@@ -9,7 +9,7 @@ local scene = composer.newScene()
 
 local tableLines = {}
 local cursor = { Line = 1, Column = 1 }
-local columns = 80
+local columns = 40
 local rows = 25
 textZoneRectangle=nil
 local function initTextScreen(sceneGroup)
@@ -18,7 +18,7 @@ local function initTextScreen(sceneGroup)
 
     local aspectRatio = 3
     local fontWH = 8 * aspectRatio
-    textZoneRectangle = display.newRect(sceneGroup, display.contentCenterX, display.contentCenterY, (fontWH * columns) / 2, fontWH * rows)
+    textZoneRectangle = display.newRect(sceneGroup, display.contentCenterX, display.contentCenterY, (fontWH * columns) , fontWH * rows)
     textZoneRectangle.strokeWidth = 5
     textZoneRectangle:setFillColor(0, 0, 0, 0.5)
     textZoneRectangle:setStrokeColor(1, 0, 0)
@@ -26,7 +26,7 @@ local function initTextScreen(sceneGroup)
     -- Initialize tableLines and create text objects
     tableLines = {}
     for Line = 1, rows do
-        local lblLine = display.newText(sceneGroup, "12345678901234567890123456789012345678901234567890123456789012345678901234567890", display.contentCenterX, 200 + (Line * fontWH), "fonts/ume-tgc5.ttf", fontWH)
+        local lblLine = display.newText(sceneGroup, "一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十", display.contentCenterX, 200 + (Line * fontWH), "fonts/ume-tgc5.ttf", fontWH)
         table.insert(tableLines, lblLine)
     end
 end
@@ -44,7 +44,7 @@ local function showTextArea()
 end
 local function CLS()
     for _, line in ipairs(tableLines) do
-        line.text = string.rep(" ", columns)
+        line.text = string.rep("　", columns)
     end
 end
 lineChanged=false
@@ -60,12 +60,12 @@ local function NEWENDLINE()
         	tableLines[L].text = tableLines[L+1].text
 		end
     end
-    tableLines[#tableLines].text = string.rep(" ", columns) -- Clear the first line
+    tableLines[#tableLines].text = string.rep("　", columns) -- Clear the first line
 end
 local function PRINT(STRING)
     while #STRING > 0 do
         -- Calculate the remaining space on the current line
-        local remainingSpace = columns - cursor.Column + 1
+        local remainingSpace = 118 - cursor.Column + 1 -- hack, I dont know why but I replaced columns with the number 118 and seems to work for Japanese
         local toPrint = STRING:sub(1, remainingSpace)
 
         -- Get the text currently on the line
@@ -95,6 +95,59 @@ local function PRINT(STRING)
     end
 end
 
+local characterTimer=nil
+local stringForSlowPrint
+local oneline
+local character
+--[[
+coPrintOneCharOfSlowPrint = coroutine.create(function () 
+    character  = string.sub(oneline, 1, 3)
+    print("here3 character:"..character )
+    oneline=string.sub(oneline, 7, #oneline)--seems hte whole problem is in hte lack of support for utf8
+    print("oneline:"..oneline )
+    if oneline=="" then
+        --timer.cancel(characterTimer)
+    end
+    PRINT(character)
+    --coroutine.yield()
+end)
+]]
+function coPrintOneCharOfSlowPrint() 
+    character  = string.sub(oneline, 1, 3)
+    print("here3 character:"..character )
+    oneline=string.sub(oneline, 4, #oneline)--seems hte whole problem is in hte lack of support for utf8
+    print("#oneline:'"..#oneline.."'" )
+    if #oneline==0 then
+        timer.cancel(characterTimer)
+    end
+    PRINT(character)
+    --coroutine.yield()
+end
+
+--local utf8 = require "utf8"
+--utf8.len(stringForSlowPrint)>40
+local function SLOWPRINT(timeInMilllisecods,string)
+    stringForSlowPrint=string
+    --hack to make the flowprint work, otherwise it is jittery
+    --hack fix, it does nto want to work form columb 1
+    --repeat
+        LOCATE(cursor.Line,2)
+        if string.len(stringForSlowPrint)>181 then
+            oneline = string.sub(stringForSlowPrint, 1, 181)--80 shoudl be two characters in utf8???
+            print("here1")
+            stringForSlowPrint=string.sub(stringForSlowPrint, 181, #stringForSlowPrint)
+            characterTimer=timer.performWithDelay( timeInMilllisecods, coPrintOneCharOfSlowPrint, 0, "charTimer" )
+        else
+            if character then
+               print("here2 oneline:"..oneline)
+            end
+            online= stringForSlowPrint
+            characterTimer=timer.performWithDelay( timeInMilllisecods, coPrintOneCharOfSlowPrint, 0, "charTimer" )
+            oneline=""
+        end
+        --coroutine.resume(coPrintOneCharOfSlowPrint)
+    --until #oneline==0
+end
 -- -----------------------------------------------------------------------------------
 -- Scene event functions
 -- -----------------------------------------------------------------------------------
@@ -116,17 +169,18 @@ function scene:show(event)
     elseif (phase == "did") then
         -- Code here runs when the scene is entirely on screen
         initTextScreen(sceneGroup)
-        CLS()
-        LOCATE(3,1)
-		PRINT("HELLO WORLD!")
-		LOCATE(10,1)
-		PRINT("こんにちは世界!日本語の文章を試します、昔々あるところでおじいちゃんをおばあちゃんがいました、おじいちゃんが芝刈りに、おばあちゃんが川で洗濯してました")
-		LOCATE(24,10)
-		PRINT("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
-		PRINT("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB")
-		PRINT("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
-        hideTextArea()
         showTextArea()
+        CLS()
+		--PRINT("こんにちは世界！")
+		SLOWPRINT(100,"こんにちは世界！日本語の文章を試します、昔々あるところでおじいちゃんをおばあちゃんがいました、おじいちゃんが芝刈りに、おばあちゃんが川で洗濯してました")
+
+		SLOWPRINT(100,"こんにちは世界！日本語の文章を試します、昔々あるところでおじいちゃんをおばあちゃんがいました、おじいちゃんが芝刈りに、おばあちゃんが川で洗濯してました")
+        --LOCATE(24,10)
+		--PRINT("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+		--PRINT("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB")
+		--PRINT("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+        --hideTextArea()
+        
 	end
 end
 
