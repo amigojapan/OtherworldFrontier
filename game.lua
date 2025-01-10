@@ -131,11 +131,11 @@ local function SLOWPRINT(timeInMilllisecods,string)
     --hack to make the flowprint work, otherwise it is jittery
     --hack fix, it does nto want to work form columb 1
     --repeat
-        LOCATE(cursor.Line,2)
-        if string.len(stringForSlowPrint)>181 then
-            oneline = string.sub(stringForSlowPrint, 1, 181)--80 shoudl be two characters in utf8???
+        --LOCATE(cursor.Line,2)
+        if string.len(stringForSlowPrint)>40 then
+            oneline = string.sub(stringForSlowPrint, 1, #stringForSlowPrint)--80 shoudl be two characters in utf8???
             print("here1")
-            stringForSlowPrint=string.sub(stringForSlowPrint, 181, #stringForSlowPrint)
+            stringForSlowPrint=string.sub(stringForSlowPrint, 40, #stringForSlowPrint)
             characterTimer=timer.performWithDelay( timeInMilllisecods, coPrintOneCharOfSlowPrint, 0, "charTimer" )
         else
             if character then
@@ -172,8 +172,6 @@ function scene:show(event)
         showTextArea()
         CLS()
 		--PRINT("こんにちは世界！")
-		SLOWPRINT(100,"こんにちは世界！日本語の文章を試します、昔々あるところでおじいちゃんをおばあちゃんがいました、おじいちゃんが芝刈りに、おばあちゃんが川で洗濯してました")
-
 		SLOWPRINT(100,"こんにちは世界！日本語の文章を試します、昔々あるところでおじいちゃんをおばあちゃんがいました、おじいちゃんが芝刈りに、おばあちゃんが川で洗濯してました")
         --LOCATE(24,10)
 		--PRINT("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
