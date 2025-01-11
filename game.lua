@@ -16,7 +16,7 @@ local function initTextScreen(sceneGroup)
     -- The C64's resolution is 320×200 pixels, which is made up of a 40×25 grid of 
     -- 8×8 character blocks. Adjusted for HD displays to use 80 characters wide.
 
-    local aspectRatio = 3
+    local aspectRatio = 5
     local fontWH = 8 * aspectRatio
     textZoneRectangle = display.newRect(sceneGroup, display.contentCenterX, display.contentCenterY, (fontWH * columns) , fontWH * rows)
     textZoneRectangle.strokeWidth = 5
@@ -172,9 +172,11 @@ function scene:show(event)
         showTextArea()
         CLS()
 		--PRINT("こんにちは世界！")
-		SLOWPRINT(100,"こんにちは世界！日本語の文章を試します、昔々あるところでおじいちゃんをおばあちゃんがいました、おじいちゃんが芝刈りに、おばあちゃんが川で洗濯してました")
+		SLOWPRINT(100,"こんにちは世界！日本語の文章を試します、昔々あるところでおじいちゃんとおばあちゃんがいました、おじいちゃんが芝刈りに、おばあちゃんが川で洗濯してました")
         --**bug makes one slowprint wait for the one in back to finish
-        SLOWPRINT(100,"こんにちは世界！日本語の文章を試します、昔々あるところでおじいちゃんをおばあちゃんがいました、おじいちゃんが芝刈りに、おばあちゃんが川で洗濯してました")
+        --maybe just append the string to the outpusiting if there is already one SLOWPRINT working
+        --idea, for the continue button, just set the timer to a shorter period, that way it will appear quickly but nto completly instantaneously  and be less work
+        SLOWPRINT(100,"こんにちは世界！日本語の文章を試します、昔々あるところでおじいちゃんとばあちゃんがいました、おじいちゃんが芝刈りに、おばあちゃんが川で洗濯してました")
         
         --LOCATE(24,10)
 		--PRINT("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
