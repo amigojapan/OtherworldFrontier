@@ -12,6 +12,11 @@ local cursor = { Line = 1, Column = 1 }
 local columns = 40
 local rows = 25
 textZoneRectangle=nil
+local characterTimer=nil
+function continue()
+    timer.cancel(characterTimer)
+    characterTimer=timer.performWithDelay( 1, coPrintOneCharOfSlowPrint, 0, "charTimer" )
+end
 local function initTextScreen(sceneGroup)
     -- The C64's resolution is 320×200 pixels, which is made up of a 40×25 grid of 
     -- 8×8 character blocks. Adjusted for HD displays to use 80 characters wide.
@@ -29,7 +34,9 @@ local function initTextScreen(sceneGroup)
         local lblLine = display.newText(sceneGroup, "一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十", display.contentCenterX, 200 + (Line * fontWH), "fonts/ume-tgc5.ttf", fontWH)
         table.insert(tableLines, lblLine)
     end
-end
+    local lblContinue = display.newText(sceneGroup, "Continue...",(columns-12)*fontWH, 200 + (rows * fontWH), "fonts/ume-tgc5.ttf", fontWH)
+    lblContinue:addEventListener( "touch", continue )
+end 
 local function hideTextArea()
     for key, lblLine in ipairs(tableLines) do
         lblLine.isVisible=false
@@ -103,7 +110,7 @@ local function PRINT(STRING)
     end
 end
 
-local characterTimer=nil
+
 local stringForSlowPrint
 local oneline
 local character
@@ -200,7 +207,7 @@ function scene:show(event)
         QUESLOWPRINT("こんにちは世界！改日本語の文章を試します、昔々あるところでおじいちゃんとおばあちゃんがいました、おじいちゃんが芝刈りに、おばあちゃんが川で洗濯してました。")
         SLOWPRINT(100,"")
 
-        --**bug makes one slowprint wait for the one in back to finish
+        --(workaround)bug makes one slowprint wait for the one in back to finish
         --maybe just append the string to the outpusiting if there is already one SLOWPRINT working
         --idea, for the continue button, just set the timer to a shorter period, that way it will appear quickly but nto completly instantaneously  and be less work
         --SLOWPRINT(100,"こんにちは世界！日本語の文章を試します、昔々あるところでおじいちゃんとばあちゃんがいました、おじいちゃんが芝刈りに、おばあちゃんが川で洗濯してました")
