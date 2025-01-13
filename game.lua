@@ -16,7 +16,7 @@ local function initTextScreen(sceneGroup)
     -- The C64's resolution is 320×200 pixels, which is made up of a 40×25 grid of 
     -- 8×8 character blocks. Adjusted for HD displays to use 80 characters wide.
 
-    local aspectRatio = 5
+    local aspectRatio = 3
     local fontWH = 8 * aspectRatio
     textZoneRectangle = display.newRect(sceneGroup, display.contentCenterX, display.contentCenterY, (fontWH * columns) , fontWH * rows)
     textZoneRectangle.strokeWidth = 5
@@ -55,14 +55,22 @@ local function LOCATE(L, C)
 end
 
 local function NEWENDLINE()
-    for L = 1, #tableLines, 1 do
-		if tableLines[L+1] then 
-        	tableLines[L].text = tableLines[L+1].text
-		end
-    end
-    tableLines[#tableLines].text = string.rep("　", columns) -- Clear the first line
+    --if cursor.Line == columns then
+    --    for L = 1, cursor.Line, 1 do
+    --        if tableLines[L+1] then 
+    --            tableLines[L].text = tableLines[L+1].text
+    --        end
+    --    end
+    --    tableLines[#tableLines].text = string.rep("　", columns) -- Clear the first line
+    --else
+        cursor.Line=cursor.Line+1
+        cursor.Column=1
+    --end
 end
+local queue
 local function PRINT(STRING)
+    --eliminate newlibes
+    STRING=STRING:gsub("\n","")
     while #STRING > 0 do
         -- Calculate the remaining space on the current line
         local remainingSpace = 118 - cursor.Column + 1 -- hack, I dont know why but I replaced columns with the number 118 and seems to work for Japanese
@@ -120,14 +128,22 @@ function coPrintOneCharOfSlowPrint()
     if #oneline==0 then
         timer.cancel(characterTimer)
     end
-    PRINT(character)
+    if character=="改" then
+        NEWENDLINE()
+        print("newline")
+    else
+        PRINT(character)
+    end
     --coroutine.yield()
 end
 
 --local utf8 = require "utf8"
 --utf8.len(stringForSlowPrint)>40
 local function SLOWPRINT(timeInMilllisecods,string)
-    stringForSlowPrint=string
+    if stringForSlowPrint==nil then
+        stringForSlowPrint=""
+    end
+    stringForSlowPrint=stringForSlowPrint..string
     --hack to make the flowprint work, otherwise it is jittery
     --hack fix, it does nto want to work form columb 1
     --repeat
@@ -147,6 +163,12 @@ local function SLOWPRINT(timeInMilllisecods,string)
         end
         --coroutine.resume(coPrintOneCharOfSlowPrint)
     --until #oneline==0
+end
+function QUESLOWPRINT(string)
+    if stringForSlowPrint==nil then
+        stringForSlowPrint=""
+    end
+    stringForSlowPrint=stringForSlowPrint..string
 end
 -- -----------------------------------------------------------------------------------
 -- Scene event functions
@@ -172,11 +194,16 @@ function scene:show(event)
         showTextArea()
         CLS()
 		--PRINT("こんにちは世界！")
-		SLOWPRINT(100,"こんにちは世界！日本語の文章を試します、昔々あるところでおじいちゃんとおばあちゃんがいました、おじいちゃんが芝刈りに、おばあちゃんが川で洗濯してました")
+        QUESLOWPRINT("改")
+        QUESLOWPRINT("こんにちは世界！改日本語の文章を試します、昔々あるところでおじいちゃんとおばあちゃんがいました、おじいちゃんが芝刈りに、おばあちゃんが川で洗濯してました。")
+        QUESLOWPRINT("改")
+        QUESLOWPRINT("こんにちは世界！改日本語の文章を試します、昔々あるところでおじいちゃんとおばあちゃんがいました、おじいちゃんが芝刈りに、おばあちゃんが川で洗濯してました。")
+        SLOWPRINT(100,"")
+
         --**bug makes one slowprint wait for the one in back to finish
         --maybe just append the string to the outpusiting if there is already one SLOWPRINT working
         --idea, for the continue button, just set the timer to a shorter period, that way it will appear quickly but nto completly instantaneously  and be less work
-        SLOWPRINT(100,"こんにちは世界！日本語の文章を試します、昔々あるところでおじいちゃんとばあちゃんがいました、おじいちゃんが芝刈りに、おばあちゃんが川で洗濯してました")
+        --SLOWPRINT(100,"こんにちは世界！日本語の文章を試します、昔々あるところでおじいちゃんとばあちゃんがいました、おじいちゃんが芝刈りに、おばあちゃんが川で洗濯してました")
         
         --LOCATE(24,10)
 		--PRINT("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
