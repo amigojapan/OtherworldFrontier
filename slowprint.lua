@@ -6,6 +6,7 @@ local callbackFunction
 local stringForSlowPrint
 local STRING="なし"
 local printing=false
+local localizedSpace=nil
 textZoneRectangle=nil
 characterTimer=nil
 function continue()
@@ -19,13 +20,30 @@ function continue()
         print("continue fast")    
     end
 end
-function initTextScreen(sceneGroup)
+local Lang=nil
+function initTextScreen(sceneGroup,language)
     -- The C64's resolution is 320×200 pixels, which is made up of a 40×25 grid of 
     -- 8×8 character blocks. Adjusted for HD displays to use 80 characters wide.
-
-    local aspectRatio = 4
-    local fontWH = 8 * aspectRatio
-    textZoneRectangle = display.newRect(sceneGroup, display.contentCenterX, display.contentCenterY, (fontWH * columns) , fontWH * rows)
+    Lang=language
+    local aspectRatio = nil
+    local fontWH = nil
+    local magicalNumber=nil
+    if Lang=="JP" then
+        aspectRatio = 4
+        fontWH = 8 * aspectRatio
+        columns = 40
+        rows = 25
+        magicalNumber=0
+        localizedSpace="　"
+    else
+        aspectRatio = 3
+        fontWH = 8 * aspectRatio
+        columns = 80
+        rows = 25
+        magicalNumber=940--dunno why but I need to substract this number to get the right size of the red rectangle
+        localizedSpace=" "
+    end
+    textZoneRectangle = display.newRect(sceneGroup, display.contentCenterX, display.contentCenterY, (fontWH * columns)-magicalNumber  , fontWH * rows)
     textZoneRectangle.strokeWidth = 5
     textZoneRectangle:setFillColor(0, 0, 0, 0.5)
     textZoneRectangle:setStrokeColor(1, 0, 0)
@@ -33,10 +51,20 @@ function initTextScreen(sceneGroup)
     -- Initialize tableLines and create text objects
     tableLines = {}
     for Line = 1, rows do
-        local lblLine = display.newText(sceneGroup, "一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十", display.contentCenterX, 100+(Line * fontWH), "fonts/ume-tgc5.ttf", fontWH)--100 is a hack to align the text and the window
+        local lblLine
+        if Lang=="JP" then
+            lblLine = display.newText(sceneGroup, "一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十", display.contentCenterX, 100+(Line * fontWH), "fonts/ume-tgc5.ttf", fontWH)--100 is a hack to align the text and the window
+        else
+            lblLine = display.newText(sceneGroup, "12345678901234567890123456789012345678901234567890123456789012345678901234567890", display.contentCenterX, 200+(Line * fontWH), "fonts/ume-tgc5.ttf", fontWH)--100 is a hack to align the text and the window
+        end
         table.insert(tableLines, lblLine)
     end
-    local lblContinue = display.newText(sceneGroup, "Continue...",(columns-12)*fontWH, 200 + (rows * fontWH), "fonts/ume-tgc5.ttf", fontWH)
+    local lblContinue
+    if Lange=="JP" then
+        lblContinue = display.newText(sceneGroup, "Continue...",(columns-12)*fontWH, 200 + (rows * fontWH), "fonts/ume-tgc5.ttf", fontWH)
+    else
+        lblContinue = display.newText(sceneGroup, "Continue...",750, (rows+8) * fontWH, "fonts/ume-tgc5.ttf", fontWH)
+    end
     lblContinue:addEventListener( "touch", continue )
 end 
 function hideTextArea()
@@ -53,7 +81,7 @@ function showTextArea()
 end
 function CLS()
     for _, line in ipairs(tableLines) do
-        line.text = string.rep("　", columns)
+        line.text = string.rep(localizedSpace, columns)
     end
 end
 lineChanged=false
@@ -70,7 +98,7 @@ function NEWENDLINE()
                 tableLines[L].text = tableLines[L+1].text
             end
         end
-        tableLines[#tableLines].text = string.rep("　", columns) -- Clear the first line
+        tableLines[#tableLines].text = string.rep(localizedSpace, columns) -- Clear the first line
         cursor.Column=1
     else
         cursor.Line=cursor.Line+1
@@ -80,13 +108,18 @@ end
 local queue
 function PRINT(STR)
     --eliminate newlibes
-    --STRING=STR:gsub("\n","改")
+    STRING=STR:gsub("\n","^")
     printing=true
     STRING=STR:gsub("なし","")
     
     while #STRING > 0 do
         -- Calculate the remaining space on the current line
-        local remainingSpace = 117 - cursor.Column + 1 -- (this would not be a problem ifn lua for solar2d supported utf8 characters)the number 118 was causing a problem, I chnaged it to 117 and it seems to work.hack, I dont know why but I replaced columns with the number 118 and seems to work for Japanese
+        local remainingSpace
+        if Lang=="JP" then
+            remainingSpace = 117 - cursor.Column + 1 -- (this would not be a problem ifn lua for solar2d supported utf8 characters)the number 118 was causing a problem, I chnaged it to 117 and it seems to work.hack, I dont know why but I replaced columns with the number 118 and seems to work for Japanese
+        else
+            remainingSpace = columns - cursor.Column + 1 -- (this would not be a problem ifn lua for solar2d supported utf8 characters)the number 118 was causing a problem, I chnaged it to 117 and it seems to work.hack, I dont know why but I replaced columns with the number 118 and seems to work for Japanese
+        end
         local toPrint = STRING:sub(1, remainingSpace)
 
         -- Get the text currently on the line
@@ -125,16 +158,23 @@ end
 local oneline
 local character
 function coPrintOneCharOfSlowPrint() 
-    character  = string.sub(oneline, 1, 3)
-    --print("here3 character:"..character )
-    oneline=string.sub(oneline, 4, #oneline)--seems hte whole problem is in hte lack of support for utf8
-    --print("oneline:'"..oneline.."'" )
+    if Lang=="JP" then
+        character  = string.sub(oneline, 1, 3)
+        --print("here3 character:"..character )
+        oneline=string.sub(oneline, 4, #oneline)--seems hte whole problem is in hte lack of support for utf8
+        --print("oneline:'"..oneline.."'" )
+    else
+        character  = string.sub(oneline, 1, 1)
+        print("here3 character:"..character )
+        oneline=string.sub(oneline, 2, #oneline)--seems hte whole problem is in hte lack of support for utf8
+        --print("oneline:'"..oneline.."'" )
+    end        
     if #oneline==0 then
         timer.cancel(characterTimer)
         printing=false
         --(it was not here, I thtink it is when I click the continue button--old comment: I think this may be hte place to set the next continue button...
     end
-    if character=="改" then
+    if character=="改" or character=="^" then
         NEWENDLINE()
         print("newline")
     else

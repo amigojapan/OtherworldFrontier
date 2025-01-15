@@ -19,8 +19,16 @@ function scene:create(event)
     -- Code here runs when the scene is first created but has not yet appeared on screen
 end
 function prologueEN()
-    QUESLOWPRINT("Prologue\n")
-    QUESLOWPRINT("The tale begins in the bustling tavern known as the 'Tavern of a Thousand Tales', nestled on\nthe southernmost edge of the continent in the city of Mistral's End. Adventurers, traders,\n and wanderers gather here to share tales of treasure and glory.  The tabernand it also works\n like an unofficial guild. A whispered legend emerges once again\n")
+    QUESLOWPRINT("Prologue^")
+    --           "123456780123456780123456780123456780123456780123456780123456780123456780"
+    QUESLOWPRINT("The tale begins in the bustling tavern known as^")
+    QUESLOWPRINT("the 'Tavern of a Thousand Tales', nestled on^")
+    QUESLOWPRINT("the southernmost edge of the continent in the^")
+    QUESLOWPRINT("city of Mistral's End. Adventurers, traders,^")
+    QUESLOWPRINT("and wanderers gather here to share tales of^")
+    QUESLOWPRINT("treasure and glory.  The tabernand it also^")
+    QUESLOWPRINT("works like an unofficial guild. A whispered^")
+    QUESLOWPRINT("legend emerges once again^")
     SLOWPRINT(100,"",prologueEN)
 end
 
@@ -60,7 +68,7 @@ function scene:show(event)
 		background.x = display.contentCenterX
 		background.y = display.contentCenterY
         -- Code here runs when the scene is entirely on screen
-        initTextScreen(sceneGroup)
+        initTextScreen(sceneGroup,"EN")
         showTextArea()
         CLS()
         prologueEN()
