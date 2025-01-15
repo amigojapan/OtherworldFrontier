@@ -18,6 +18,12 @@ function scene:create(event)
     local sceneGroup = self.view
     -- Code here runs when the scene is first created but has not yet appeared on screen
 end
+function prologueEN()
+    QUESLOWPRINT("Prologue\n")
+    QUESLOWPRINT("The tale begins in the bustling tavern known as the 'Tavern of a Thousand Tales', nestled on\nthe southernmost edge of the continent in the city of Mistral's End. Adventurers, traders,\n and wanderers gather here to share tales of treasure and glory.  The tabernand it also works\n like an unofficial guild. A whispered legend emerges once again\n")
+    SLOWPRINT(100,"",prologueEN)
+end
+
 function prologue()
     QUESLOWPRINT("プロローグ改")
     QUESLOWPRINT("物語は「千の物語の酒場」して知られる賑やかな酒場から始まる。この酒場は大陸の南端、ミストラルの終わりの街に位置し、冒険者、商人、そして旅人が宝と栄光の物語を共有するために集う場所だ。そこで再びささやかれる伝説がある。改")
@@ -57,7 +63,7 @@ function scene:show(event)
         initTextScreen(sceneGroup)
         showTextArea()
         CLS()
-        prologue()
+        prologueEN()
         
 		--PRINT("こんにちは世界！")
 

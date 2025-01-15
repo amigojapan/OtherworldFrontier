@@ -1,0 +1,46 @@
+Prologue\n
+\n
+The tale begins in the bustling tavern known as the "Tavern of a Thousand Tales", nestled on\n
+the southernmost edge of the continent in the city of Mistral's End. Adventurers, traders,\n and wanderers gather here to share tales of treasure and glory. 　The tabernand it also works\n
+like an unofficial guild. A whispered legend emerges once again\n
+\n
+"Beyond the Northern Tundra lies the Crown of Eternity, a mythical artifact created by the\n God himself. It is said to grant unparalleled power or fulfill the deepest desire of\n 
+whoever possesses it."\n
+
+Many have tried to claim the artifact, but the journey north is perilous. Ancient forests, deadly mountains, cursed wastelands, and frozen tundras and evil monsters stand between the brave and their goal. Most of then could not survive the journey.Despite the odds, your party has decided to embark on this epic journey. Whether for riches, redemption, or renown, the stakes are high, and the path ahead is fraught with danger.
+
+prompt for your name*
+
+switch to picture of you*
+
+(your) backstory:
+you were born under a rare celestial event known as the Veil’s Convergence, where the twin moons of Eternia aligned perfectly, casting the land in an eerie silver glow. This alignment was said to herald the arrival of those destined to shape the world's fate—be it for salvation or destruction.
+
+
+Switch to nightshade frame*
+
+(you), our heroine, goes into the tavern, and a dodgy character called "Nightshade" offers to sell you a map to the location of the Crown of Eternity. you offer him money, but he says he wants your お母さんの形見 very reluctantly you agree to his offer.
+
+Switch to image with five adventurers*
+
+heading onto a table, (you) seat yourself in a table with another 4 girls.
+here is where you set the names of the 4 other adventurers...
+
+Prompt for names of 4 adventurers
+
+adventurer1's backstory: "Born under a comet's light in the tranquil village of Silverglade, adnventurer1 was raised by a family of traveling performers. Her melodious voice and harp-playing were said to charm even the stars. One fateful night, a celestial spirit appeared in her dreams, granting her the power to weave magic into her songs."
+
+adventurer2's backstory: "adventurer2 was raised in the militant city of Ironreach, groomed from a young age to become an elite knight. However, when she uncovered her order's secret dealings with dark forces, she fled, taking with her the enchanted blade meant to control her."
+
+adventurer3's backstory: "Abandoned as a child in the magical wilderness of Everbloom Thicket, adventurer3 was raised by forest spirits who taught her ancient, untamed magic. Her powers are formidable but unpredictable, often causing chaos in tense moments."
+
+
+adventurer4's backstory: " adventurer4 grew up in the serene coastal village of Solrise, where she served as an apprentice to the village healer and priestess. When her home was raided by a band of marauders, adventurer4 invoked the protection of God, unleashing a burst of divine light that drove the attackers away. The experience left her both awed and burdened by the responsibility of wielding divine power."
+
+
+
+you say "join me in a quest to find the Crown of Eternity, I have purchased a map to get it. I have an old caravan we can use..."
+adventurer1 says "we will need to go to the stable to get unicorns to pull it"
+adventurer2 says "we will need to head to he shop to buy supplies"
+adventurer3 says "lets do it!"
+adventurer4 silently nods

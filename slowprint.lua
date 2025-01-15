@@ -3,11 +3,21 @@ local cursor = { Line = 1, Column = 1 }
 local columns = 40
 local rows = 25
 local callbackFunction
+local stringForSlowPrint
+local STRING="なし"
+local printing=false
 textZoneRectangle=nil
 characterTimer=nil
 function continue()
-    timer.cancel(characterTimer)
-    characterTimer=timer.performWithDelay( 1, coPrintOneCharOfSlowPrint, 0, "charTimer" )
+    if printing==false then
+        timer.cancel(characterTimer)
+        callbackFunction()
+        print("continue next")
+    else
+        timer.cancel(characterTimer)
+        characterTimer=timer.performWithDelay( 1, coPrintOneCharOfSlowPrint, 0, "charTimer" )
+        print("continue fast")    
+    end
 end
 function initTextScreen(sceneGroup)
     -- The C64's resolution is 320×200 pixels, which is made up of a 40×25 grid of 
@@ -68,10 +78,12 @@ function NEWENDLINE()
     end
 end
 local queue
-function PRINT(STRING)
+function PRINT(STR)
     --eliminate newlibes
-    STRING=STRING:gsub("\n","")
-    print("STRING:"..STRING)
+    --STRING=STR:gsub("\n","改")
+    printing=true
+    STRING=STR:gsub("なし","")
+    
     while #STRING > 0 do
         -- Calculate the remaining space on the current line
         local remainingSpace = 117 - cursor.Column + 1 -- (this would not be a problem ifn lua for solar2d supported utf8 characters)the number 118 was causing a problem, I chnaged it to 117 and it seems to work.hack, I dont know why but I replaced columns with the number 118 and seems to work for Japanese
@@ -109,7 +121,7 @@ function PRINT(STRING)
 end
 
 
-local stringForSlowPrint
+
 local oneline
 local character
 function coPrintOneCharOfSlowPrint() 
@@ -119,9 +131,8 @@ function coPrintOneCharOfSlowPrint()
     --print("oneline:'"..oneline.."'" )
     if #oneline==0 then
         timer.cancel(characterTimer)
-        --** I think this may be hte place to set the next continue button...
-        stringForSlowPrint=""
-        callbackFunction()
+        printing=false
+        --(it was not here, I thtink it is when I click the continue button--old comment: I think this may be hte place to set the next continue button...
     end
     if character=="改" then
         NEWENDLINE()
