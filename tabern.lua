@@ -28,12 +28,13 @@ function prologueEN()
     QUESLOWPRINT("works like an unofficial guild. A whispered legend emerges once again:^^")
     SLOWPRINT(100,"",monogatari1EN)
 end
+
 function monogatari2EN()
-    print("monogatari2 called")
+    print("monogatari3 called")
     --CLS()
     --LOCATE(1,1)
     RESETQUE()
-    QUESLOWPRINT("^^Many have tried to claim the artifact, but the journey north is perilous. Ancient forests, deadly mountains, cursed wastelands, and frozen tundras and evil monsters stand between the brave and their goal. Most of then could not survive the journey.Despite the odds, your party has decided to embark on this epic journey. Whether for riches, redemption, or renown, the stakes are high, and the path ahead is fraught with danger.")
+    QUESLOWPRINT("^^Many have tried to claim the artifact, but the journey north is perilous. Ancient forests, deadly mountains, cursed wastelands, and frozen tundras and evil monsters stand between the brave and their goal. Most of them could not survive the journey.Despite the odds, your party has decided to embark on this epic journey. Whether for riches, redemption, or renown, the stakes are high, and the path ahead is fraught with danger.")
     SLOWPRINT(100,"",prologueEN)
 end
 
@@ -42,7 +43,7 @@ function monogatari1EN()
     --CLS()
     --LOCATE(1,1)
     RESETQUE()
-    QUESLOWPRINT("Beyond the Northern Tundra lies the Crown of Eternity, a mythical artifact created by the God himself. It is said to grant unparalleled power or fulfill the deepest desire of whoever possesses it.")
+    QUESLOWPRINT("'Beyond the Northern Tundra lies the Crown of Eternity, a mythical artifact created by the God himself. It is said to grant unparalleled power or fulfill the deepest desire of whoever possesses it.'")
     SLOWPRINT(100,"",monogatari2EN)
 end
 
@@ -54,19 +55,18 @@ end
 
 function monogatari2()
     print("monogatari2 called")
-    --CLS()
-    --LOCATE(1,1)
+    RESETQUE()
     QUESLOWPRINT("多くの者がその遺物を手に入れようと挑んだが、北への旅路は非常に危険だ。古代の森、険しい山々、呪われた荒地、改そして凍てついたツンドラが勇者たちの前に立ちはだかる。それでもなお、君たちの仲間はこの壮大な旅に出ることを決意した。富のためか、贖罪のためか、それとも名声のためか、いずれにせよ賭け金は高く、前途は危険に満ちている。改")
     SLOWPRINT(100,"",prologue)
 end
 
 function monogatari1()
     print("monogatari1 called")
-    --CLS()
-    --LOCATE(1,1)
+    RESETQUE()
     QUESLOWPRINT("「北のツンドラを越えた先に『永遠の冠』がある。それは神様自身が作り出したとされる神秘的な遺物だ。これを手にする者には無比の力が与えられるか、最も深い願いが叶えられるという。」改")
     SLOWPRINT(100,"",monogatari2)
 end
+
 
 -- show()
 function scene:show(event)

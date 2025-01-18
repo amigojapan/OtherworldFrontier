@@ -70,7 +70,7 @@ function initTextScreen(sceneGroup,language)
     else
         lblContinue = display.newText(sceneGroup, "[Continue...]", 750, (rows+8) * fontWH, "fonts/ume-tgc5.ttf", fontWH)
     end
-    lblContinue:addEventListener( "touch", continue )
+    lblContinue:addEventListener( "tap", continue )
 end 
 function hideTextArea()
     for key, lblLine in ipairs(tableLines) do
@@ -174,7 +174,7 @@ function coPrintOneCharOfSlowPrint()
         oneline=string.sub(oneline, 2, #oneline)--seems hte whole problem is in hte lack of support for utf8
         --print("oneline:'"..oneline.."'" )
     end
-    print("#oneline:"..#oneline)        
+    --print("#oneline:"..#oneline)        
     if #oneline==0 then
         timer.cancel(characterTimer)
         printing=false
@@ -226,4 +226,5 @@ function QUESLOWPRINT(string)
         stringForSlowPrint=""
     end
     stringForSlowPrint=stringForSlowPrint..string
+    print(stringForSlowPrint)
 end
