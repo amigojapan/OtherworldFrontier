@@ -7,6 +7,7 @@ local stringForSlowPrint
 local STRING="なし"
 local printing=false
 local localizedSpace=nil
+Lang=nil
 textZoneRectangle=nil
 characterTimer=nil
 function continue()
@@ -20,11 +21,11 @@ function continue()
         print("continue fast")    
     end
 end
-local Lang=nil
 function initTextScreen(sceneGroup,language)
     -- The C64's resolution is 320×200 pixels, which is made up of a 40×25 grid of 
     -- 8×8 character blocks. Adjusted for HD displays to use 80 characters wide.
     Lang=language
+    
     local aspectRatio = nil
     local fontWH = nil
     local magicalNumber=nil
@@ -60,10 +61,14 @@ function initTextScreen(sceneGroup,language)
         table.insert(tableLines, lblLine)
     end
     local lblContinue
-    if Lange=="JP" then
-        lblContinue = display.newText(sceneGroup, "Continue...",(columns-12)*fontWH, 200 + (rows * fontWH), "fonts/ume-tgc5.ttf", fontWH)
+    print("here5!!")
+    print("Lang:"..Lang)
+    if Lang=="JP" then
+        print("here4!!")
+        lblContinue = display.newText(sceneGroup, "[続き...]",(columns-12)*fontWH, 200 + (rows * fontWH), "fonts/ume-tgc5.ttf", fontWH)
+        --lblContinue = display.newText(sceneGroup, "Continue...", 200, 200, "fonts/ume-tgc5.ttf", fontWH)
     else
-        lblContinue = display.newText(sceneGroup, "Continue...",750, (rows+8) * fontWH, "fonts/ume-tgc5.ttf", fontWH)
+        lblContinue = display.newText(sceneGroup, "[Continue...]", 750, (rows+8) * fontWH, "fonts/ume-tgc5.ttf", fontWH)
     end
     lblContinue:addEventListener( "touch", continue )
 end 
@@ -165,13 +170,15 @@ function coPrintOneCharOfSlowPrint()
         --print("oneline:'"..oneline.."'" )
     else
         character  = string.sub(oneline, 1, 1)
-        print("here3 character:"..character )
+        --print("here3 character:"..character )
         oneline=string.sub(oneline, 2, #oneline)--seems hte whole problem is in hte lack of support for utf8
         --print("oneline:'"..oneline.."'" )
-    end        
+    end
+    print("#oneline:"..#oneline)        
     if #oneline==0 then
         timer.cancel(characterTimer)
         printing=false
+        return
         --(it was not here, I thtink it is when I click the continue button--old comment: I think this may be hte place to set the next continue button...
     end
     if character=="改" or character=="^" then
@@ -211,10 +218,12 @@ function SLOWPRINT(timeInMilllisecods,string,callbackFunctionWhenFinished)
         --coroutine.resume(coPrintOneCharOfSlowPrint)
     --until #oneline==0
 end
+function RESETQUE()
+    stringForSlowPrint=""
+end
 function QUESLOWPRINT(string)
     if stringForSlowPrint==nil then
         stringForSlowPrint=""
     end
     stringForSlowPrint=stringForSlowPrint..string
-    
 end

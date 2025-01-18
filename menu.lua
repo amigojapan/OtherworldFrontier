@@ -44,18 +44,18 @@ end
 
 
 
-local function gotoGameEnglish()
-	composer.setVariable( "language", "tabern" )
+function gotoGameEnglish()
+	composer.setVariable( "language", "English" )
 	sendToDIfferentTrialStates()
 end
 
-local function gotoGameJapanese()
-	composer.setVariable( "language", "tabern" )
+function gotoGameJapanese()
+	composer.setVariable( "language", "Japanese" )
 	sendToDIfferentTrialStates()
 end
 
-local function gotoGameSpanish()
-	composer.setVariable( "language", "tabern" )
+function gotoGameSpanish()
+	composer.setVariable( "language", "Spanish" )
 	sendToDIfferentTrialStates()
 end
 
@@ -153,9 +153,9 @@ audio.reserveChannels( 1 )
 		startButtonSpanish:addEventListener( "tap", gotoGameSpanish )
 
 		offsetY=offsetY+55
-		local startButtonSpanish = display.newText( sceneGroup, "Settings, 設定, Opciones", display.contentCenterX, offsetY, "fonts/ume-tgc5.ttf", 44 )
-		startButtonSpanish:setFillColor( 0.82, 0.86, 1 )
-		startButtonSpanish:addEventListener( "tap", gotoSettingsMenu )
+		local startButtonSettings = display.newText( sceneGroup, "Settings, 設定, Opciones", display.contentCenterX, offsetY, "fonts/ume-tgc5.ttf", 44 )
+		startButtonSettings:setFillColor( 0.82, 0.86, 1 )
+		startButtonSettings:addEventListener( "tap", gotoSettingsMenu )
 
 	
 		--local highScoresButton = display.newText( sceneGroup, "Scores,スコア、Puntuaje", display.contentCenterX, 720, "fonts/ume-tgc5.ttf", 44 )

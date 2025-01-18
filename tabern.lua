@@ -21,15 +21,29 @@ end
 function prologueEN()
     QUESLOWPRINT("Prologue^")
     --           "123456780123456780123456780123456780123456780123456780123456780123456780"
-    QUESLOWPRINT("The tale begins in the bustling tavern known as^")
-    QUESLOWPRINT("the 'Tavern of a Thousand Tales', nestled on^")
-    QUESLOWPRINT("the southernmost edge of the continent in the^")
-    QUESLOWPRINT("city of Mistral's End. Adventurers, traders,^")
-    QUESLOWPRINT("and wanderers gather here to share tales of^")
-    QUESLOWPRINT("treasure and glory.  The tabernand it also^")
-    QUESLOWPRINT("works like an unofficial guild. A whispered^")
-    QUESLOWPRINT("legend emerges once again^")
+    QUESLOWPRINT("The tale begins in the bustling tavern known as the 'Tavern of a ^")
+    QUESLOWPRINT("Thousand Tales', nestled on　the southernmost edge of the continent in^")
+    QUESLOWPRINT("the city of Mistral's End. Adventurers, traders, and wanderers gather^") 
+    QUESLOWPRINT("here to share tales of treasure and glory.  The tabernand it also^")
+    QUESLOWPRINT("works like an unofficial guild. A whispered legend emerges once again:^^")
+    SLOWPRINT(100,"",monogatari1EN)
+end
+function monogatari2EN()
+    print("monogatari2 called")
+    --CLS()
+    --LOCATE(1,1)
+    RESETQUE()
+    QUESLOWPRINT("^^Many have tried to claim the artifact, but the journey north is perilous. Ancient forests, deadly mountains, cursed wastelands, and frozen tundras and evil monsters stand between the brave and their goal. Most of then could not survive the journey.Despite the odds, your party has decided to embark on this epic journey. Whether for riches, redemption, or renown, the stakes are high, and the path ahead is fraught with danger.")
     SLOWPRINT(100,"",prologueEN)
+end
+
+function monogatari1EN()
+    print("monogatari1 called")
+    --CLS()
+    --LOCATE(1,1)
+    RESETQUE()
+    QUESLOWPRINT("Beyond the Northern Tundra lies the Crown of Eternity, a mythical artifact created by the God himself. It is said to grant unparalleled power or fulfill the deepest desire of whoever possesses it.")
+    SLOWPRINT(100,"",monogatari2EN)
 end
 
 function prologue()
@@ -68,11 +82,18 @@ function scene:show(event)
 		background.x = display.contentCenterX
 		background.y = display.contentCenterY
         -- Code here runs when the scene is entirely on screen
-        initTextScreen(sceneGroup,"EN")
-        showTextArea()
-        CLS()
-        prologueEN()
-        
+        print("language:"..composer.getVariable( "language" ))
+        if composer.getVariable( "language" ) == "English" then
+            initTextScreen(sceneGroup,"EN")
+            showTextArea()
+            CLS()
+            prologueEN()
+        elseif composer.getVariable( "language" ) == "Japanese" then
+            initTextScreen(sceneGroup,"JP")
+            showTextArea()
+            CLS()
+            prologue()
+        end
 		--PRINT("こんにちは世界！")
 
         --(workaround)bug makes one slowprint wait for the one in back to finish
