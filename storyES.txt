@@ -1,0 +1,16 @@
+Prologue
+The tale begins in the bustling tavern known as the "Tavern of a Thousand Tales", nestled on
+the southernmost edge of the continent in the city of Mistral's End. Adventurers, traders, and wanderers gather here to share tales of treasure and glory. 　The tabernand it also works
+like an unofficial guild. A whispered legend emerges once again
+
+"Beyond the Northern Tundra lies the Crown of Eternity, a mythical artifact created by the\n God himself. It is said to grant unparalleled power or fulfill the deepest desire of\n 
+whoever possesses it."\n
+
+Many have tried to claim the artifact, but the journey north is perilous. Ancient forests, deadly mountains, cursed wastelands, and frozen tundras and evil monsters stand between the brave and their goal. Most of then could not survive the journey.Despite the odds, your party has decided to embark on this epic journey. Whether for riches, redemption, or renown, the stakes are high, and the path ahead is fraught with danger.
+
+prompt for your name*
+
+switch to picture of you*
+
+(your) backstory:
+you were born under a rare celestial event known as the Veil’s Convergence, where the twin moons of Eternia aligned perfectly, casting the land in an eerie silver glow. This alignment was said to herald the arrival of those destined to shape the world's fate—be it for salvation or destruction.

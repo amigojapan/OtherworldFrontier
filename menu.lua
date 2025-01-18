@@ -21,7 +21,7 @@ function sendToDIfferentTrialStates()
 			params = {
 			}
 		}
-		composer.gotoScene( "tabern", options )
+		composer.gotoScene( "tavern", options )
 	elseif trialState == "Trial period over" then
 		composer.gotoScene( "trialPeriodOver" )
 	elseif trialState == "Trial period start" then

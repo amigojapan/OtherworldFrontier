@@ -12,12 +12,12 @@ characterTimer=nil
 function gotoMenu()
 	timer.cancel(characterTimer)
 	local options =
-{
-    effect = "fade",
-    time = 400,
-    params = {
-    }
-}
+	{
+		effect = "fade",
+		time = 400,
+		params = {
+		}
+	}
 	composer.gotoScene( "menu", options )
 end
 

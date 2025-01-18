@@ -88,6 +88,8 @@ function CLS()
     for _, line in ipairs(tableLines) do
         line.text = string.rep(localizedSpace, columns)
     end
+    cursor.Line=1
+    cursor.Column=1
 end
 lineChanged=false
 function LOCATE(L, C)
