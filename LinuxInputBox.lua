@@ -146,6 +146,7 @@ function addInputToBuffer(downkey)
 		inputBuffer=""
 		downkey=""
 		removerInputBox()
+		return
 	end
 	if downkey == "deleteBack" or downkey == "back" or downkey == "<<" then
 		inputBuffer = inputBuffer:sub(1, -2)--deletes last character off the buffer

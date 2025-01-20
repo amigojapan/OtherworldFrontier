@@ -34,16 +34,23 @@ local function alertBoxYesClickedComplete( )
 	}
 	composer.gotoScene( "ourHeroine", options )
 end
-local function alertBoxNoClickedComplete()
-    showInputBox("what is your name?:",callback)
+local function alertBoxNoClickedCompleteEN()
+    promtForNameEN()
 end
+local function alertBoxNoClickedCompleteJP()
+    promtForNameJP()
+end
+local function alertBoxNoClickedCompleteES()
+    promtForNameES()
+end
+
 function askUserIfTheyLikeNameEN(userinput)
     composer.setVariable( "MCname", userinput)
     createCustomAlert(
     "Name",
     "Your Name is"..userinput..", right?",
     alertBoxYesClickedComplete,
-    alertBoxNoClickedComplete
+    alertBoxNoClickedCompleteEN
     )
 end
 
@@ -53,7 +60,7 @@ function askUserIfTheyLikeNameJP(userinput)
     "名前",
     "あなたの名前は:"..userinput.."ですか？",
     alertBoxYesClickedComplete,
-    alertBoxNoClickedComplete
+    alertBoxNoClickedCompleteJP
     )
 end
 function askUserIfTheyLikeNameES(userinput)
@@ -62,7 +69,7 @@ function askUserIfTheyLikeNameES(userinput)
     "Tu nombre",
     "Te llamas:"..userinput..", verdad？",
     alertBoxYesClickedComplete,
-    alertBoxNoClickedComplete
+    alertBoxNoClickedCompleteES
     )
 end
 
@@ -80,11 +87,15 @@ end
 function prologueEN()
     QUESLOWPRINT("Prologue^")
     --           "123456780123456780123456780123456780123456780123456780123456780123456780"
+    --Nanobot> amigojapan: I know you were talking about this earlier, but "The tavern also works like an unofficial guild" sounds weird to me. First of all, I think you're talking about an "adventurer's guild" specifically. Second, I feel like it would make more sense if you were to say something like "The town doesn't have an adventurer's guild, but this tavern serves a similar role" or something along those lines. When I think of a "guild", I think of a much more 
+    --reduce wait time form 100MS to 50MS
+    --also add 病死 to the list of calamities
     QUESLOWPRINT("The tale begins in the bustling tavern known as the 'Tavern of a ^")
     QUESLOWPRINT("Thousand Tales', nestled on　the southernmost edge of the continent in^")
     QUESLOWPRINT("the city of Mistral's End. Adventurers, traders, and wanderers gather^") 
-    QUESLOWPRINT("here to share tales of treasure and glory.  The tavern  also^")
-    QUESLOWPRINT("works like an unofficial guild. A whispered legend emerges once again:^^")
+    QUESLOWPRINT("here to share tales of treasure and glory.  The town doesn't have an^")
+    QUESLOWPRINT("adventurer's guild, but this tavern serves a similar role...^")
+    QUESLOWPRINT("^A whispered legend emerges once again:^^")
     SLOWPRINT(100,"",monogatari1EN)
 end
 
@@ -108,14 +119,14 @@ end
 
 function prologueJP()
     QUESLOWPRINT("プロローグ改")
-    QUESLOWPRINT("物語は「千の物語の酒場」して知られる賑やかな酒場から始まる。この酒場は大陸の南端、ミストラルの終わりの街に位置し、冒険者、商人、そして旅人が宝と栄光の物語を共有するために集う場所だ。そこで再びささやかれる伝説がある。改")
+    QUESLOWPRINT("物語は「千の物語の酒場」して知られる賑やかな酒場から始まる。この酒場は大陸の南端、ミストラルズ・エンドの街に位置し、冒険者、商人、そして旅人が宝と栄光の物語を共有するために集う場所だ。この町に冒険者用ギルドがないですが、この酒場がそのような役割を果たしてます。^^そこで再びあ伝説がるささやかれる。改")
     SLOWPRINT(100,"",monogatari1JP)
 end
 
 function monogatari2JP()
     print("monogatari2 called")
     RESETQUE()
-    QUESLOWPRINT("改改多くの者がその遺物を手に入れようと挑んだが、北への旅路は非常に危険だ。古代の森、険しい山々、呪われた荒地、改そして凍てついたツンドラが勇者たちの前に立ちはだかる。それでもなお、君たちの仲間はこの壮大な旅に出ることを決意した。富のためか、贖罪のためか、それとも名声のためか、いずれにせよ賭け金は高く、前途は危険に満ちている。改")
+    QUESLOWPRINT("改改多くの者がその遺物を手に入れようと挑んだが、北への旅路は非常に危険だ。古代の森、険しい山々、呪われた荒地、改そして凍てついたツンドラが勇者たちの前に立ちはだかる。それでもなお、君たちの仲間はこの壮大な旅に出ることを決意した。富のためか、贖罪のためか、それとも名声のためか、いずれにせよリスクは高く、前途は危険に満ちている。改")
     SLOWPRINT(100,"",promtForNameJP)
 end
 
@@ -129,7 +140,7 @@ end
 function prologueES()
     QUESLOWPRINT("Prologo^")
     --           "123456780123456780123456780123456780123456780123456780123456780123456780"
-    QUESLOWPRINT("El relato comienza en una taverna llena de gente conocida como la 'Taberna de los Mil Relatos', situada en el extremo más al sur del continente, en la ciudad de Mistral's end. ^Aventureros, comerciantes y viajeros se reúnen aquí para compartir historias de tesoros y gloria. La taberna también funciona como un gremio inoficial. La leyenda susurrada vuelve a surgir.:")
+    QUESLOWPRINT("El relato comienza en una taverna llena de gente conocida como la 'Taberna de los Mil Relatos', situada en el extremo más al sur del continente, en la ciudad de Mistral's end. ^Aventureros, comerciantes y viajeros se reúnen aquí para compartir historias de tesoros y gloria. Este pueblo no tiene un gremio de aventureros pero esta taverna hace una funcion simillar...^^La leyenda susurrada vuelve a surgir.:")
     SLOWPRINT(100,"",monogatari1ES)
 end
 
@@ -175,7 +186,7 @@ function scene:show(event)
             initTextScreen(sceneGroup,"JP")
             showTextArea()
             CLS()
-            prologue()
+            prologueJP()
         elseif composer.getVariable( "language" ) == "Spanish" then
             initTextScreen(sceneGroup,"ES")
             showTextArea()
