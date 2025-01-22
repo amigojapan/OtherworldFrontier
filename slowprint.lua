@@ -61,7 +61,7 @@ function initTextScreen(sceneGroup,language)
         table.insert(tableLines, lblLine)
     end
     local lblContinue
-    print("here5!!")
+    
     print("Lang:"..Lang)
     if Lang=="JP" then
         print("here4!!")
@@ -113,6 +113,43 @@ function NEWENDLINE()
     end
 end
 local queue
+
+function getCharWidth(ch)
+    if string.byte(ch) < 128 then
+        return 0.5 -- ASCII characters
+    else
+        return 1 -- Full-width characters (e.g., Japanese)
+    end
+end
+function getStringWidth(str)
+    local width = 0
+    local i = 1
+    local len = #str
+
+    while i <= len do
+        local byte = string.byte(str, i)
+        if byte < 128 then
+            -- ASCII character (single byte, half-width)
+            width = width + 0.5
+            i = i + 1
+        else
+            -- Non-ASCII character (double-width)
+            width = width + 1
+            if byte >= 192 and byte <= 223 then
+                i = i + 2 -- Two-byte character
+            elseif byte >= 224 and byte <= 239 then
+                i = i + 3 -- Three-byte character
+            elseif byte >= 240 and byte <= 247 then
+                i = i + 4 -- Four-byte character
+            else
+                i = i + 1 -- Fallback for malformed sequences
+            end
+        end
+    end
+
+    return width
+end
+
 function PRINT(STR)
     --eliminate newlibes
     STRING=STR:gsub("\n","^")
@@ -129,14 +166,25 @@ function PRINT(STR)
         end
         local toPrint = STRING:sub(1, remainingSpace)
 
+        local characterWasAscii
+        if isAscii2(toPrint) then
+            characterWasAscii=true
+        else 
+            characterWasAscii=false
+        end
         -- Get the text currently on the line
         local currentLine = tableLines[cursor.Line].text
 
         -- Concatenate text correctly
         local textbefore = currentLine:sub(1, cursor.Column - 1)
-        local textafter = currentLine:sub(cursor.Column + #toPrint)
-
+        local textafter
+        if characterWasAscii then
+            textafter = currentLine:sub((cursor.Column + #toPrint)+1)
+        else
+            textafter = currentLine:sub(cursor.Column + #toPrint)
+        end
         local updatedLine = textbefore .. toPrint .. textafter
+
         if cursor.Line==rows-1 then
             NEWENDLINE()
             LOCATE(cursor.Line-1,1)--changing LOCATE(cursor.Line-2,1) to LOCATE(cursor.Line-1,1) seems to have fixed the newline problem 
@@ -178,6 +226,16 @@ function treatAsUTF8(oneline)
     local ol=string.sub(oneline, 4, #oneline)--seems hte whole problem is in hte lack of support for utf8
     --print("oneline:'"..oneline.."'" )
     return ch,ol
+end
+
+function isAscii2(character)
+    -- Check if the character is single-byte and within ASCII range (0–127)
+    local byte = string.byte(character)
+    if byte and byte >= 0 and byte <= 127 then
+        return true
+    else
+        return false
+    end
 end
 
 function isAscii()
