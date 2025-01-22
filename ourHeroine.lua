@@ -61,7 +61,7 @@ function welcomeHeroineJP()
     --LOCATE(1,1)
     RESETQUE()
     QUESLOWPRINT(composer.getVariable( "MCname").."のストーリー:")
-    QUESLOWPRINT("改改"..composer.getVariable( "MCname").."が、「Veil's Convergence」改（エターニアの二つの月が完璧にあってる時に大地が銀色に染まる）って言うとても珍しい天体現象の時に生まれました。その現象で生まれた人が救世主になるといわれてます。でもその人がエターニアの救いを働ける、あるいはエターニアの破滅かもしれません。")
+    QUESLOWPRINT("改改"..composer.getVariable( "MCname").."が、「ブエルズ・コンバージェンス」改（エターニアの二つの月が完璧にあってる時に大地が銀色に染まる）って言うとても珍しい天体現象の時に生まれました。その現象で生まれた人が救世主になるといわれてます。でもその人がエターニアの救いを働ける、あるいはエターニアの破滅かもしれません。")
     SLOWPRINT(100,"",welcomeHeroineEN)
 end
 
