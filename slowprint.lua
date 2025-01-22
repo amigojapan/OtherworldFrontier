@@ -179,7 +179,11 @@ function PRINT(STR)
         local textbefore = currentLine:sub(1, cursor.Column - 1)
         local textafter
         if characterWasAscii then
-            textafter = currentLine:sub((cursor.Column + #toPrint)+1)--I think this was the fix I was looking for, it is not perfect but seems to work well enough
+            if Lang=="JP" then
+                textafter = currentLine:sub((cursor.Column + #toPrint)+1)--I think this was the fix I was looking for, it is not perfect but seems to work well enough
+            else
+                textafter = currentLine:sub(cursor.Column + #toPrint)
+            end    
         else
             textafter = currentLine:sub(cursor.Column + #toPrint)
         end
