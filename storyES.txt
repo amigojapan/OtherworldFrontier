@@ -1,16 +1,13 @@
-Prologue
-The tale begins in the bustling tavern known as the "Tavern of a Thousand Tales", nestled on
-the southernmost edge of the continent in the city of Mistral's End. Adventurers, traders, and wanderers gather here to share tales of treasure and glory. 　The tabernand it also works
-like an unofficial guild. A whispered legend emerges once again
+Prologo:^
+El relato comienza en una taverna llena de gente conocida como la 'Taberna de los Mil Relatos', situada en el extremo más al sur del continente, en la ciudad de Mistral's end. ^Aventureros, comerciantes y viajeros se reúnen aquí para compartir historias de tesoros y gloria. La taberna también funciona como un gremio inoficial. Una leyenda susurrada vuelve a surgir.
 
-"Beyond the Northern Tundra lies the Crown of Eternity, a mythical artifact created by the\n God himself. It is said to grant unparalleled power or fulfill the deepest desire of\n 
-whoever possesses it."\n
+^^'Más allá de la Tundra del Norte esta la Crown of eternity, un artefacto mítico creado por el Dios mismo. Se dice que otorga un poder sin igual o cumple el deseo más profundo de quien la posea.'
 
-Many have tried to claim the artifact, but the journey north is perilous. Ancient forests, deadly mountains, cursed wastelands, and frozen tundras and evil monsters stand between the brave and their goal. Most of then could not survive the journey.Despite the odds, your party has decided to embark on this epic journey. Whether for riches, redemption, or renown, the stakes are high, and the path ahead is fraught with danger.
+^^Muchos han intentado reclamar el artefacto, pero el viaje hacia el norte es peligroso. Bosques ancestrales, montañas mortales, montes malditos, tundras heladas y monstruos malvados se interponen entre los valientes y su objetivo. La mayoría no sobrevive al trayecto. A pesar de las probabilidades, tu grupo ha decidido embarcarse en esta épica travesía. Ya sea por riquezas, redención o renombre, el riesgo es alto, y el camino por delante está plagado con peligros.
 
-prompt for your name*
+Indica tu nombre
 
-switch to picture of you*
+Cambia a una imagen tuya
 
-(your) backstory:
-you were born under a rare celestial event known as the Veil’s Convergence, where the twin moons of Eternia aligned perfectly, casting the land in an eerie silver glow. This alignment was said to herald the arrival of those destined to shape the world's fate—be it for salvation or destruction.
+Tu historia:
+Naciste bajo un raro evento celestial conocido como la Convergencia del Velo, cuando las dos lunas gemelas de Eternia se alinearon perfectamente, bañando la tierra en un inquietante resplandor plateado. Se decía que esta alineación anunciaba la llegada de aquellos destinados a moldear el destino del mundo, ya fuera para su salvación o su destrucción.

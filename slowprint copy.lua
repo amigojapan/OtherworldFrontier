@@ -164,40 +164,17 @@ end
 
 local oneline
 local character
-function treatAsAscii(oneline)
-    local ch  = string.sub(oneline, 1, 1)
-    --print("here3 character:"..character )
-    local ol=string.sub(oneline, 2, #oneline)--seems hte whole problem is in hte lack of support for utf8
-    --print("oneline:'"..oneline.."'" )
-    return ch,ol
-end
-
-function treatAsUTF8(oneline)
-    local ch  = string.sub(oneline, 1, 3)
-    --print("here3 character:"..character )
-    local ol=string.sub(oneline, 4, #oneline)--seems hte whole problem is in hte lack of support for utf8
-    --print("oneline:'"..oneline.."'" )
-    return ch,ol
-end
-
-function isAscii()
-    local ch=treatAsAscii(oneline)
-    if string.byte(ch)<148 then--148 seems like hte last valid ascii character to me
-        return true
-    else
-        return false
-    end
-end
-
 function coPrintOneCharOfSlowPrint() 
     if Lang=="JP" then -- **need to figuure out a way to display both english and Japanese on the syste withoughht overflowing the line,maybe I can somehow figure out if a character is alphanumerical and handle it differently form Japanese?
-        if isAscii(oneline) then
-            character,oneline=treatAsAscii(oneline)
-        else
-            character,oneline=treatAsUTF8(oneline)
-        end
+        character  = string.sub(oneline, 1, 3)
+        --print("here3 character:"..character )
+        oneline=string.sub(oneline, 4, #oneline)--seems hte whole problem is in hte lack of support for utf8
+        --print("oneline:'"..oneline.."'" )
     else
-        character,oneline=treatAsAscii(oneline)
+        character  = string.sub(oneline, 1, 1)
+        --print("here3 character:"..character )
+        oneline=string.sub(oneline, 2, #oneline)--seems hte whole problem is in hte lack of support for utf8
+        --print("oneline:'"..oneline.."'" )
     end
     --print("#oneline:"..#oneline)        
     if #oneline==0 then

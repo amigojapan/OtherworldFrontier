@@ -96,7 +96,7 @@ function prologueEN()
     QUESLOWPRINT("here to share tales of treasure and glory.  The town doesn't have an^")
     QUESLOWPRINT("adventurer's guild, but this tavern serves a similar role...^")
     QUESLOWPRINT("^A whispered legend emerges once again:^^")
-    SLOWPRINT(100,"",monogatari1EN)
+    SLOWPRINT(50,"",monogatari1EN)
 end
 
 function monogatari2EN()
@@ -104,8 +104,8 @@ function monogatari2EN()
     --CLS()
     --LOCATE(1,1)
     RESETQUE()
-    QUESLOWPRINT("^^Many have tried to claim the artifact, but the journey north is perilous. Ancient forests, deadly mountains, cursed wastelands, and frozen tundras and evil monsters stand between the brave and their goal. Most of them could not survive the journey.Despite the odds, your party has decided to embark on this epic journey. Whether for riches, redemption, or renown, the stakes are high, and the path ahead is fraught with danger.")
-    SLOWPRINT(100,"",promtForNameEN)
+    QUESLOWPRINT("^^Many have tried to claim the artifact, but the journey north is perilous. Ancient forests, deadly mountains, cursed wastelands, and frozen tundras and evil monsters stand between the brave and their goal. Most of them could not survive the journey.^^Despite the odds, your party has decided to embark on this epic journey. Whether for riches, redemption, or renown, the stakes are high, and the path ahead is fraught with danger.")
+    SLOWPRINT(50,"",promtForNameEN)
 end
 
 function monogatari1EN()
@@ -113,35 +113,48 @@ function monogatari1EN()
     --CLS()
     --LOCATE(1,1)
     RESETQUE()
-    QUESLOWPRINT("^^'Beyond the Northern Tundra lies the Crown of Eternity, a mythical artifact created by the God himself. It is said to grant unparalleled power or fulfill the deepest desire of whoever possesses it.'")
-    SLOWPRINT(100,"",monogatari2EN)
+    QUESLOWPRINT("^^'Beyond the Northern Tundra lies the Crown of Eternity, a mythical artifact created by God himself. It is said to grant unparalleled power or fulfill the deepest desire of whoever possesses it.'")
+    SLOWPRINT(50,"",monogatari2EN)
 end
 
 function prologueJP()
     QUESLOWPRINT("プロローグ改")
     QUESLOWPRINT("物語は「千の物語の酒場」して知られる賑やかな酒場から始まる。この酒場は大陸の南端、ミストラルズ・エンドの街に位置し、冒険者、商人、そして旅人が宝と栄光の物語を共有するために集う場所だ。この町に冒険者用ギルドがないですが、この酒場がそのような役割を果たしてます。^^そこで再びあ伝説がるささやかれる。改")
-    SLOWPRINT(100,"",monogatari1JP)
+    SLOWPRINT(50,"",monogatari1JP)
 end
 
 function monogatari2JP()
     print("monogatari2 called")
     RESETQUE()
     QUESLOWPRINT("改改多くの者がその遺物を手に入れようと挑んだが、北への旅路は非常に危険だ。古代の森、険しい山々、呪われた荒地、改そして凍てついたツンドラが勇者たちの前に立ちはだかる。それでもなお、君たちの仲間はこの壮大な旅に出ることを決意した。富のためか、贖罪のためか、それとも名声のためか、いずれにせよリスクは高く、前途は危険に満ちている。改")
-    SLOWPRINT(100,"",promtForNameJP)
+    SLOWPRINT(50,"",promtForNameJP)
 end
 
 function monogatari1JP()
     print("monogatari1 called")
     RESETQUE()
     QUESLOWPRINT("改改「北のツンドラを越えた先に『永遠の冠』がある。それは神様自身が作り出したとされる神秘的な遺物だ。これを手にする者には無比の力が与えられるか、最も深い願いが叶えられるという。」改")
-    SLOWPRINT(100,"",monogatari2JP)
+    SLOWPRINT(50,"",monogatari2JP)
 end
 
 function prologueES()
+    --           "123456780123456780123456780123456780"
     QUESLOWPRINT("Prologo^")
-    --           "123456780123456780123456780123456780123456780123456780123456780123456780"
-    QUESLOWPRINT("El relato comienza en una taverna llena de gente conocida como la 'Taberna de los Mil Relatos', situada en el extremo más al sur del continente, en la ciudad de Mistral's end. ^Aventureros, comerciantes y viajeros se reúnen aquí para compartir historias de tesoros y gloria. Este pueblo no tiene un gremio de aventureros pero esta taverna hace una funcion simillar...^^La leyenda susurrada vuelve a surgir.:")
-    SLOWPRINT(100,"",monogatari1ES)
+    QUESLOWPRINT("El relato comienza en una taverna^")
+    QUESLOWPRINT("llena de gente conocida como la ^")
+    QUESLOWPRINT("'Taberna de los Mil Relatos', ^")
+    QUESLOWPRINT("situada en el extremo más al sur^")
+    QUESLOWPRINT("del continente, en la ciudad de^")
+    QUESLOWPRINT("Mistral's end. Aventureros, ^")
+    QUESLOWPRINT("comerciantes y viajeros se reúnen^")
+    QUESLOWPRINT("aquí para compartir historias de ^")
+    QUESLOWPRINT("tesoros y gloria. Este pueblo no ^")
+    QUESLOWPRINT("tiene un gremio de aventureros ^")
+    QUESLOWPRINT("pero esta taverna hace una funcion^")
+    QUESLOWPRINT("simillar...^")
+    QUESLOWPRINT("^^La leyenda susurrada vuelve ^")
+    QUESLOWPRINT("a surgir.:")
+    SLOWPRINT(50,"",monogatari1ES)
 end
 
 function monogatari2ES()
@@ -149,17 +162,36 @@ function monogatari2ES()
     --CLS()
     --LOCATE(1,1)
     RESETQUE()
-    QUESLOWPRINT("^^^Muchos han intentado reclamar el artefacto, pero el viaje hacia el norte es peligroso. Bosques ancestrales, montañas mortales, montes malditos, tundras heladas y monstruos malvados se interponen entre los valientes y su objetivo. La mayoría no sobrevive al trayecto. A pesar de las probabilidades, tu grupo ha decidido embarcarse en esta épica travesía. Ya sea por riquezas, redención o renombre, el riesgo es alto, y el camino por delante está plagado con peligros.")
-    SLOWPRINT(100,"",promtForNameES)
+    --           "123456780123456780123456780123456780"
+    QUESLOWPRINT("^^Muchos han intentado reclamar el^")
+    QUESLOWPRINT("artefacto, pero el viaje hacia el^")
+    QUESLOWPRINT("norte es peligroso. Bosques ^")
+    QUESLOWPRINT("ancestrales, montañas mortales,^")
+    QUESLOWPRINT("montes malditos, tundras heladas y^")
+    QUESLOWPRINT("monstruos malvados se interponen^")
+    QUESLOWPRINT("entre los valientes y su objetivo.^")
+    QUESLOWPRINT("La mayoría han sobrevivido el^")
+    QUESLOWPRINT("trayecto. A pesar de las^")
+    QUESLOWPRINT("probabilidades, tu grupo ha^")
+    QUESLOWPRINT("decidido embarcarse en esta épica^")
+    QUESLOWPRINT("travesía. Ya sea por riquezas,^")
+    QUESLOWPRINT("redención o renombre, el riesgo es^")
+    QUESLOWPRINT("alto, y el camino por delante está^")
+    QUESLOWPRINT("plagado con peligros.")
+    SLOWPRINT(50,"",promtForNameES)
 end
 
 function monogatari1ES()
     print("monogatari1 called")
-    --CLS()
-    --LOCATE(1,1)
     RESETQUE()
-    QUESLOWPRINT("^^^'Más allá de la Tundra del Norte esta la Crown of eternity, un artefacto mítico creado por el Dios mismo. Se dice que otorga un poder sin igual o cumple el deseo más profundo de quien la posea.'")
-    SLOWPRINT(100,"",monogatari2ES)
+    --           "123456780123456780123456780123456780"
+    QUESLOWPRINT("^^'Más allá de la Tundra del Norte^")
+    QUESLOWPRINT("esta la ''Corona de la eternidad'',^")
+    QUESLOWPRINT("un artefacto mítico creado por Dios^")
+    QUESLOWPRINT("mismo. Se dice que otorga un poder^")
+    QUESLOWPRINT("sin igual o cumple el deseo más^")
+    QUESLOWPRINT("profundo de quien la posea.'")
+    SLOWPRINT(50,"",monogatari2ES)
 end
 
 -- show()
@@ -198,7 +230,7 @@ function scene:show(event)
         --(workaround)bug makes one slowprint wait for the one in back to finish
         --maybe just append the string to the outpusiting if there is already one SLOWPRINT working
         --idea, for the continue button, just set the timer to a shorter period, that way it will appear quickly but nto completly instantaneously  and be less work
-        --SLOWPRINT(100,"こんにちは世界！日本語の文章を試します、昔々あるところでおじいちゃんとばあちゃんがいました、おじいちゃんが芝刈りに、おばあちゃんが川で洗濯してました")
+        --SLOWPRINT(50,"こんにちは世界！日本語の文章を試します、昔々あるところでおじいちゃんとばあちゃんがいました、おじいちゃんが芝刈りに、おばあちゃんが川で洗濯してました")
         
         --LOCATE(24,10)
 		--PRINT("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
