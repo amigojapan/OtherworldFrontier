@@ -9,7 +9,17 @@ local scene = composer.newScene()
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
 -- -----------------------------------------------------------------------------------
 
-
+function gotoFiveHeroinsTable()
+        --continue on journey
+        local options =
+        {
+            effect = "fade",
+            time = 400,
+            params = {
+            }
+        }
+        composer.gotoScene( "gotoFiveHeroinsTable", options )
+end
 
 -- -----------------------------------------------------------------------------------
 -- Scene event functions
@@ -56,14 +66,29 @@ function welcomeHeroineEN()
     QUESLOWPRINT("^^"..composer.getVariable( "MCname").." was born under a rare celestial event known as the Veil's Convergence, where the twin moons of Eternia aligned perfectly, casting the land in an eerie silver glow. This alignment was said to herald the arrival of those destined to shape the world's fate—be it for salvation or destruction.")
     SLOWPRINT(100,"",welcomeHeroineEN)
 end
-function welcomeHeroineJP()
-    --CLS()
-    --LOCATE(1,1)
+
+function letsNameOur4HeroinesJP()
     RESETQUE()
-    QUESLOWPRINT(composer.getVariable( "MCname").."のストーリー:")
-    QUESLOWPRINT("改改"..composer.getVariable( "MCname").."が、「Veil's Convergence」改（エターニアの二つの月が完璧にあってる時に大地が銀色に染まる）って言うとても珍しい天体現象の時に生まれました。その現象で生まれた人が救世主になるといわれてます。でもその人がエターニアの救いを働ける、あるいはエターニアの破滅かもしれません。")
-    SLOWPRINT(100,"",welcomeHeroineEN)
+    QUESLOWPRINT("改改地図をもらってから、少し酒場を回ってから、４人の女の人が座ってるテーブルを見かける。そこに座ることにする…")
+    SLOWPRINT(100,"",spotsTableWithFourHeroinesJP)
 end
+function introductionsJP()
+    RESETQUE()
+    QUESLOWPRINT(composer.getVariable( "MCname").."がテーブルに座ると皆が自公紹介する。")    
+    SLOWPRINT(100,"", letsNameOur4HeroinesJP)
+end
+
+function ourFiveHeroinesMeetJP()
+    RESETQUE()
+    QUESLOWPRINT(composer.getVariable( "MCname").."がそのテーブルに座って、皆と自公紹介を始めます。。")
+    SLOWPRINT(100,"",introductionsJP)
+end
+function introductionsJP()
+    RESETQUE()
+    QUESLOWPRINT("改改ここで４人の仲間の名前を決めましょう…。")
+    SLOWPRINT(100,"", introductionsJP)
+end
+
 
 function welcomeHeroineES()
     --CLS()
@@ -84,7 +109,7 @@ function scene:show(event)
 
     elseif (phase == "did") then
         --background
-        local background = display.newImageRect( sceneGroup, "backgrounds/you.png", 1400,800 )
+        local background = display.newImageRect( sceneGroup, "backgrounds/fiveHeroinesAtTable.png", 1000,800 )
 		background.x = display.contentCenterX
 		background.y = display.contentCenterY
         -- Code here runs when the scene is entirely on screen
@@ -98,7 +123,7 @@ function scene:show(event)
             initTextScreen(sceneGroup,"JP")
             showTextArea()
             CLS()
-            welcomeHeroineJP()
+            ourFiveHeroinesMeetJP()
         elseif composer.getVariable( "language" ) == "Spanish" then
             initTextScreen(sceneGroup,"ES")
             showTextArea()

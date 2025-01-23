@@ -9,7 +9,7 @@ local scene = composer.newScene()
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
 -- -----------------------------------------------------------------------------------
 
-function gotoNightshadeScreen()
+function gotoFiveHeroinsTable()
         --continue on journey
         local options =
         {
@@ -18,7 +18,7 @@ function gotoNightshadeScreen()
             params = {
             }
         }
-        composer.gotoScene( "nightShade", options )
+        composer.gotoScene( "fiveHeroinesTable", options )
 end
 
 -- -----------------------------------------------------------------------------------
@@ -66,17 +66,15 @@ function welcomeHeroineEN()
     QUESLOWPRINT("^^"..composer.getVariable( "MCname").." was born under a rare celestial event known as the Veil's Convergence, where the twin moons of Eternia aligned perfectly, casting the land in an eerie silver glow. This alignment was said to herald the arrival of those destined to shape the world's fate—be it for salvation or destruction.")
     SLOWPRINT(100,"",welcomeHeroineEN)
 end
-function welcomeHeroineJP()
+function nightShadeJP()
     RESETQUE()
-    QUESLOWPRINT(composer.getVariable( "MCname").."のストーリー:")
-    QUESLOWPRINT("改改"..composer.getVariable( "MCname").."が、「ブエルズ・コンバージェンス」改（エターニアの二つの月が完璧に重なる時に大地が銀色に染まる）って言う、とても珍しい天体現象の時に生まれました。その現象で生まれた人がエターニアの救世主になるか、破滅に導くと言われています。。")
-    SLOWPRINT(100,"",storyContinuesJP)
+    QUESLOWPRINT("怪しい人に近づくと^^「永遠の冠（Crown of Eternity）」の在りかを示す地図を売る」と言われるけど…改改君は彼にお金を差し出すが、何故か彼が「君のお母さんの形見が欲しい」と言う。「何でこの人が知ってるんだろう」と思いながら、君が渋々ながら、君はその申し出を受け入れることにした。。")    
+    SLOWPRINT(100,"",spotsTableWithFourHeroinesJP)
 end
-function storyContinuesJP()
+function spotsTableWithFourHeroinesJP()
     RESETQUE()
-    QUESLOWPRINT("改改話が続いて、"..composer.getVariable( "MCname").."がミストラルズエンドの千の物語の酒場に入り、怪しい人に声掛けられます…。")
-    print("goto nightshadescreen")
-    SLOWPRINT(100,"", gotoNightshadeScreen )
+    QUESLOWPRINT("改改地図をもらってから、少し酒場を回ってから、４人の女の人が座ってるテーブルを見かける。そこに座ることにする…")
+    SLOWPRINT(100,"", gotoFiveHeroinsTable)
 end
 
 
@@ -99,7 +97,7 @@ function scene:show(event)
 
     elseif (phase == "did") then
         --background
-        local background = display.newImageRect( sceneGroup, "backgrounds/you.png", 1000,800 )
+        local background = display.newImageRect( sceneGroup, "backgrounds/nighhtshade.png", 1000,800 )
 		background.x = display.contentCenterX
 		background.y = display.contentCenterY
         -- Code here runs when the scene is entirely on screen
@@ -113,7 +111,7 @@ function scene:show(event)
             initTextScreen(sceneGroup,"JP")
             showTextArea()
             CLS()
-            welcomeHeroineJP()
+            nightShadeJP()
         elseif composer.getVariable( "language" ) == "Spanish" then
             initTextScreen(sceneGroup,"ES")
             showTextArea()
