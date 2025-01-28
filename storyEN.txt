@@ -38,8 +38,8 @@ adventurer4's backstory: " adventurer4 grew up in the serene coastal village of 
 
 
 
-you say "join me in a quest to find the Crown of Eternity, I have purchased a map to get it. I have an old caravan we can use..."
-adventurer1 says "we will need to go to the stable to get unicorns to pull it"
-adventurer2 says "we will need to head to he shop to buy supplies"
-adventurer3 says "lets do it!"
+you say 'join me in a quest to find the Crown of Eternity, I have purchased a map to get it. I have an old caravan we can use...'
+adventurer1 says 'we will need to go to the stable to get unicorns to pull it'
+adventurer2 says 'we will need to head to he shop to buy supplies'
+adventurer3 says 'lets do it!'
 adventurer4 silently nods

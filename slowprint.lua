@@ -7,6 +7,7 @@ local stringForSlowPrint
 local STRING="なし"
 local printing=false
 local localizedSpace=nil
+local lblContinue=nil
 Lang=nil
 textZoneRectangle=nil
 characterTimer=nil
@@ -41,7 +42,7 @@ function initTextScreen(sceneGroup,language)
         fontWH = 16 * aspectRatio
         columns = 40
         rows = 12
-        magicalNumber=1300--dunno why but I need to substract this number to get the right size of the red rectangle
+        magicalNumber=1200--dunno why but I need to substract this number to get the right size of the red rectangle(it seems the smaller the bigger the rectangle gets)
         localizedSpace=" "
     end
     textZoneRectangle = display.newRect(sceneGroup, display.contentCenterX, display.contentCenterY, (fontWH * columns)-magicalNumber  , fontWH * rows)
@@ -60,12 +61,11 @@ function initTextScreen(sceneGroup,language)
         end
         table.insert(tableLines, lblLine)
     end
-    local lblContinue
     
     print("Lang:"..Lang)
     if Lang=="JP" then
         print("here4!!")
-        lblContinue = display.newText(sceneGroup, "[続き...]",(columns-12)*fontWH, 200 + (rows * fontWH), "fonts/ume-tgc5.ttf", fontWH)
+        lblContinue = display.newText(sceneGroup, "[>>]",(columns-12)*fontWH, 200 + (rows * fontWH), "fonts/ume-tgc5.ttf", fontWH)
         --lblContinue = display.newText(sceneGroup, "Continue...", 200, 200, "fonts/ume-tgc5.ttf", fontWH)
     else
         lblContinue = display.newText(sceneGroup, "[Continue...]", 750, 1000, "fonts/ume-tgc5.ttf", fontWH)
@@ -285,7 +285,11 @@ function SLOWPRINT(timeInMilllisecods,string,callbackFunctionWhenFinished)
         stringForSlowPrint=""
     end
     stringForSlowPrint=stringForSlowPrint..string
-    --hack to make the flowprint work, otherwise it is jittery
+    --log the story into a file
+    file = io.open("testRead.txt","a")
+    file:write(stringForSlowPrint)
+    file:close()
+    --hack to make the slowprint work, otherwise it is jittery
     --hack fix, it does nto want to work form columb 1
     --repeat
         --LOCATE(cursor.Line,2)
@@ -298,9 +302,10 @@ function SLOWPRINT(timeInMilllisecods,string,callbackFunctionWhenFinished)
             if character then
                print("here2 oneline:"..oneline)
             end
-            online= stringForSlowPrint
+            oneline= stringForSlowPrint
+            print("here7"..oneline)
             characterTimer=timer.performWithDelay( timeInMilllisecods, coPrintOneCharOfSlowPrint, 0, "charTimer" )
-            oneline=""
+            --buggy, but will removing this affect something else? oneline=""
         end
         --coroutine.resume(coPrintOneCharOfSlowPrint)
     --until #oneline==0
@@ -314,4 +319,14 @@ function QUESLOWPRINT(string)
     end
     stringForSlowPrint=stringForSlowPrint..string
     print(stringForSlowPrint)
+end
+function disableContinueButton()
+    print("disableContinueButton() called")
+    lblContinue.isVisible=false
+    lblContinue.isHitTestable=false
+end
+function enableContinueButton()
+    print("enableContinueButton() called")
+    lblContinue.isVisible=true
+    lblContinue.isHitTestable=true
 end

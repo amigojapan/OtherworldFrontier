@@ -9,7 +9,7 @@ local scene = composer.newScene()
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
 -- -----------------------------------------------------------------------------------
 
-function gotoNightshadeScreen()
+function gotoFiveHeroinsTable()
         --continue on journey
         local options =
         {
@@ -18,7 +18,7 @@ function gotoNightshadeScreen()
             params = {
             }
         }
-        composer.gotoScene( "nightShade", options )
+        composer.gotoScene( "Adventurer1introduction", options )
 end
 
 -- -----------------------------------------------------------------------------------
@@ -41,68 +41,98 @@ local function alertBoxYesClickedComplete( )
 		params = {
 		}
 	}
-	composer.gotoScene( "ourHeroine", options )
+	composer.gotoScene( "Adventurer1introduction", options )
 end
-local function alertBoxNoClickedComplete()
-    showInputBox("what is your name?:",callback)
+local function alertBoxNoClickedCompleteEN()
+    promtForNameEN()
+end
+local function alertBoxNoClickedCompleteJP()
+    promtForNameJP()
+end
+local function alertBoxNoClickedCompleteES()
+    promtForNameES()
 end
 
 function askUserIfTheyLikeNameEN(userinput)
-    createCustomAlert(
-    "Name",
-    "Your name is:"..userinput..", right?",
+    composer.setVariable( "adventurer1", userinput)
+    AlertBox(
+    "Adventurer1",
+    "Her name is:"..userinput..", alright?",
     alertBoxYesClickedComplete,
-    alertBoxNoClickedComplete
+    alertBoxNoClickedCompleteEN
     )
+    removerInputBox()
+    disableContinueButton()--this automatically gets enabled on the next screem so no need to enable it again
+end
+
+function askUserIfTheyLikeNameJP(userinput)
+    composer.setVariable( "adventurer1", userinput)
+    AlertBox(
+    "冒険者その１",
+    "名前は:"..userinput.."でいいですね？",
+    alertBoxYesClickedComplete,
+    alertBoxNoClickedCompleteJP
+    )
+    removerInputBox()
+    disableContinueButton()--this automatically gets enabled on the next screem so no need to enable it again
+end
+function askUserIfTheyLikeNameES(userinput)
+    composer.setVariable( "adventurer1", userinput)
+    AlertBox(
+    "adventurer1",
+    "se llama:"..userinput..", bien？",
+    alertBoxYesClickedComplete,
+    alertBoxNoClickedCompleteES
+    )
+    removerInputBox()
+    disableContinueButton()--this automatically gets enabled on the next screem so no need to enable it again
+end
+
+function promtForNameJP()
+    showInputBox("冒険者その１に名前を付けて：", askUserIfTheyLikeNameJP)
 end
 function promtForNameEN()
-    showInputBox("Please enter your name:", askUserIfTheyLikeNameEN)
-end
-function welcomeHeroineEN()
-    --CLS()
-    --LOCATE(1,1)
-    RESETQUE()
-    QUESLOWPRINT(composer.getVariable( "MCname").."'s backstory:")
-    QUESLOWPRINT("^^"..composer.getVariable( "MCname").." was born under a rare celestial event known as the Veil's Convergence, where the twin moons of Eternia aligned perfectly, casting the land in an eerie silver glow. This alignment was said to herald the arrival of those destined to shape the world's fate—be it for salvation or destruction....")
-    SLOWPRINT(100,"", storyContinuesEN)
-end
-function storyContinuesEN()
-    RESETQUE()
-    QUESLOWPRINT("^^"..composer.getVariable( "MCname").." enters the Tavern of a Thousand Tales at Mistral’s End,a suspicious character aproches you....")
-    print("goto nightshadescreen")
-    SLOWPRINT(100,"", gotoNightshadeScreen )
+    showInputBox("please name adventurer1:", askUserIfTheyLikeNameEN)
 end
 
-function welcomeHeroineJP()
-    RESETQUE()
-    QUESLOWPRINT(composer.getVariable( "MCname").."のストーリー:")
-    QUESLOWPRINT("改改"..composer.getVariable( "MCname").."が、「ブエルズ・コンバージェンス」改（エターニアの二つの月が完璧に重なる時に大地が銀色に染まる）って言う、とても珍しい天体現象の時に生まれました。その現象で生まれた人がエターニアの救世主になるか、破滅に導くと言われています。。")
-    SLOWPRINT(100,"",storyContinuesJP)
-end
-function storyContinuesJP()
-    RESETQUE()
-    QUESLOWPRINT("改改"..composer.getVariable( "MCname").."がミストラルズエンドの千の物語の酒場に入り、怪しい人に声掛けられます…。")
-    print("goto nightshadescreen")
-    SLOWPRINT(100,"", gotoNightshadeScreen )
+function promtForNameES()
+    showInputBox("dale nombre a la aventurera1:", askUserIfTheyLikeNameES)
 end
 
-
-function welcomeHeroineES()
-    --CLS()
-    --LOCATE(1,1)
+function youSayEN()
     RESETQUE()
-    QUESLOWPRINT("La historia de "..composer.getVariable( "MCname")..":")
-    QUESLOWPRINT("^^"..composer.getVariable( "MCname").." Nació bajo un evento raro celestial conocido como la Convergencia del Velo, cuando las dos lunas gemelas de Eternia se alinearon perfectamente, tiñendo la tierra en un inquietante resplandor plateado. Se díce que esta alineación anunciaba la llegada de aquellos destinados a moldear el destino del mundo, ya fuera para su salvación o su destrucción.")
-    SLOWPRINT(100,"",storyContinuesES)
+    QUESLOWPRINT(composer.getVariable( "MCname").." says 'join me in a quest to find the Crown of Eternity, I have purchased a map to get it. I have an old caravan we can use....'")
+    SLOWPRINT(50,"",adventurer1saysEN)
 end
-function storyContinuesES()
+function adventurer1saysEN()
     RESETQUE()
-    QUESLOWPRINT("^^"..composer.getVariable( "MCname").." entra en la Taberna de las Mil Historias en Mistral's End....")
-    print("goto nightshadescreen")
-    SLOWPRINT(100,"", gotoNightshadeScreen )
+    QUESLOWPRINT("^^"..composer.getVariable( "adventurer1").." says 'we will need to go to the stable to get unicorns to pull it'.")
+    SLOWPRINT(50,"",adventurer2saysEN)
 end
 
+function adventurer2saysEN()
+    RESETQUE()
+    QUESLOWPRINT("^^"..composer.getVariable( "adventurer2").." says 'we will need to head to the shop to buy supplies'.")
+    SLOWPRINT(50,"",adventurer3saysEN)
+end
 
+function adventurer3saysEN()
+    RESETQUE()
+    QUESLOWPRINT("^^"..composer.getVariable( "adventurer3").." says 'lets do it!'.")
+    SLOWPRINT(50,"",adventurer4saysEN)
+end
+
+function adventurer4saysEN()
+    RESETQUE()
+    QUESLOWPRINT("^^"..composer.getVariable( "adventurer4").." silently nods.")
+    SLOWPRINT(50,"",adventureBeginsEN)
+end
+
+function adventureBeginsEN()
+    RESETQUE()
+    QUESLOWPRINT("^^and so the adventure begins....")
+    SLOWPRINT(50,"",adventureBeginsEN)
+end
 -- show()
 function scene:show(event)
     local sceneGroup = self.view
@@ -113,7 +143,7 @@ function scene:show(event)
 
     elseif (phase == "did") then
         --background
-        local background = display.newImageRect( sceneGroup, "backgrounds/you.png", 1000,800 )
+        local background = display.newImageRect( sceneGroup, "backgrounds/fiveHeroinesAtTable.png", 1000,800 )
 		background.x = display.contentCenterX
 		background.y = display.contentCenterY
         -- Code here runs when the scene is entirely on screen
@@ -122,17 +152,17 @@ function scene:show(event)
             initTextScreen(sceneGroup,"EN")
             showTextArea()
             CLS()
-            welcomeHeroineEN()
+            youSayEN()
         elseif composer.getVariable( "language" ) == "Japanese" then
             initTextScreen(sceneGroup,"JP")
             showTextArea()
             CLS()
-            welcomeHeroineJP()
+            ourFiveHeroinesMeetJP()
         elseif composer.getVariable( "language" ) == "Spanish" then
             initTextScreen(sceneGroup,"ES")
             showTextArea()
             CLS()
-            welcomeHeroineES()
+            ourFiveHeroinesMeetES()
         end
 	end
 end

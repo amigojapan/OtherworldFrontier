@@ -13,7 +13,9 @@ print( "ORIENTATION: "..system.orientation )
 function sendToDIfferentTrialStates()
 	local trialState=trialAlgorythm()
 	if trialState == "Free version" or trialState == "Trial period valid" then
-		timer.cancel(characterTimer)
+		--if characterTimer then
+			--timer.cancel(characterTimer)
+		--end
 		local options =
 		{
 			effect = "fade",
@@ -88,11 +90,11 @@ audio.reserveChannels( 1 )
 
 
 	-- Load audio
-	musicTrack = audio.loadStream( "audio/Base-Game-Loop.mp3",system.ResourceDirectory)
+	--musicTrack = audio.loadStream( "audio/Base-Game-Loop.mp3",system.ResourceDirectory)
 
 
 	-- Play the background music on channel 1, loop infinitely 
-	audio.play( musicTrack, { channel=1, loops=-1 } )
+	--audio.play( musicTrack, { channel=1, loops=-1 } )
 
 
 	local sceneGroup = self.view
@@ -103,7 +105,7 @@ audio.reserveChannels( 1 )
 		
 	elseif ( phase == "did" ) then
 		-- Code here runs when the scene is entirely on screen
-		print("Removed scene")
+		print("Removed scene menu")
 		--composer.removeScene( "game" )
 		local background = display.newImageRect( sceneGroup, "backgrounds/Otherword-Frontier-Intro-screen.png", 1400,800 )
 		background.x = display.contentCenterX

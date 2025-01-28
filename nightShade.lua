@@ -71,9 +71,30 @@ function nightShadeJP()
     QUESLOWPRINT("怪しい人に近づくと^^「永遠の冠（Crown of Eternity）」の在りかを示す地図を売る」と言われるけど…改改君は彼にお金を差し出すが、何故か彼が「君のお母さんの形見が欲しい」と言う。「何でこの人が知ってるんだろう」と思いながら、君が渋々ながら、君はその申し出を受け入れることにした。。")    
     SLOWPRINT(100,"",spotsTableWithFourHeroinesJP)
 end
+
 function spotsTableWithFourHeroinesJP()
     RESETQUE()
     QUESLOWPRINT("改改地図をもらってから、少し酒場を回ってから、４人の女の人が座ってるテーブルを見かける。そこに座ることにする…")
+    SLOWPRINT(100,"", gotoFiveHeroinsTable)
+end
+function nightShadeES()
+    RESETQUE()
+    QUESLOWPRINT("un extraño personaje le llama la atención. Cuando te acercas a él, te dice: 'Te vendo un mapa que señala ^la ubicación de la ''Corona de la Eternidad''.' Sin embargo, en lugar de dinero, el extraño te pide una reliquia que perteneció a tu madre. Aunque te preguntas 'cómo conoce ese detalle?', decides aceptar la oferta....")    
+    SLOWPRINT(100,"",spotsTableWithFourHeroinesES)
+end
+function spotsTableWithFourHeroinesES()
+    RESETQUE()
+    QUESLOWPRINT("Con el mapa en tus manos, recorres un poco la taberna y encuentras una mesa donde se sientan cuatro chicas....")
+    SLOWPRINT(100,"", gotoFiveHeroinsTable)
+end
+function nightShadeEN()
+    RESETQUE()
+    QUESLOWPRINT("As you approach, he says, 'I'll sell you a map pointing to the location of the ''Crown of Eternity.''' However, instead of money, the stranger demands a relic that once belonged to your mother. Although you wonder, 'How does he know about it?' you decide to accept the deal..")    
+    SLOWPRINT(100,"",spotsTableWithFourHeroinesEN)
+end
+function spotsTableWithFourHeroinesEN()
+    RESETQUE()
+    QUESLOWPRINT("^^With the map in hand, you wander around the tavern and find a table where four girls are seated....")
     SLOWPRINT(100,"", gotoFiveHeroinsTable)
 end
 
@@ -106,7 +127,7 @@ function scene:show(event)
             initTextScreen(sceneGroup,"EN")
             showTextArea()
             CLS()
-            welcomeHeroineEN()
+            nightShadeEN()
         elseif composer.getVariable( "language" ) == "Japanese" then
             initTextScreen(sceneGroup,"JP")
             showTextArea()
@@ -116,7 +137,7 @@ function scene:show(event)
             initTextScreen(sceneGroup,"ES")
             showTextArea()
             CLS()
-            welcomeHeroineES()
+            nightShadeES()
         end
 	end
 end

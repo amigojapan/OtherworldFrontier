@@ -10,6 +10,7 @@ rectEdit=nil
 lblTitle=nil
 editBuffer=nil
 okButton=nil
+inputBuffer=""
 local _callback=nil
 
 local function setAllObjectsHitTestable(group, value)
@@ -36,8 +37,8 @@ function okButtonTouchListener( event )
 	if event.phase == "ended" then
 		print("ok clicked!")
 		_callback(inputBuffer)
-		okButton.isVisible=false
-		removerInputBox()
+		--okButton.isVisible=false
+		--removerInputBox()
 	end
     return true  -- Prevents tap/touch propagation to underlying objects
 end
@@ -85,6 +86,23 @@ function removeScreenKeyboard()
 	end
 end
 
+function logDisplayObjects()
+	print("Number of active display objects: " .. display.getCurrentStage().numChildren)
+	for i = 1, display.getCurrentStage().numChildren do
+		print("Object " .. i .. ": " .. tostring(display.getCurrentStage()[i]))
+		
+		--if i==2 then
+		--	local buggyObject=display.getCurrentStage()[i]
+		--	buggyObject.isVisible=false
+			--buggyObject:removeSelf()
+			--buggyObject=nil
+		--end
+	end
+	--this hack seems to hide the black object from any extra number of screens
+	print ("display.getCurrentStage().numChildren"..display.getCurrentStage().numChildren)
+	display.getCurrentStage()[display.getCurrentStage().numChildren-1].isVisible=false--hack to hide hte invisible object that I do't know what it is
+	--display.getCurrentStage()[2]:removeSelf()--cant do this, cause it seems composer tries to bring this object to the front
+end
 function removerInputBox(event)
     -- Set all objects back to being hit-testable
     setAllObjectsHitTestable(display.getCurrentStage(), true)
@@ -125,19 +143,13 @@ function removerInputBox(event)
     -- Remove event listeners
     Runtime:removeEventListener("enterFrame", frameUpdate)
     Runtime:removeEventListener("key", onKeyEvent)
-	local function logDisplayObjects()
-		print("Number of active display objects: " .. display.getCurrentStage().numChildren)
-		for i = 1, display.getCurrentStage().numChildren do
-			print("Object " .. i .. ": " .. tostring(display.getCurrentStage()[i]))
-			display.getCurrentStage()[2].isVisible=false--hack to hide hte invisible object that I do't know what it is
-		end
-	end
+
 	logDisplayObjects()
 end
 
 --handle keystrokes
 downkey=""
-inputBuffer=""
+
 local action = {}
 function addInputToBuffer(downkey)
 	if downkey == "enter" then
@@ -145,7 +157,7 @@ function addInputToBuffer(downkey)
 		_callback(inputBuffer)
 		inputBuffer=""
 		downkey=""
-		removerInputBox()
+		--removerInputBox()
 		return
 	end
 	if downkey == "deleteBack" or downkey == "back" or downkey == "<<" then
@@ -307,9 +319,13 @@ end
 
 
 
-
-function showInputBox(prompt,callback)
+prebuff=nil
+function showInputBox(prompt,callback,predefinedBuffer)
 	print("showInputBox called")
+	if predefinedBuffer == nil then
+		predefinedBuffer=""
+	end
+	inputBuffer=predefinedBuffer
 	--disable isHitTestable for all display objects
 	setAllObjectsHitTestable(display.getCurrentStage(),false)
 	print("All objects set to isHitTestable = false")

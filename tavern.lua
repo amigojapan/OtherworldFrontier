@@ -46,31 +46,37 @@ end
 
 function askUserIfTheyLikeNameEN(userinput)
     composer.setVariable( "MCname", userinput)
-    createCustomAlert(
+    AlertBox(
     "Name",
-    "Your Name is"..userinput..", right?",
+    "Your Name is:"..userinput..", right?",
     alertBoxYesClickedComplete,
     alertBoxNoClickedCompleteEN
     )
+    removerInputBox()
+    disableContinueButton()--this automatically gets enabled on the next screem so no need to enable it again
 end
 
 function askUserIfTheyLikeNameJP(userinput)
     composer.setVariable( "MCname", userinput)
-    createCustomAlert(
+    AlertBox(
     "名前",
     "あなたの名前は:"..userinput.."ですか？",
     alertBoxYesClickedComplete,
     alertBoxNoClickedCompleteJP
     )
+    removerInputBox()
+    disableContinueButton()--this automatically gets enabled on the next screem so no need to enable it again
 end
 function askUserIfTheyLikeNameES(userinput)
     composer.setVariable( "MCname", userinput)
-    createCustomAlert(
+    AlertBox(
     "Tu nombre",
     "Te llamas:"..userinput..", verdad？",
     alertBoxYesClickedComplete,
     alertBoxNoClickedCompleteES
     )
+    removerInputBox()
+    disableContinueButton()--this automatically gets enabled on the next screem so no need to enable it again
 end
 
 function promtForNameJP()

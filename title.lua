@@ -8,7 +8,7 @@ local scene = composer.newScene()
 -- Code outside of the scene event functions below will only be executed ONCE unless
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
 -- -----------------------------------------------------------------------------------
-characterTimer=nil
+local characterTimer=nil
 function gotoMenu()
 	timer.cancel(characterTimer)
 	local options =
@@ -97,11 +97,11 @@ audio.reserveChannels( 1 )
 
 
 	-- Load audio
-	musicTrack = audio.loadStream( "audio/Base-Game-Loop.mp3",system.ResourceDirectory)
+	--musicTrack = audio.loadStream( "audio/Base-Game-Loop.mp3",system.ResourceDirectory)
 
 
 	-- Play the background music on channel 1, loop infinitely 
-	audio.play( musicTrack, { channel=1, loops=-1 } )
+	--audio.play( musicTrack, { channel=1, loops=-1 } )
 
 
 	local sceneGroup = self.view
@@ -112,14 +112,14 @@ audio.reserveChannels( 1 )
 		
 	elseif ( phase == "did" ) then
 		-- Code here runs when the scene is entirely on screen
-		print("Removed scene")
+		print("Removed scene title")
 		--composer.removeScene( "game" )
 		local background = display.newImageRect( sceneGroup, "backgrounds/Otherword-Frontier-Intro-screen.png", 1400,800 )
 		background.x = display.contentCenterX
 		background.y = display.contentCenterY
 		local lblTitle = display.newText( sceneGroup, "Otherworld Frontier", display.contentCenterX, display.contentCenterY, "fonts/ume-tgc5.ttf", 130 )
 		lblTitle:setFillColor( 0, 0,0 )
-		characterTimer=timer.performWithDelay( 5000, gotoMenu, 0  )
+		characterTimer=timer.performWithDelay( 5000, gotoMenu, 1  )
 	end
 end
 

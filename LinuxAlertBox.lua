@@ -1,3 +1,23 @@
+local function setAllObjectsHitTestable(group, value)
+    value = value or false -- Default to false if no value is provided
+    for i = 1, group.numChildren do
+        local child = group[i]
+        if child then
+            -- Check if the object has the isHitTestable property
+            if child.isHitTestable ~= nil then
+				child.isVisible = value
+                child.isHitTestable = value
+            end
+
+            -- If the child is a group, recurse into it
+            if child.numChildren then
+                setAllObjectsHitTestable(child, value)
+            end
+        end
+    end
+end
+
+local Group
 local function cleanup()
     --local objects = {background, alertBox, titleText, messageText, yesButton, yesText, noButton, noText}
     local objects = {alertBox, titleText, messageText, yesButton, yesText, noButton, noText}
@@ -13,16 +33,19 @@ local function cleanup()
         group:removeSelf()
         group = nil
     end
+    setAllObjectsHitTestable(Group, false)
 end
 
-function createCustomAlert(title, message, onYesPress, onNoPress)
+function AlertBox(title, message, onYesPress, onNoPress)
+	print("show AlertBox called")
+	--disable isHitTestable for all display objects
+	--setAllObjectsHitTestable(display.getCurrentStage(),false)
     -- Create a semi-transparent background
     --local background = display.newRect(display.contentCenterX, display.contentCenterY, display.contentWidth, display.contentHeight)
     --background:setFillColor(0, 0, 0, 0.5)
     --background.isHitTestable = true
-
     -- Create the alert box
-    local alertBox = display.newRoundedRect(display.contentCenterX, display.contentCenterY, 300, 200, 15)
+    local alertBox = display.newRoundedRect(display.contentCenterX, display.contentCenterY, 800, 400, 15)
     alertBox:setFillColor(0.3)
     alertBox:setStrokeColor(0.2)
     alertBox.strokeWidth = 2
@@ -31,10 +54,10 @@ function createCustomAlert(title, message, onYesPress, onNoPress)
     local titleText = display.newText({
         text = title,
         x = display.contentCenterX,
-        y = display.contentCenterY - 60,
+        y = display.contentCenterY - 100,
         width = 280,
         font = "fonts/ume-tgc5.ttf", --(japanese font) Replace with your custom font if needed
-        fontSize = 20,
+        fontSize = 50,
         align = "center"
     })
     titleText:setFillColor(1)
@@ -44,9 +67,9 @@ function createCustomAlert(title, message, onYesPress, onNoPress)
         text = message,
         x = display.contentCenterX,
         y = display.contentCenterY - 20,
-        width = 280,
+        width = 800,
         font = "fonts/ume-tgc5.ttf", -- Replace with your custom font if needed
-        fontSize = 16,
+        fontSize = 50,
         align = "center"
     })
     messageText:setFillColor(1)
@@ -56,11 +79,11 @@ function createCustomAlert(title, message, onYesPress, onNoPress)
     yesButton:setFillColor(0.5, 0.5, 0.5)
 
     local yesText = display.newText({
-        text = "Yes",
+        text = "✔",
         x = display.contentCenterX - 80,
         y = display.contentCenterY + 60,
-        font = native.systemFontBold, -- Replace with your custom font if needed
-        fontSize = 18,
+        font = "fonts/ume-tgc5.ttf", -- Replace with your custom font if needed
+        fontSize = 50,
         align = "center"
     })
     yesText:setFillColor(1)
@@ -70,11 +93,11 @@ function createCustomAlert(title, message, onYesPress, onNoPress)
     noButton:setFillColor(0.5, 0.5, 0.5)
 
     local noText = display.newText({
-        text = "No",
+        text = "✘",
         x = display.contentCenterX + 80,
         y = display.contentCenterY + 60,
-        font = native.systemFontBold, -- Replace with your custom font if needed
-        fontSize = 18,
+        font = "fonts/ume-tgc5.ttf", -- Replace with your custom font if needed
+        fontSize = 50,
         align = "center"
     })
     noText:setFillColor(1)

@@ -15,4 +15,12 @@ display.setStatusBar( display.HiddenStatusBar )
 math.randomseed( os.time() )
 
 -- Go to the menu screen
-composer.gotoScene( "title" )
+--composer.gotoScene( "title" )
+composer.setVariable( "language", "English" )
+composer.setVariable( "MCname", "amigojapan" )
+composer.setVariable( "adventurer1", "tomako" )
+composer.setVariable( "adventurer2", "chihiro" )
+composer.setVariable( "adventurer3", "akira" )
+composer.setVariable( "adventurer4", "toma" )
+composer.gotoScene( "nightShade" )
+--composer.gotoScene( "fiveHeroinesConversation" )
