@@ -119,6 +119,15 @@ function welcomeHeroineEN()
     SLOWPRINT(100,"", gotoFiveHeroinesConversation)
 end
 
+function welcomeHeroineES()
+    --CLS()
+    --LOCATE(1,1)
+    RESETQUE()
+    QUESLOWPRINT("la historia de "..composer.getVariable( "adventurer4")..":")
+    QUESLOWPRINT("^^"..composer.getVariable( "adventurer4").." crecio en el pueblo costal llamado Solrise, alli sirvio como amprendiz de la sacerdotisa y curadora de el pueblo. un dia su pueblo fue asaltado por una banda de merodeadores, "..composer.getVariable( "adventurer4").." invoco la proteccion de Dios, soltando una luz divina que asusto a los merodeadores, y se fueron. Tal experiencia le dio temor y la dejo con la tremenda responsabilida de manejar poder divino....")
+    SLOWPRINT(100,"", gotoFiveHeroinesConversation)
+end
+
 function letsNameOur4HeroinesJP()
     RESETQUE()
     QUESLOWPRINT("改改地図をもらってから、少し酒場を回ってから、４人の女の人が座ってるテーブルを見かける。そこに座ることにする…")
@@ -164,13 +173,7 @@ function introductionsEN()
 end
 
 
-function welcomeHeroineES()
-    --CLS()
-    --LOCATE(1,1)
-    RESETQUE()
-    QUESLOWPRINT("ahora ponle nombre a las otras 4 heroinas...")
-    SLOWPRINT(100,"",welcomeHeroineEN)
-end
+
 
 -- show()
 function scene:show(event)

@@ -133,6 +133,42 @@ function adventureBeginsEN()
     QUESLOWPRINT("^^and so the adventure begins....")
     SLOWPRINT(50,"",adventureBeginsEN)
 end
+
+function youSayES()
+    RESETQUE()
+    QUESLOWPRINT(composer.getVariable( "MCname").." dijo 'vengan con migo en una busqueda para encontrar la 'Crown of Eternity', He obtenido un mapa que guia a su locacion. Tengo una caravana vieja que podemos utilizar....'")
+    SLOWPRINT(50,"",adventurer1saysES)
+end
+function adventurer1saysES()
+    RESETQUE()
+    QUESLOWPRINT("^^"..composer.getVariable( "adventurer1").." dijo 'necesitaremos ir al establo para conseguir unicornios para jalar la caravana'.")
+    SLOWPRINT(50,"",adventurer2saysES)
+end
+
+function adventurer2saysES()
+    RESETQUE()
+    QUESLOWPRINT("^^"..composer.getVariable( "adventurer2").." dijo 'nesesitaremos ir a la tienda para conseguir suministros'.")
+    SLOWPRINT(50,"",adventurer3saysES)
+end
+
+function adventurer3saysES()
+    RESETQUE()
+    QUESLOWPRINT("^^"..composer.getVariable( "adventurer3").." dijo 'Pues vamos ya!'.")
+    SLOWPRINT(50,"",adventurer4saysES)
+end
+
+function adventurer4saysES()
+    RESETQUE()
+    QUESLOWPRINT("^^"..composer.getVariable( "adventurer4").." solo hizo el gesto que si con su cabez.")
+    SLOWPRINT(50,"",adventureBeginsES)
+end
+
+function adventureBeginsES()
+    RESETQUE()
+    QUESLOWPRINT("^^y asi comienza la aventura....")
+    SLOWPRINT(50,"",adventureBeginsES)
+end
+
 -- show()
 function scene:show(event)
     local sceneGroup = self.view
@@ -157,12 +193,12 @@ function scene:show(event)
             initTextScreen(sceneGroup,"JP")
             showTextArea()
             CLS()
-            ourFiveHeroinesMeetJP()
+            youSayJP()
         elseif composer.getVariable( "language" ) == "Spanish" then
             initTextScreen(sceneGroup,"ES")
             showTextArea()
             CLS()
-            ourFiveHeroinesMeetES()
+            youSayES()
         end
 	end
 end

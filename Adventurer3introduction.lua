@@ -98,7 +98,7 @@ showInputBox("please name adventurer4:", askUserIfTheyLikeNameEN)
 end
 
 function promtForNameES()
-showInputBox("dale nombre a la aventurera1:", askUserIfTheyLikeNameES)
+showInputBox("dale nombre a la aventurera 4:", askUserIfTheyLikeNameES)
 end
 
 function welcomeHeroineEN()
@@ -109,6 +109,16 @@ function welcomeHeroineEN()
     QUESLOWPRINT("^^"..composer.getVariable( "adventurer3").." Abandoned as a child in the magical wilderness of Everbloom Thicket, "..composer.getVariable( "adventurer3").." was raised by forest spirits who taught her ancient, untamed magic. Her powers are formidable but unpredictable, often causing chaos in tense moments....")
     SLOWPRINT(100,"",promtForNameEN)
 end
+
+function welcomeHeroineES()
+    --CLS()
+    --LOCATE(1,1)
+    RESETQUE()
+    QUESLOWPRINT("la historia de "..composer.getVariable( "adventurer3")..":")
+    QUESLOWPRINT("^^"..composer.getVariable( "adventurer3").." fue abandonada de niña en el bosque magico llamado Everbloom Thicket, a "..composer.getVariable( "adventurer3").." la cuidaron los espiritus del bosque los cuales le enseñaron magia antigua y sin dominio. Sus poderes son formidables, pero inpredecibles, en moemntos tensos esa magia puede causar caos....")
+    SLOWPRINT(100,"",promtForNameEN)
+end
+
 
 function letsNameOur4HeroinesJP()
     RESETQUE()
@@ -155,13 +165,6 @@ function introductionsEN()
 end
 
 
-function welcomeHeroineES()
-    --CLS()
-    --LOCATE(1,1)
-    RESETQUE()
-    QUESLOWPRINT("ahora ponle nombre a las otras 4 heroinas...")
-    SLOWPRINT(100,"",welcomeHeroineEN)
-end
 
 -- show()
 function scene:show(event)

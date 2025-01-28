@@ -79,7 +79,7 @@ end
 function askUserIfTheyLikeNameES(userinput)
     composer.setVariable( "adventurer1", userinput)
     AlertBox(
-    "adventurer1",
+    "la aventurera 1",
     "se llama:"..userinput..", bien？",
     alertBoxYesClickedComplete,
     alertBoxNoClickedCompleteES
@@ -132,12 +132,12 @@ end
 
 function ourFiveHeroinesMeetES()
     RESETQUE()
-    QUESLOWPRINT("te sientas en la mesa con las otras 4 chicas y comienzan a presentarse...")
+    QUESLOWPRINT("te sientas en la mesa con las otras 4 chicas y comienzan a presentarse....")
     SLOWPRINT(50,"",introductionsES)
 end
 function introductionsES()
     RESETQUE()
-    QUESLOWPRINT("^^ahora dales nombre a las 4 chicas......")
+    QUESLOWPRINT("^^ahora dales nombre a las 4 chicas....")
     SLOWPRINT(50,"", promtForNameES)
 end
 function ourFiveHeroinesMeetEN()

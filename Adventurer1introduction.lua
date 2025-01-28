@@ -109,7 +109,7 @@ showInputBox("please name adventurer2:", askUserIfTheyLikeNameEN)
 end
 
 function promtForNameES()
-showInputBox("dale nombre a la aventurera 1:", askUserIfTheyLikeNameES)
+showInputBox("dale nombre a la aventurera 2:", askUserIfTheyLikeNameES)
 end
 
 function welcomeHeroineEN()
@@ -119,6 +119,15 @@ function welcomeHeroineEN()
     QUESLOWPRINT(composer.getVariable( "adventurer1").."'s backstory:")
     QUESLOWPRINT("^^"..composer.getVariable( "adventurer1")..". Born under a comet's light in the tranquil village of Silverglade, "..composer.getVariable( "adventurer1").." was raised by a family of traveling performers. Her melodious voice and harp-playing were said to charm even the stars. One fateful night, a celestial spirit appeared in her dreams, granting her the power to weave magic into her songs....")
     SLOWPRINT(100,"",promtForNameEN)
+end
+
+function welcomeHeroineES()
+    --CLS()
+    --LOCATE(1,1)
+    RESETQUE()
+    QUESLOWPRINT("la historia de "..composer.getVariable( "adventurer1")..":")
+    QUESLOWPRINT("^^"..composer.getVariable( "adventurer1")..". Nacida bajo la luz de un cometa en el tranquilo pueblo de Silverglade, "..composer.getVariable( "adventurer1").." fue creada por un grupo de musicos ambulantes. Su voz melodica y su abilidad para tocar la harpa fue renombrada, se dice que hasta podria pacificar a las estrellas. Una noche especial, un espiritu celestial aparecio en sus sueños, dandole el poder de integrar la magia a su musica....")
+    SLOWPRINT(100,"",promtForNameES)
 end
 
 function letsNameOur4HeroinesJP()
@@ -155,13 +164,7 @@ function introductionsES()
     SLOWPRINT(100,"", ourFiveHeroinesMeetES)
 end
 
-function welcomeHeroineES()
-    --CLS()
-    --LOCATE(1,1)
-    RESETQUE()
-    QUESLOWPRINT("ahora ponle nombre a las otras 4 heroinas...")
-    SLOWPRINT(100,"",welcomeHeroineEN)
-end
+
 
 -- show()
 function scene:show(event)

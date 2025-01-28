@@ -98,7 +98,7 @@ showInputBox("please name adventurer3:", askUserIfTheyLikeNameEN)
 end
 
 function promtForNameES()
-showInputBox("dale nombre a la aventurera1:", askUserIfTheyLikeNameES)
+showInputBox("dale nombre a la aventurera 3:", askUserIfTheyLikeNameES)
 end
 
 function welcomeHeroineEN()
@@ -110,6 +110,14 @@ function welcomeHeroineEN()
     SLOWPRINT(100,"",promtForNameEN)
 end
 
+function welcomeHeroineES()
+    --CLS()
+    --LOCATE(1,1)
+    RESETQUE()
+    QUESLOWPRINT("La historia de ".. composer.getVariable( "adventurer2")..":")
+    QUESLOWPRINT("^^"..composer.getVariable( "adventurer2").." crecio en la cuidad militaristica llamada Ironreach, trataron de forzarla a ser una soldada caballera. pero, cuando se dio cuenta de los planes malevolos de su orden de unirse con las fuerzas de las tinieblas , se escapo, y se llevo la espada encandada que la estaba contolando....")
+    SLOWPRINT(100,"",promtForNameEN)
+end
 function letsNameOur4HeroinesJP()
     RESETQUE()
     QUESLOWPRINT("改改地図をもらってから、少し酒場を回ってから、４人の女の人が座ってるテーブルを見かける。そこに座ることにする…")
@@ -155,13 +163,6 @@ function introductionsEN()
 end
 
 
-function welcomeHeroineES()
-    --CLS()
-    --LOCATE(1,1)
-    RESETQUE()
-    QUESLOWPRINT("ahora ponle nombre a las otras 4 heroinas...")
-    SLOWPRINT(100,"",welcomeHeroineEN)
-end
 
 -- show()
 function scene:show(event)
