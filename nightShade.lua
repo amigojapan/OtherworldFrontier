@@ -68,13 +68,13 @@ function welcomeHeroineEN()
 end
 function nightShadeJP()
     RESETQUE()
-    QUESLOWPRINT("怪しい人に近づくと^^「永遠の冠（Crown of Eternity）」の在りかを示す地図を売る」と言われるけど…改改君は彼にお金を差し出すが、何故か彼が「君のお母さんの形見が欲しい」と言う。「何でこの人が知ってるんだろう」と思いながら、君が渋々ながら、君はその申し出を受け入れることにした。。")    
+    QUESLOWPRINT("怪しい人に近づくと^^「永遠の冠（Crown of Eternity）」改の在りかを示す地図を売る」と言われる。改改"..composer.getVariable( "MCname").."は彼にお金を差し出すが、何故か彼は「君のお母さんの形見が欲しい」と言う。改「何故彼は私が母の形見を持ってることを知ってるのか？」と思いながら、"..composer.getVariable( "MCname").."は改秘めた思いのために、"..composer.getVariable( "MCname").."はその申し出を受け入れることにした。。")    
     SLOWPRINT(100,"",spotsTableWithFourHeroinesJP)
 end
 
 function spotsTableWithFourHeroinesJP()
     RESETQUE()
-    QUESLOWPRINT("改改地図をもらってから、少し酒場を回ってから、４人の女の人が座ってるテーブルを見かける。そこに座ることにする…")
+    QUESLOWPRINT("改改地図をもらってから、少し酒場を回り、４人の女性が座ってるテーブルを見かける。そこに座ることにする…")
     SLOWPRINT(100,"", gotoFiveHeroinsTable)
 end
 function nightShadeES()

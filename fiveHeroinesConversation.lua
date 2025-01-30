@@ -89,7 +89,7 @@ function askUserIfTheyLikeNameES(userinput)
 end
 
 function promtForNameJP()
-    showInputBox("冒険者その１に名前を付けて：", askUserIfTheyLikeNameJP)
+    showInputBox("冒険者その１に名前を付けましょう：", askUserIfTheyLikeNameJP)
 end
 function promtForNameEN()
     showInputBox("please name adventurer1:", askUserIfTheyLikeNameEN)
@@ -98,6 +98,46 @@ end
 function promtForNameES()
     showInputBox("dale nombre a la aventurera1:", askUserIfTheyLikeNameES)
 end
+
+
+
+function youSayJP()
+    RESETQUE()
+    QUESLOWPRINT(composer.getVariable( "MCname").."が「一緒に『古の王冠』を探す旅改に出ない？王冠の場所を記す地図を買ったし、馬車も持ってるから」と言った。。")
+    SLOWPRINT(50,"",adventurer1saysJP)
+end
+function adventurer1saysJP()
+    RESETQUE()
+    QUESLOWPRINT("^^"..composer.getVariable( "adventurer1").."が「牧場に行って、馬車を引くユニコーンを買わなきゃいけないね」と言った。。")
+    SLOWPRINT(50,"",adventurer2saysJP)
+end
+
+function adventurer2saysJP()
+    RESETQUE()
+    QUESLOWPRINT("^^"..composer.getVariable( "adventurer2").."も「店に物資を買いに行かなくちゃいけないね」と言った。。")
+    SLOWPRINT(50,"",adventurer3saysJP)
+end
+
+function adventurer3saysJP()
+    RESETQUE()
+    QUESLOWPRINT("^^"..composer.getVariable( "adventurer3").."が、「よし、行こう！」と言った。")
+    SLOWPRINT(50,"",adventurer4saysJP)
+end
+
+function adventurer4saysJP()
+    RESETQUE()
+    QUESLOWPRINT("^^"..composer.getVariable( "adventurer4").."が静かに頷いた。。")
+    SLOWPRINT(50,"",adventureBeginsJP)
+end
+
+function adventureBeginsJP()
+    RESETQUE()
+    QUESLOWPRINT("^^そして、ここから冒険が始まる…。")
+    SLOWPRINT(50,"",adventureBeginsEN)
+end
+
+
+
 
 function youSayEN()
     RESETQUE()

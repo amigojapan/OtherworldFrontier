@@ -89,7 +89,7 @@ function askUserIfTheyLikeNameES(userinput)
 end
 
 function promtForNameJP()
-    showInputBox("冒険者その１に名前を付けて：", askUserIfTheyLikeNameJP)
+    showInputBox("冒険者その１に名前を付けましょう：", askUserIfTheyLikeNameJP)
 end
 function promtForNameEN()
     showInputBox("please name adventurer1:", askUserIfTheyLikeNameEN)
@@ -120,7 +120,7 @@ end
 
 function ourFiveHeroinesMeetJP()
     RESETQUE()
-    QUESLOWPRINT(composer.getVariable( "MCname").."がそのテーブルに座って、皆と自公紹介を始めます。。")
+    QUESLOWPRINT(composer.getVariable( "MCname").."がそのテーブルに座って、改皆と自己紹介を始める。。")
     SLOWPRINT(50,"",introductionsJP)
 end
 function introductionsJP()

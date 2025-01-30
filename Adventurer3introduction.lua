@@ -71,7 +71,7 @@ function askUserIfTheyLikeNameJP(userinput)
 composer.setVariable( "adventurer4", userinput)
 AlertBox(
 "冒険者その4",
-"名前は:"..userinput.."でいいですね？",
+"名前は:"..userinput.."でよろしいですか？",
 alertBoxYesClickedComplete,
 alertBoxNoClickedCompleteJP
 )
@@ -91,7 +91,7 @@ disableContinueButton()--this automatically gets enabled on the next screem so n
 end
 
 function promtForNameJP()
-showInputBox("冒険者その１に名前を付けて：", askUserIfTheyLikeNameJP)
+showInputBox("冒険者その１に名前を付けましょう：", askUserIfTheyLikeNameJP)
 end
 function promtForNameEN()
 showInputBox("please name adventurer4:", askUserIfTheyLikeNameEN)
@@ -100,6 +100,16 @@ end
 function promtForNameES()
 showInputBox("dale nombre a la aventurera 4:", askUserIfTheyLikeNameES)
 end
+
+function welcomeHeroineJP()
+    --CLS()
+    --LOCATE(1,1)
+    RESETQUE()
+    QUESLOWPRINT(composer.getVariable( "adventurer3").."のストーリー：改")
+    QUESLOWPRINT("^^"..composer.getVariable( "adventurer3").."は子供の頃「Everbloom Thicket」の荒地に捨てられた。改"..composer.getVariable( "adventurer3").."は森の精霊に育てられ、野生の魔法を教わった。彼女の魔法の力は強いが、失敗すると何が起こるか分からない不安定なものだった…。")
+    SLOWPRINT(100,"",promtForNameEN)
+end
+
 
 function welcomeHeroineEN()
     --CLS()
@@ -118,52 +128,6 @@ function welcomeHeroineES()
     QUESLOWPRINT("^^"..composer.getVariable( "adventurer3").." fue abandonada de niña en el bosque magico llamado Everbloom Thicket, a "..composer.getVariable( "adventurer3").." la cuidaron los espiritus del bosque los cuales le enseñaron magia antigua y sin dominio. Sus poderes son formidables, pero inpredecibles, en moemntos tensos esa magia puede causar caos....")
     SLOWPRINT(100,"",promtForNameEN)
 end
-
-
-function letsNameOur4HeroinesJP()
-    RESETQUE()
-    QUESLOWPRINT("改改地図をもらってから、少し酒場を回ってから、４人の女の人が座ってるテーブルを見かける。そこに座ることにする…")
-    SLOWPRINT(100,"",spotsTableWithFourHeroinesJP)
-end
-function introductionsJP()
-    RESETQUE()
-    QUESLOWPRINT(composer.getVariable( "MCname").."がテーブルに座ると皆が自公紹介する。")    
-    SLOWPRINT(100,"", letsNameOur4HeroinesJP)
-end
-
-function ourFiveHeroinesMeetJP()
-    RESETQUE()
-    QUESLOWPRINT(composer.getVariable( "MCname").."がそのテーブルに座って、皆と自公紹介を始めます。。")
-    SLOWPRINT(100,"",introductionsJP)
-end
-function introductionsJP()
-    RESETQUE()
-    QUESLOWPRINT("改改ここで４人の仲間の名前を決めましょう…。")
-    SLOWPRINT(100,"", introductionsJP)
-end
-
-
-function ourFiveHeroinesMeetES()
-    RESETQUE()
-    QUESLOWPRINT("te sientas en la mesa con las otras 4 chicas y comienzan a presentarse...")
-    SLOWPRINT(100,"",introductionsES)
-end
-function introductionsES()
-    RESETQUE()
-    QUESLOWPRINT("^^ahora dales nombre a las 4 chicas......")
-    SLOWPRINT(100,"", ourFiveHeroinesMeetES)
-end
-function ourFiveHeroinesMeetEN()
-    RESETQUE()
-    QUESLOWPRINT("You sit down at the table with the other girls and introductions start...")
-    SLOWPRINT(100,"",introductionsEN)
-end
-function introductionsEN()
-    RESETQUE()
-    QUESLOWPRINT("^^here is where you get to name the other 4 girls.....")
-    SLOWPRINT(100,"", promtForNameEN)
-end
-
 
 
 -- show()

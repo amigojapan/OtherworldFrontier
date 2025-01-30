@@ -31,17 +31,17 @@ function initTextScreen(sceneGroup,language)
     local fontWH = nil
     local magicalNumber=nil
     if Lang=="JP" then
-        aspectRatio = 4
+        aspectRatio = 8
         fontWH = 8 * aspectRatio
-        columns = 40
-        rows = 25
+        columns = 21
+        rows = 14
         magicalNumber=0
         localizedSpace="　"
     else
         aspectRatio = 4
         fontWH = 16 * aspectRatio
         columns = 40
-        rows = 12
+        rows = 14
         magicalNumber=1200--dunno why but I need to substract this number to get the right size of the red rectangle(it seems the smaller the bigger the rectangle gets)
         localizedSpace=" "
     end
@@ -55,7 +55,7 @@ function initTextScreen(sceneGroup,language)
     for Line = 1, rows do
         local lblLine
         if Lang=="JP" then
-            lblLine = display.newText(sceneGroup, "一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十", display.contentCenterX, 100+(Line * fontWH), "fonts/ume-tgc5.ttf", fontWH)--100 is a hack to align the text and the window
+            lblLine = display.newText(sceneGroup, "一二三四五六七八九十一二三四五六七八九十一", display.contentCenterX, 100+(Line * fontWH), "fonts/ume-tgc5.ttf", fontWH)--100 is a hack to align the text and the window
         else
             lblLine = display.newText(sceneGroup, "1234567890123456789012345678901234567890", display.contentCenterX, 100+(Line * fontWH), "fonts/ume-tgc5.ttf", fontWH)--100 is a hack to align the text and the window
         end
@@ -65,10 +65,10 @@ function initTextScreen(sceneGroup,language)
     print("Lang:"..Lang)
     if Lang=="JP" then
         print("here4!!")
-        lblContinue = display.newText(sceneGroup, "[>>]",(columns-12)*fontWH, 200 + (rows * fontWH), "fonts/ume-tgc5.ttf", fontWH)
+        lblContinue = display.newText(sceneGroup, "[>>]",(columns-12)*fontWH, 200 + ((rows-1.6) * fontWH), "fonts/ume-tgc5.ttf", fontWH)
         --lblContinue = display.newText(sceneGroup, "Continue...", 200, 200, "fonts/ume-tgc5.ttf", fontWH)
     else
-        lblContinue = display.newText(sceneGroup, "[Continue...]", 750, 1000, "fonts/ume-tgc5.ttf", fontWH)
+        lblContinue = display.newText(sceneGroup, "[Continue...]", 750, 996, "fonts/ume-tgc5.ttf", fontWH)
     end
     lblContinue:addEventListener( "tap", continue )
 end 
@@ -158,9 +158,10 @@ function PRINT(STR)
     
     while #STRING > 0 do
         -- Calculate the remaining space on the current line
+        local magicnum2=columns*3-- ah the magic number is about the newline at the end of the columns
         local remainingSpace
         if Lang=="JP" then
-            remainingSpace = 117 - cursor.Column + 1 -- (this would not be a problem ifn lua for solar2d supported utf8 characters)the number 118 was causing a problem, I chnaged it to 117 and it seems to work.hack, I dont know why but I replaced columns with the number 118 and seems to work for Japanese
+            remainingSpace = magicnum2 - cursor.Column + 1 -- (this would not be a problem ifn lua for solar2d supported utf8 characters)the number 118 was causing a problem, I chnaged it to 117 and it seems to work.hack, I dont know why but I replaced columns with the number 118 and seems to work for Japanese
         else
             remainingSpace = columns - cursor.Column + 1 -- (this would not be a problem ifn lua for solar2d supported utf8 characters)the number 118 was causing a problem, I chnaged it to 117 and it seems to work.hack, I dont know why but I replaced columns with the number 118 and seems to work for Japanese
         end
@@ -293,10 +294,10 @@ function SLOWPRINT(timeInMilllisecods,string,callbackFunctionWhenFinished)
     --hack fix, it does nto want to work form columb 1
     --repeat
         --LOCATE(cursor.Line,2)
-        if string.len(stringForSlowPrint)>40 then
+        if string.len(stringForSlowPrint)>columns then
             oneline = string.sub(stringForSlowPrint, 1, #stringForSlowPrint)--80 shoudl be two characters in utf8???
             print("here1")
-            stringForSlowPrint=string.sub(stringForSlowPrint, 40, #stringForSlowPrint)
+            stringForSlowPrint=string.sub(stringForSlowPrint, columns, #stringForSlowPrint)
             characterTimer=timer.performWithDelay( timeInMilllisecods, coPrintOneCharOfSlowPrint, 0, "charTimer" )
         else
             if character then

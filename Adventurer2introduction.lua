@@ -71,7 +71,7 @@ function askUserIfTheyLikeNameJP(userinput)
 composer.setVariable( "adventurer3", userinput)
 AlertBox(
 "冒険者その3",
-"名前は:"..userinput.."でいいですね？",
+"名前は:"..userinput.."でよろしいですか？",
 alertBoxYesClickedComplete,
 alertBoxNoClickedCompleteJP
 )
@@ -101,6 +101,15 @@ function promtForNameES()
 showInputBox("dale nombre a la aventurera 3:", askUserIfTheyLikeNameES)
 end
 
+function welcomeHeroineJP()
+    --CLS()
+    --LOCATE(1,1)
+    RESETQUE()
+    QUESLOWPRINT(composer.getVariable( "adventurer2").."のストーリー：改")
+    QUESLOWPRINT("^^"..composer.getVariable( "adventurer2").."は軍事の街の「Ironreach」で改育てられた。エリートの騎士になるように改幼い頃から洗脳されていたが、 ある日、彼女は自分の軍隊が魔王と手を組むことを企んでいたことを知って、魔法の剣を持ち、街を逃げ出した…。")
+    SLOWPRINT(100,"",promtForNameJP)
+end
+
 function welcomeHeroineEN()
     --CLS()
     --LOCATE(1,1)
@@ -118,50 +127,6 @@ function welcomeHeroineES()
     QUESLOWPRINT("^^"..composer.getVariable( "adventurer2").." crecio en la cuidad militaristica llamada Ironreach, trataron de forzarla a ser una soldada caballera. pero, cuando se dio cuenta de los planes malevolos de su orden de unirse con las fuerzas de las tinieblas , se escapo, y se llevo la espada encandada que la estaba contolando....")
     SLOWPRINT(100,"",promtForNameEN)
 end
-function letsNameOur4HeroinesJP()
-    RESETQUE()
-    QUESLOWPRINT("改改地図をもらってから、少し酒場を回ってから、４人の女の人が座ってるテーブルを見かける。そこに座ることにする…")
-    SLOWPRINT(100,"",spotsTableWithFourHeroinesJP)
-end
-function introductionsJP()
-    RESETQUE()
-    QUESLOWPRINT(composer.getVariable( "MCname").."がテーブルに座ると皆が自公紹介する。")    
-    SLOWPRINT(100,"", letsNameOur4HeroinesJP)
-end
-
-function ourFiveHeroinesMeetJP()
-    RESETQUE()
-    QUESLOWPRINT(composer.getVariable( "MCname").."がそのテーブルに座って、皆と自公紹介を始めます。。")
-    SLOWPRINT(100,"",introductionsJP)
-end
-function introductionsJP()
-    RESETQUE()
-    QUESLOWPRINT("改改ここで４人の仲間の名前を決めましょう…。")
-    SLOWPRINT(100,"", introductionsJP)
-end
-
-
-function ourFiveHeroinesMeetES()
-    RESETQUE()
-    QUESLOWPRINT("te sientas en la mesa con las otras 4 chicas y comienzan a presentarse...")
-    SLOWPRINT(100,"",introductionsES)
-end
-function introductionsES()
-    RESETQUE()
-    QUESLOWPRINT("^^ahora dales nombre a las 4 chicas......")
-    SLOWPRINT(100,"", ourFiveHeroinesMeetES)
-end
-function ourFiveHeroinesMeetEN()
-    RESETQUE()
-    QUESLOWPRINT("You sit down at the table with the other girls and introductions start...")
-    SLOWPRINT(100,"",introductionsEN)
-end
-function introductionsEN()
-    RESETQUE()
-    QUESLOWPRINT("^^here is where you get to name the other 4 girls.....")
-    SLOWPRINT(100,"", promtForNameEN)
-end
-
 
 
 -- show()
