@@ -12,7 +12,7 @@ editBuffer=nil
 okButton=nil
 inputBuffer=""
 local _callback=nil
-
+LinuxInputBoxElements = display.newGroup()
 function setAllObjectsHitTestable(group, value)
     value = value or false -- Default to false if no value is provided
     for i = 1, group.numChildren do
@@ -52,24 +52,24 @@ local paint = {
     type = "image",
     filename = "img/ok.png"
 }
-okButton = display.newRect(offsetx, offsety, 200, 100 )
+okButton = display.newRect(LinuxInputBoxElements,offsetx, offsety, 200, 100 )
 okButton.fill = paint
 okButton:addEventListener( "touch", okButtonTouchListener )  -- Add a "touch" listener to the obj
 okButton.isVisible=false
 
 function drawBorder(x,y,width,height)
-		rectBorder = display.newRect(x,y,width,height)
+		rectBorder = display.newRect(LinuxInputBoxElements,x,y,width,height)
 		rectBorder.strokeWidth = 5
 		rectBorder:setFillColor( 0, 0 , 0, 0.5 )
 		rectBorder:setStrokeColor( 1, 1, 1 )
 end
 editBuffer=nil
 function drawInputPrompt(x,y,width,height,prompt)
-		lblTitle = display.newText( prompt, x, y, "fonts/ume-tgc5.ttf", 50 )
+		lblTitle = display.newText(LinuxInputBoxElements, prompt, x, y, "fonts/ume-tgc5.ttf", 50 )
 		lblTitle:setFillColor( 0.82, 0.86, 1 )
-		editBuffer = display.newText( "", x, y+100, "fonts/ume-tgc5.ttf", 50 )
+		editBuffer = display.newText(LinuxInputBoxElements, "", x, y+100, "fonts/ume-tgc5.ttf", 50 )
 		editBuffer:setFillColor( 0.82, 0.86, 1 )
-		rectEdit = display.newRect(x,y+100,width-300,height-700)
+		rectEdit = display.newRect(LinuxInputBoxElements,x,y+100,width-300,height-700)
 		rectEdit.strokeWidth = 5
 		rectEdit:setFillColor( 1, 1 , 1, 0.5 )
 		rectEdit:setStrokeColor( 1, 1, 1 )
@@ -145,6 +145,7 @@ function removerInputBox(event)
     Runtime:removeEventListener("key", onKeyEvent)
 
 	logDisplayObjects()
+	LinuxInputBoxElements.isVisible=false
 end
 
 --handle keystrokes
@@ -245,7 +246,7 @@ function bringUpScreenKeyboard()
 	local xoffset=100--initial position of keys
 	local yoffset=200
 	for key, value in ipairs(keysTable) do
-		local lable = display.newText( value, xoffset, yoffset, "fonts/ume-tgc5.ttf", 50 )
+		local lable = display.newText(LinuxInputBoxElements, value, xoffset, yoffset, "fonts/ume-tgc5.ttf", 50 )
 		lable:setFillColor( 0.82, 0.86, 1 )
 		lable:addEventListener( "touch", clickOnScreenKeys )
 		table.insert(keysLablesTable, lable)
@@ -265,7 +266,7 @@ function bringUpScreenKeyboard()
 	table.insert(keysTable, "o")
 	table.insert(keysTable, "p")
 	for key, value in ipairs(keysTable) do
-		local lable = display.newText( value, xoffset, yoffset, "fonts/ume-tgc5.ttf", 50 )
+		local lable = display.newText(LinuxInputBoxElements, value, xoffset, yoffset, "fonts/ume-tgc5.ttf", 50 )
 		lable:setFillColor( 0.82, 0.86, 1 )
 		lable:addEventListener( "touch", clickOnScreenKeys )
 		table.insert(keysLablesTable, lable)
@@ -285,7 +286,7 @@ function bringUpScreenKeyboard()
 	table.insert(keysTable, "k")
 	table.insert(keysTable, "l")
 	for key, value in ipairs(keysTable) do
-		local lable = display.newText( value, xoffset, yoffset, "fonts/ume-tgc5.ttf", 50 )
+		local lable = display.newText(LinuxInputBoxElements, value, xoffset, yoffset, "fonts/ume-tgc5.ttf", 50 )
 		lable:setFillColor( 0.82, 0.86, 1 )
 		lable:addEventListener( "touch", clickOnScreenKeys )
 		table.insert(keysLablesTable, lable)
@@ -303,7 +304,7 @@ function bringUpScreenKeyboard()
 	table.insert(keysTable, "m")
 	table.insert(keysTable, "_")
 	for key, value in ipairs(keysTable) do
-		local lable = display.newText( value, xoffset, yoffset, "fonts/ume-tgc5.ttf", 50 )
+		local lable = display.newText(LinuxInputBoxElements, value, xoffset, yoffset, "fonts/ume-tgc5.ttf", 50 )
 		lable:setFillColor( 0.82, 0.86, 1 )
 		lable:addEventListener( "touch", clickOnScreenKeys )
 		table.insert(keysLablesTable, lable)
@@ -311,7 +312,7 @@ function bringUpScreenKeyboard()
 	end
 	yoffset=yoffset+50
 	xoffset=350
-	local lable = display.newText( "space", xoffset, yoffset, "fonts/ume-tgc5.ttf", 50 )
+	local lable = display.newText(LinuxInputBoxElements, "space", xoffset, yoffset, "fonts/ume-tgc5.ttf", 50 )
 	lable:setFillColor( 0.82, 0.86, 1 )
 	lable:addEventListener( "touch", clickOnScreenKeys )
 	table.insert(keysLablesTable, lable)
@@ -340,7 +341,7 @@ function showInputBox(prompt,callback,predefinedBuffer)
 			type = "image",
 			filename = "img/ok.png"
 		}
-		okButton = display.newRect(offsetx, offsety, 200, 100 )
+		okButton = display.newRect(LinuxInputBoxElements, offsetx, offsety, 200, 100 )
 		okButton.fill = paint
 		okButton:addEventListener( "touch", okButtonTouchListener )  -- Add a "touch" listener to the obj
 	end
@@ -351,6 +352,7 @@ function showInputBox(prompt,callback,predefinedBuffer)
 	Runtime:addEventListener( "key", onKeyEvent )
 	--maybe do this optionally if on touchscreen
 	bringUpScreenKeyboard()	
+	LinuxInputBoxElements.isVisible=true
 end
 
 

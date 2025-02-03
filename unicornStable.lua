@@ -135,11 +135,12 @@ end
   
 function verifyPurchaseEN(userinput)
     if not isInteger(userinput) then
-        removerInputBox()
+        --removerInputBox()
         print ("display.getCurrentStage().numChildren"..display.getCurrentStage().numChildren)
-        local buggyObject=display.getCurrentStage()[display.getCurrentStage().numChildren]--hack to hide hte invisible object that I do't know what it is    
+        local buggyObject=display.getCurrentStage()[display.getCurrentStage().numChildren-1]--hack to hide hte invisible object that I do't know what it is    
         setAllObjectsHitTestable(display.getCurrentStage(), true) 
         buggyObject.isVisible=false
+        LinuxInputBoxElements.isVisible=false
         --clearBuggyObjects()
         --CLS()
         
@@ -207,9 +208,9 @@ function stableAriveEN()
     --CLS()
     --LOCATE(1,1)
     RESETQUE()
-    QUESLOWPRINT("You have:"..composer.getVariable( "gold").."grams of gold:^")
+    QUESLOWPRINT("^You have:"..composer.getVariable( "gold").."grams of gold:^")
     --           "1234567890123456789012345678901234567890"
-    QUESLOWPRINT("^^each unicorn costs 100 grams of gold, how many uniicorns do you want to buy?^")
+    QUESLOWPRINT("^^each unicorn costs 100 grams of gold, how many unicorns do you want to buy?^")
     SLOWPRINT(100,"",promptForNnumerOfUnicornsEN)
 end
 

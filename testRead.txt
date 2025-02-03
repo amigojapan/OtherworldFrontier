@@ -813,3 +813,63 @@ amigojapan said ^'join me in a quest to find the Crown of^Eternity, I have purch
 ^^and so the adventure begun....
 You have:1000grams of gold:^^^each unicorn costs 100 grams of gold, how many uniicorns do you want to buy?^
 ^^Sorry, the number of unicorns must be a number...^
+You have:1000grams of gold:^^^each unicorn costs 100 grams of gold, how many uniicorns do you want to buy?^
+You have:1000grams of gold:^^^each unicorn costs 100 grams of gold, how many uniicorns do you want to buy?^
+^^Sorry, the number of unicorns must be a number...^
+You have:1000grams of gold:^^^each unicorn costs 100 grams of gold, how many uniicorns do you want to buy?^
+^^Sorry, the number of unicorns must be a number...^
+You have:1000grams of gold:^^^each unicorn costs 100 grams of gold, how many uniicorns do you want to buy?^
+You have:1000grams of gold:^^^each unicorn costs 100 grams of gold, how many uniicorns do you want to buy?^
+You have:1000grams of gold:^^^each unicorn costs 100 grams of gold, how many uniicorns do you want to buy?^
+^^Sorry, the number of unicorns must be a number...^
+You have:1000grams of gold:^^^each unicorn costs 100 grams of gold, how many uniicorns do you want to buy?^
+^^Sorry, the number of unicorns must be a number...^
+You have:1000grams of gold:^^^each unicorn costs 100 grams of gold, how many uniicorns do you want to buy?^
+^^Sorry, the number of unicorns must be a number...^
+You have:1000grams of gold:^^^each unicorn costs 100 grams of gold, how many uniicorns do you want to buy?^
+^^Sorry, the number of unicorns must be a number...^
+You have:1000grams of gold:^^^each unicorn costs 100 grams of gold, how many uniicorns do you want to buy?^
+^^Sorry, the number of unicorns must be a number...^
+You have:1000grams of gold:^^^each unicorn costs 100 grams of gold, how many uniicorns do you want to buy?^
+^^Sorry, the number of unicorns must be a number...^
+You have:1000grams of gold:^^^each unicorn costs 100 grams of gold, how many uniicorns do you want to buy?^
+^^Sorry, the number of unicorns must be a number...^
+You have:1000grams of gold:^^^each unicorn costs 100 grams of gold, how many uniicorns do you want to buy?^
+^You have:1000grams of gold:^^^each unicorn costs 100 grams of gold, how many unicorns do you want to buy?^
+^^Sorry, the number of unicorns must be a number...^
+^You have:1000grams of gold:^^^each unicorn costs 100 grams of gold, how many unicorns do you want to buy?^
+^^Sorry, the number of unicorns must be a number...^
+^You have:1000grams of gold:^^^each unicorn costs 100 grams of gold, how many unicorns do you want to buy?^
+^^Sorry, the number of unicorns must be a number...^
+^You have:1000grams of gold:^^^each unicorn costs 100 grams of gold, how many unicorns do you want to buy?^
+^^Sorry, the number of unicorns must be a number...^
+^You have:1000grams of gold:^^^each unicorn costs 100 grams of gold, how many unicorns do you want to buy?^
+^^Sorry, the number of unicorns must be a number...^
+Prologue^The tale begins in the bustling tavern ^known as the 'Tavern of a Thousand ^Tales', nestled on the southernmost ^edge of the continent in the city of ^Mistral's End. Adventurers, traders, ^and wanderers gather here to share ^tales of treasure and glory.  ^The town doesn't have an adventurer's^guild, but this tavern serves a ^similar role... A whispered legend ^emerges once again:^^
+^^'Beyond the Northern Tundra lies the ^Crown of Eternity, a mythical artifact ^created by God himself. It is said to ^grant unparalleled power or fulfill ^the deepest desire of whoever ^possesses it.'
+^^Many have tried to claim the ^artifact, but the journey north is ^perilous. Ancient forests, deadly ^mountains, cursed wastelands, and ^frozen tundras and evil monsters ^stand between the brave and their ^goal. Most of them could not survive ^the journey.^^^Despite the odds, your party has ^decided to embark on this epic ^journey. Whether for riches, ^redemption, or renown, the stakes are^high, and the path ahead is fraught ^with danger.
+amigojapan's backstory:^^amigojapan was born under a ^rare celestial event known as the ^Veil's Convergence, where the twin ^moons of Eternia aligned perfectly, ^casting the land in an eerie silver ^glow. This alignment was said to ^herald the arrival of those destined ^to shape the world's fate—be it for ^salvation or destruction....
+^^amigojapan enters the Tavern of^a Thousand Tales at Mistral’s End, a^ suspicious character aproches you....
+As you approach, he says, 'I'll sell ^you a map pointing to the location of ^the "Crown of Eternity."' However, ^instead of money, the stranger demands^a relic that once belonged to your ^mother. Although you wonder, How he^ knows about it, you decide to ^accept the deal..
+^^With the map in hand, you wander ^around the tavern and find a table ^where four girls are seated....
+You sit down at the table with the other girls and introductions start....
+^^here is where you get to name the other 4 girls....
+tomako's backstory:^^tomako. Born under a^comet's light in the tranquil village^of Silverglade, tomako was ^raised by a family of traveling ^performers. Her melodious voice and ^harp-playing were said to charm even ^the stars. One fateful night,^a celestial spirit appeared in her ^dreams, granting her the power to ^weave magic into her songs....
+eren's backstory:^^eren was raised^in the militant city of Ironreach, ^groomed from a young age to become an ^elite knight. However, when she ^uncovered her order's secret dealings ^with dark forces, she fled, taking ^with her the enchanted sword called^"The Astral Blade"....
+eren's backstory:^^eren Abandoned as a child^in the magical wilderness of Everbloom ^Thicket, ^eren was raised by^forest spirits who taught her ancient,^untamed magic. Her powers are ^formidable but unpredictable, often ^causing chaos in tense moments....
+zcom's backstory:^^zcom grew up in the^serene coastal village of Solrise, ^where she served as an apprentice to^the village healer and priestess. When^her home was raided by a band of^marauders, ^zcom invoked the^protection of God, unleashing a burst^of divine light that drove the ^attackers away. The experience left ^her both awed and burdened by the ^responsibility of wielding divine^power....
+amigojapan said ^'join me in a quest to find the Crown of^Eternity, I have purchased a map to get^it. I have an old caravan we ^can use....'
+^^tomako said ^'we will need to go to the stable to^get unicorns to pull it'.
+^^eren said^'we will need to head to the shop to ^buy supplies'.
+^^eren said^'lets do it!'.
+^^zcom silently nodded.
+^^and so the adventure began....
+^You have:1000grams of gold:^^^each unicorn costs 100 grams of gold, how many unicorns do you want to buy?^
+^^Sorry, the number of unicorns must be a number...^
+^You have:1000grams of gold:^^^each unicorn costs 100 grams of gold, how many unicorns do you want to buy?^
+^^Sorry, the number of unicorns must be a number...^
+^You have:1000grams of gold:^^^each unicorn costs 100 grams of gold, how many unicorns do you want to buy?^
+^^Sorry, the number of unicorns must be a number...^
+^You have:1000grams of gold:^^^each unicorn costs 100 grams of gold, how many unicorns do you want to buy?^
+zcom's backstory:^^zcom grew up in the^serene coastal village of Solrise, ^where she served as an apprentice to^the village healer and priestess. When^her home was raided by a band of^marauders, ^zcom invoked the^protection of God, unleashing a burst^of divine light that drove the ^attackers away. The experience left ^her both awed and burdened by the ^responsibility of wielding divine^power....
+^You have:1000grams of gold:^^^each unicorn costs 100 grams of gold, how many unicorns do you want to buy?^
