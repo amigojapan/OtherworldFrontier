@@ -118,13 +118,13 @@ local options =
 composer.gotoScene( "Adventurer4introduction", options )
 end
 local function alertBoxNoClickedCompleteEN()
-promtForNameEN()
+    stableAriveEN()
 end
 local function alertBoxNoClickedCompleteJP()
-promtForNameJP()
+    promtForNameJP()
 end
 local function alertBoxNoClickedCompleteES()
-promtForNameES()
+    promtForNameES()
 end
 
 function isInteger(str)
@@ -134,31 +134,30 @@ function isInteger(str)
 end
   
 function verifyPurchaseEN(userinput)
+    print ("display.getCurrentStage().numChildren"..display.getCurrentStage().numChildren)
+    local buggyObject=display.getCurrentStage()[display.getCurrentStage().numChildren-1]--hack to hide hte invisible object that I do't know what it is    
+    setAllObjectsHitTestable(display.getCurrentStage(), true) 
+    buggyObject.isVisible=false
+    LinuxInputBoxElements.isVisible=false
+    print("userinput:"..userinput)
     if not isInteger(userinput) then
-        --removerInputBox()
-        print ("display.getCurrentStage().numChildren"..display.getCurrentStage().numChildren)
-        local buggyObject=display.getCurrentStage()[display.getCurrentStage().numChildren-1]--hack to hide hte invisible object that I do't know what it is    
-        setAllObjectsHitTestable(display.getCurrentStage(), true) 
-        buggyObject.isVisible=false
-        LinuxInputBoxElements.isVisible=false
-        --clearBuggyObjects()
-        --CLS()
-        
         RESETQUE()
         QUESLOWPRINT("^^Sorry, the number of unicorns must be a number...^")
         SLOWPRINT(100,"",stableAriveEN)
-        --composer.removeScene( "unicornStable" )
-        --composer.gotoScene( "unicornStable" )
+    elseif tonumber(userinput)<1 then
+        RESETQUE()
+        QUESLOWPRINT("^^Sorry, you must buy at least one unicorn...^")
+        SLOWPRINT(100,"",stableAriveEN)    
     else    
         composer.setVariable( "unicorncount", userinput)
         AlertBox(
-        "Adventurer4",
-        "Her name is:"..userinput..", alright?",
+        "",--no title
+        "You want to buy:"..userinput..", unicorns right?",
         alertBoxYesClickedComplete,
         alertBoxNoClickedCompleteEN
         )
-        removerInputBox()
-        disableContinueButton()--this automatically gets enabled on the next screem so no need to enable it again
+        --removerInputBox()
+        --disableContinueButton()--this automatically gets enabled on the next screem so no need to enable it again
     end
 end
 

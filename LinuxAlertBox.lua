@@ -1,17 +1,19 @@
 local function setAllObjectsHitTestable(group, value)
     value = value or false -- Default to false if no value is provided
-    for i = 1, group.numChildren do
-        local child = group[i]
-        if child then
-            -- Check if the object has the isHitTestable property
-            if child.isHitTestable ~= nil then
-				child.isVisible = value
-                child.isHitTestable = value
-            end
+    if group then
+        for i = 1, group.numChildren do
+            local child = group[i]
+            if child then
+                -- Check if the object has the isHitTestable property
+                if child.isHitTestable ~= nil then
+                    child.isVisible = value
+                    child.isHitTestable = value
+                end
 
-            -- If the child is a group, recurse into it
-            if child.numChildren then
-                setAllObjectsHitTestable(child, value)
+                -- If the child is a group, recurse into it
+                if child.numChildren then
+                    setAllObjectsHitTestable(child, value)
+                end
             end
         end
     end
