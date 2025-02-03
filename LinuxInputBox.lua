@@ -13,7 +13,7 @@ okButton=nil
 inputBuffer=""
 local _callback=nil
 
-local function setAllObjectsHitTestable(group, value)
+function setAllObjectsHitTestable(group, value)
     value = value or false -- Default to false if no value is provided
     for i = 1, group.numChildren do
         local child = group[i]
@@ -190,7 +190,9 @@ function addInputToBuffer(downkey)
 		downkey=""
 	end
 	
-	editBuffer.text=inputBuffer
+	if editBuffer then 
+		editBuffer.text=inputBuffer
+	end
 end
 function frameUpdate()
 	local keyDown = false
@@ -365,3 +367,5 @@ function callback(userinput)
 end
 showInputBox("your prompt:",callback)
 ]]
+
+--try adding a group to every object in here to it can be hid easily... for everything later (a way to fix the black ares)

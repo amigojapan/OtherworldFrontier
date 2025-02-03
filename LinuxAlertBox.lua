@@ -18,7 +18,7 @@ local function setAllObjectsHitTestable(group, value)
 end
 
 local Group
-local function cleanup()
+function cleanup2()
     --local objects = {background, alertBox, titleText, messageText, yesButton, yesText, noButton, noText}
     local objects = {alertBox, titleText, messageText, yesButton, yesText, noButton, noText}
     for _, obj in ipairs(objects) do
@@ -144,7 +144,7 @@ function AlertBox(title, message, onYesPress, onNoPress)
         yesText=nil
         noButton=nil
         noText=nil
-        cleanup()
+        cleanup2()
     end
 
     yesButton:addEventListener("tap", handleYesTap)

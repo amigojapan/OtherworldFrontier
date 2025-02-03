@@ -9,8 +9,7 @@ local scene = composer.newScene()
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
 -- -----------------------------------------------------------------------------------
 
-function gotoFiveHeroinsTable()
-        --continue on journey
+function gotoUnicornStable()       --continue on journey
         local options =
         {
             effect = "fade",
@@ -18,7 +17,7 @@ function gotoFiveHeroinsTable()
             params = {
             }
         }
-        composer.gotoScene( "Adventurer1introduction", options )
+        composer.gotoScene( "unicornStable", options )
 end
 
 -- -----------------------------------------------------------------------------------
@@ -103,30 +102,30 @@ end
 
 function youSayJP()
     RESETQUE()
-    QUESLOWPRINT(composer.getVariable( "MCname").."が「一緒に『古の王冠』を探す旅改に出ない？王冠の場所を記す地図を買ったし、馬車も持ってるから」と言った。。")
+    QUESLOWPRINT(composer.getVariable( "MCname").."が改「一緒に『古の王冠』を探す旅改に出ない？王冠の場所を記す地図を買ったし、馬車も持ってるから」と言った。。")
     SLOWPRINT(50,"",adventurer1saysJP)
 end
 function adventurer1saysJP()
     RESETQUE()
-    QUESLOWPRINT("^^"..composer.getVariable( "adventurer1").."が「牧場に行って、馬車を引くユニコーンを買わなきゃいけないね」と言った。。")
+    QUESLOWPRINT("^^"..composer.getVariable( "adventurer1").."が改「牧場に行って、馬車を引くユニコーンを買わなきゃいけないね」と言った。。")
     SLOWPRINT(50,"",adventurer2saysJP)
 end
 
 function adventurer2saysJP()
     RESETQUE()
-    QUESLOWPRINT("^^"..composer.getVariable( "adventurer2").."も「店に物資を買いに行かなくちゃいけないね」と言った。。")
+    QUESLOWPRINT("^^"..composer.getVariable( "adventurer2").."も改「店で物資を調達しなきゃね」と言った。。")
     SLOWPRINT(50,"",adventurer3saysJP)
 end
 
 function adventurer3saysJP()
     RESETQUE()
-    QUESLOWPRINT("^^"..composer.getVariable( "adventurer3").."が、「よし、行こう！」と言った。")
+    QUESLOWPRINT("^^"..composer.getVariable( "adventurer3").."が、改「よし、行こう！」と言った。")
     SLOWPRINT(50,"",adventurer4saysJP)
 end
 
 function adventurer4saysJP()
     RESETQUE()
-    QUESLOWPRINT("^^"..composer.getVariable( "adventurer4").."が静かに頷いた。。")
+    QUESLOWPRINT("^^"..composer.getVariable( "adventurer4").."が改静かに頷いた。。")
     SLOWPRINT(50,"",adventureBeginsJP)
 end
 
@@ -141,37 +140,52 @@ end
 
 function youSayEN()
     RESETQUE()
-    QUESLOWPRINT(composer.getVariable( "MCname").." says 'join me in a quest to find the Crown of Eternity, I have purchased a map to get it. I have an old caravan we can use....'")
+    --           "1234567890123456789012345678901234567890"
+    QUESLOWPRINT(composer.getVariable( "MCname").." said ^")
+    QUESLOWPRINT("'join me in a quest to find the Crown of^")
+    QUESLOWPRINT("Eternity, I have purchased a map to get^")
+    QUESLOWPRINT("it. I have an old caravan we ^")
+    QUESLOWPRINT("can use....'")
     SLOWPRINT(50,"",adventurer1saysEN)
 end
 function adventurer1saysEN()
     RESETQUE()
-    QUESLOWPRINT("^^"..composer.getVariable( "adventurer1").." says 'we will need to go to the stable to get unicorns to pull it'.")
+    --           "1234567890123456789012345678901234567890"
+    QUESLOWPRINT("^^"..composer.getVariable( "adventurer1").." said ^")
+    QUESLOWPRINT("'we will need to go to the stable to^")
+    QUESLOWPRINT("get unicorns to pull it'.")
     SLOWPRINT(50,"",adventurer2saysEN)
 end
 
 function adventurer2saysEN()
     RESETQUE()
-    QUESLOWPRINT("^^"..composer.getVariable( "adventurer2").." says 'we will need to head to the shop to buy supplies'.")
+    --           "1234567890123456789012345678901234567890"
+    QUESLOWPRINT("^^"..composer.getVariable( "adventurer2").." said^")
+    QUESLOWPRINT("'we will need to head to the shop to ^")
+    QUESLOWPRINT("buy supplies'.")
     SLOWPRINT(50,"",adventurer3saysEN)
 end
 
 function adventurer3saysEN()
     RESETQUE()
-    QUESLOWPRINT("^^"..composer.getVariable( "adventurer3").." says 'lets do it!'.")
+    --           "1234567890123456789012345678901234567890"
+    QUESLOWPRINT("^^"..composer.getVariable( "adventurer3").." said^")
+    QUESLOWPRINT("'lets do it!'.")
     SLOWPRINT(50,"",adventurer4saysEN)
 end
 
 function adventurer4saysEN()
     RESETQUE()
-    QUESLOWPRINT("^^"..composer.getVariable( "adventurer4").." silently nods.")
+    --           "1234567890123456789012345678901234567890"
+    QUESLOWPRINT("^^"..composer.getVariable( "adventurer4").." silently nodded.")
     SLOWPRINT(50,"",adventureBeginsEN)
 end
 
 function adventureBeginsEN()
     RESETQUE()
-    QUESLOWPRINT("^^and so the adventure begins....")
-    SLOWPRINT(50,"",adventureBeginsEN)
+    --           "1234567890123456789012345678901234567890"
+    QUESLOWPRINT("^^and so the adventure began....")
+    SLOWPRINT(50,"",gotoUnicornStable)
 end
 
 function youSayES()
@@ -253,7 +267,6 @@ function scene:hide(event)
 
     elseif (phase == "did") then
         -- Code here runs immediately after the scene goes entirely off screen
-
     end
 end
 

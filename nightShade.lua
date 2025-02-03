@@ -68,7 +68,7 @@ function welcomeHeroineEN()
 end
 function nightShadeJP()
     RESETQUE()
-    QUESLOWPRINT("怪しい人に近づくと^^「永遠の冠（Crown of Eternity）」改の在りかを示す地図を売る」と言われる。改改"..composer.getVariable( "MCname").."は彼にお金を差し出すが、何故か彼は「君のお母さんの形見が欲しい」と言う。改「何故彼は私が母の形見を持ってることを知ってるのか？」と思いながら、"..composer.getVariable( "MCname").."は改秘めた思いのために、"..composer.getVariable( "MCname").."はその申し出を受け入れることにした。。")    
+    QUESLOWPRINT("怪しい人に近づくと^^「古の王冠」改の在りかを示す地図を売る」と言われる。改改"..composer.getVariable( "MCname").."は改彼にお金を差し出すが、何故か彼は「君のお母さんの形見が欲しい」と言う。改「何故彼は私が母の形見を持ってることを知ってるのか？」と思いながら、"..composer.getVariable( "MCname").."は改秘めた思いのために、改その申し出を受け入れることにした。。")    
     SLOWPRINT(100,"",spotsTableWithFourHeroinesJP)
 end
 
@@ -89,12 +89,23 @@ function spotsTableWithFourHeroinesES()
 end
 function nightShadeEN()
     RESETQUE()
-    QUESLOWPRINT("As you approach, he says, 'I'll sell you a map pointing to the location of the ''Crown of Eternity.''' However, instead of money, the stranger demands a relic that once belonged to your mother. Although you wonder, 'How does he know about it?' you decide to accept the deal..")    
+    --           "1234567890123456789012345678901234567890"
+    QUESLOWPRINT("As you approach, he says, 'I'll sell ^")
+    QUESLOWPRINT("you a map pointing to the location of ^")
+    QUESLOWPRINT("the \"Crown of Eternity.\"' However, ^")
+    QUESLOWPRINT("instead of money, the stranger demands^")
+    QUESLOWPRINT("a relic that once belonged to your ^")
+    QUESLOWPRINT("mother. Although you wonder, How he^")
+    QUESLOWPRINT(" knows about it, you decide to ^")
+    QUESLOWPRINT("accept the deal..")    
     SLOWPRINT(100,"",spotsTableWithFourHeroinesEN)
 end
 function spotsTableWithFourHeroinesEN()
     RESETQUE()
-    QUESLOWPRINT("^^With the map in hand, you wander around the tavern and find a table where four girls are seated....")
+    --           "1234567890123456789012345678901234567890"
+    QUESLOWPRINT("^^With the map in hand, you wander ^")
+    QUESLOWPRINT("around the tavern and find a table ^")
+    QUESLOWPRINT("where four girls are seated....")
     SLOWPRINT(100,"", gotoFiveHeroinsTable)
 end
 

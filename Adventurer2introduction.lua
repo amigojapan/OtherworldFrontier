@@ -106,7 +106,7 @@ function welcomeHeroineJP()
     --LOCATE(1,1)
     RESETQUE()
     QUESLOWPRINT(composer.getVariable( "adventurer2").."のストーリー：改")
-    QUESLOWPRINT("^^"..composer.getVariable( "adventurer2").."は軍事の街の「Ironreach」で改育てられた。エリートの騎士になるように改幼い頃から洗脳されていたが、 ある日、彼女は自分の軍隊が魔王と手を組むことを企んでいたことを知って、魔法の剣を持ち、街を逃げ出した…。")
+    QUESLOWPRINT("^^"..composer.getVariable( "adventurer2").."は改軍事の街の「アイロンリーチ」で改育てられた。エリートの騎士になるように改幼い頃から洗脳されていたが、ある日、彼女は自分の軍隊が魔王と手を組むことを企んでいたことを知って、魔法の剣「アストラルブレード」を持ち出し、街を逃げ出した…。")
     SLOWPRINT(100,"",promtForNameJP)
 end
 
@@ -114,8 +114,16 @@ function welcomeHeroineEN()
     --CLS()
     --LOCATE(1,1)
     RESETQUE()
+    --           "1234567890123456789012345678901234567890"
     QUESLOWPRINT(composer.getVariable( "adventurer2").."'s backstory:")
-    QUESLOWPRINT("^^"..composer.getVariable( "adventurer2").." was raised in the militant city of Ironreach, groomed from a young age to become an elite knight. However, when she uncovered her order's secret dealings with dark forces, she fled, taking with her the enchanted blade meant to control her....")
+    QUESLOWPRINT("^^"..composer.getVariable( "adventurer2").." was raised^")
+    QUESLOWPRINT("in the militant city of Ironreach, ^")
+    QUESLOWPRINT("groomed from a young age to become an ^")
+    QUESLOWPRINT("elite knight. However, when she ^")
+    QUESLOWPRINT("uncovered her order's secret dealings ^")
+    QUESLOWPRINT("with dark forces, she fled, taking ^")
+    QUESLOWPRINT("with her the enchanted sword called^")  
+    QUESLOWPRINT("\"The Astral Blade\"....")
     SLOWPRINT(100,"",promtForNameEN)
 end
 
@@ -124,7 +132,7 @@ function welcomeHeroineES()
     --LOCATE(1,1)
     RESETQUE()
     QUESLOWPRINT("La historia de ".. composer.getVariable( "adventurer2")..":")
-    QUESLOWPRINT("^^"..composer.getVariable( "adventurer2").." crecio en la cuidad militaristica llamada Ironreach, trataron de forzarla a ser una soldada caballera. pero, cuando se dio cuenta de los planes malevolos de su orden de unirse con las fuerzas de las tinieblas , se escapo, y se llevo la espada encandada que la estaba contolando....")
+    QUESLOWPRINT("^^"..composer.getVariable( "adventurer2").." crecio en la cuidad militaristica llamada Ironreach, trataron de forzarla a ser una soldada caballera. pero, cuando se dio cuenta de los planes malevolos de su orden de unirse con las fuerzas de las tinieblas , se escapo, y se llevo la espada encandada llamada \"Astral Blade\"")
     SLOWPRINT(100,"",promtForNameEN)
 end
 

@@ -2,6 +2,7 @@ local tableLines = {}
 local cursor = { Line = 1, Column = 1 }
 local columns = 40
 local rows = 25
+local currentcolumbs=columns
 local callbackFunction
 local stringForSlowPrint
 local STRING="なし"
@@ -151,7 +152,7 @@ function getStringWidth(str)
 end
 
 function PRINT(STR)
-    --eliminate newlibes
+    --eliminate newlines
     STRING=STR:gsub("\n","^")
     printing=true
     STRING=STR:gsub("なし","")
@@ -161,10 +162,12 @@ function PRINT(STR)
         local magicnum2=columns*3-- ah the magic number is about the newline at the end of the columns
         local remainingSpace
         if Lang=="JP" then
+            --magicnum2=63-6--(63 is columns21*3)(6 is to give it some margin to avoid teh line wrapping up(which I don't want))
             remainingSpace = magicnum2 - cursor.Column + 1 -- (this would not be a problem ifn lua for solar2d supported utf8 characters)the number 118 was causing a problem, I chnaged it to 117 and it seems to work.hack, I dont know why but I replaced columns with the number 118 and seems to work for Japanese
         else
             remainingSpace = columns - cursor.Column + 1 -- (this would not be a problem ifn lua for solar2d supported utf8 characters)the number 118 was causing a problem, I chnaged it to 117 and it seems to work.hack, I dont know why but I replaced columns with the number 118 and seems to work for Japanese
         end
+        local characterWasAscii
         local toPrint = STRING:sub(1, remainingSpace)
 
         local characterWasAscii
@@ -175,7 +178,9 @@ function PRINT(STR)
         end
         -- Get the text currently on the line
         local currentLine = tableLines[cursor.Line].text
-
+        --if characterWasAscii then
+            --cursor.Column=cursor.Column-0.5
+        --end
         -- Concatenate text correctly
         local textbefore = currentLine:sub(1, cursor.Column - 1)
         local textafter
@@ -288,7 +293,9 @@ function SLOWPRINT(timeInMilllisecods,string,callbackFunctionWhenFinished)
     stringForSlowPrint=stringForSlowPrint..string
     --log the story into a file
     file = io.open("testRead.txt","a")
-    file:write(stringForSlowPrint)
+    local tmp=stringForSlowPrint:gsub("^","\n")
+    local tmp=tmp:gsub("改","\n")
+    file:write(tmp)
     file:close()
     --hack to make the slowprint work, otherwise it is jittery
     --hack fix, it does nto want to work form columb 1
@@ -330,4 +337,29 @@ function enableContinueButton()
     print("enableContinueButton() called")
     lblContinue.isVisible=true
     lblContinue.isHitTestable=true
+    if Lang=="JP" then
+        aspectRatio = 8
+        fontWH = 8 * aspectRatio
+        columns = 21
+        rows = 14
+        magicalNumber=0
+        localizedSpace="　"
+    else
+        aspectRatio = 4
+        fontWH = 16 * aspectRatio
+        columns = 40
+        rows = 14
+        magicalNumber=1200--dunno why but I need to substract this number to get the right size of the red rectangle(it seems the smaller the bigger the rectangle gets)
+        localizedSpace=" "
+    end
+  
+    if Lang=="JP" then
+        print("here4!!")
+        lblContinue = display.newText( "[>>]",(columns-12)*fontWH, 200 + ((rows-1.6) * fontWH), "fonts/ume-tgc5.ttf", fontWH)
+        --lblContinue = display.newText(sceneGroup, "Continue...", 200, 200, "fonts/ume-tgc5.ttf", fontWH)
+    else
+        lblContinue = display.newText("[Continue...]", 750, 996, "fonts/ume-tgc5.ttf", fontWH)
+    end
+    lblContinue:addEventListener( "tap", continue )
+
 end

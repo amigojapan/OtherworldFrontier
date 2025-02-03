@@ -8,6 +8,76 @@ local scene = composer.newScene()
 -- Code outside of the scene event functions below will only be executed ONCE unless
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
 -- -----------------------------------------------------------------------------------
+buggyObjNum=0
+--[[
+function clearBuggyObjects()
+	print("Number of active display objects: " .. display.getCurrentStage().numChildren)
+	for i = 1, display.getCurrentStage().numChildren do
+		print("Object " .. i .. ": " .. tostring(display.getCurrentStage()[i]))
+		--display.getCurrentStage()[2].isVisible=false--hack to hide hte invisible object that I do't know what it is
+        -- this works three times
+        if i==display.getCurrentStage().numChildren then
+			if buggyObjNum==0 then  
+                buggyObject=display.getCurrentStage()[i]
+                buggyObject.isVisible=false
+                buggyObjNum=buggyObjNum+1
+            elseif buggyObjNum==1 then
+                buggyObject=display.getCurrentStage()[i-1]
+                buggyObject.isVisible=false
+                buggyObjNum=buggyObjNum+1
+            elseif buggyObjNum==2 then
+                buggyObject=display.getCurrentStage()[i-2]
+                buggyObject.isVisible=false
+                buggyObjNum=buggyObjNum+1
+            elseif buggyObjNum==3 then
+                print("buggyObjNum==3")
+                buggyObject=display.getCurrentStage()[7]
+                buggyObject.isVisible=false
+                buggyObjNum=buggyObjNum+1
+            elseif buggyObjNum==4 then
+                print("buggyObjNum==4")
+                buggyObject=display.getCurrentStage()[i-buggyObject]
+                buggyObject.isVisible=false
+                buggyObjNum=buggyObjNum+1
+            elseif buggyObjNum==5 then
+                print("buggyObjNum==5")
+                buggyObject=display.getCurrentStage()[i-5]
+                buggyObject.isVisible=false
+                buggyObjNum=buggyObjNum+1
+            elseif buggyObjNum==6 then
+                print("buggyObjNum==6")
+                buggyObject=display.getCurrentStage()[i-6]
+                buggyObject.isVisible=false
+                buggyObjNum=buggyObjNum+1
+            elseif buggyObjNum==7 then
+                print("buggyObjNum==7")
+                buggyObject=display.getCurrentStage()[i-buggyObject]
+                buggyObject.isVisible=false
+                buggyObjNum=buggyObjNum+1
+
+            end
+			--buggyObject:removeSelf()
+			--buggyObject=nil
+		end
+              
+        
+        if i==display.getCurrentStage().numChildren then
+			if buggyObjNum==0 then  
+                buggyObject=display.getCurrentStage()[i]
+                buggyObject.isVisible=false
+                buggyObjNum=buggyObjNum+1
+            elseif buggyObjNum==1 then
+                buggyObject=display.getCurrentStage()[i-buggyObjNum]
+                buggyObject.isVisible=false
+                buggyObjNum=buggyObjNum+1
+            end
+			--buggyObject:removeSelf()
+			--buggyObject=nil
+		end
+        
+	end
+end
+]]
 function clearBuggyObjects()
 	print("Number of active display objects: " .. display.getCurrentStage().numChildren)
 	for i = 1, display.getCurrentStage().numChildren do
@@ -15,7 +85,9 @@ function clearBuggyObjects()
 		--display.getCurrentStage()[2].isVisible=false--hack to hide hte invisible object that I do't know what it is
 		if i==display.getCurrentStage().numChildren then
 			local buggyObject=display.getCurrentStage()[i]
-			buggyObject.isVisible=false
+			if buggyObject then
+                buggyObject.isVisible=false
+            end
 			--buggyObject:removeSelf()
 			--buggyObject=nil
 		end
@@ -55,16 +127,38 @@ local function alertBoxNoClickedCompleteES()
 promtForNameES()
 end
 
-function askUserIfTheyLikeNameEN(userinput)
-composer.setVariable( "adventurer4", userinput)
-AlertBox(
-"Adventurer4",
-"Her name is:"..userinput..", alright?",
-alertBoxYesClickedComplete,
-alertBoxNoClickedCompleteEN
-)
-removerInputBox()
-disableContinueButton()--this automatically gets enabled on the next screem so no need to enable it again
+function isInteger(str)
+
+    return not (str == "" or str:find("%D"))  -- str:match("%D") also works
+  
+end
+  
+function verifyPurchaseEN(userinput)
+    if not isInteger(userinput) then
+        removerInputBox()
+        print ("display.getCurrentStage().numChildren"..display.getCurrentStage().numChildren)
+        local buggyObject=display.getCurrentStage()[display.getCurrentStage().numChildren]--hack to hide hte invisible object that I do't know what it is    
+        setAllObjectsHitTestable(display.getCurrentStage(), true) 
+        buggyObject.isVisible=false
+        --clearBuggyObjects()
+        --CLS()
+        
+        RESETQUE()
+        QUESLOWPRINT("^^Sorry, the number of unicorns must be a number...^")
+        SLOWPRINT(100,"",stableAriveEN)
+        --composer.removeScene( "unicornStable" )
+        --composer.gotoScene( "unicornStable" )
+    else    
+        composer.setVariable( "unicorncount", userinput)
+        AlertBox(
+        "Adventurer4",
+        "Her name is:"..userinput..", alright?",
+        alertBoxYesClickedComplete,
+        alertBoxNoClickedCompleteEN
+        )
+        removerInputBox()
+        disableContinueButton()--this automatically gets enabled on the next screem so no need to enable it again
+    end
 end
 
 function askUserIfTheyLikeNameJP(userinput)
@@ -90,14 +184,14 @@ removerInputBox()
 disableContinueButton()--this automatically gets enabled on the next screem so no need to enable it again
 end
 
-function promtForNameJP()
+function promptForNnumerOfUnicornsJP()
 showInputBox("冒険者その１に名前を付けましょう：", askUserIfTheyLikeNameJP)
 end
-function promtForNameEN()
-showInputBox("please name adventurer4:", askUserIfTheyLikeNameEN)
+function promptForNnumerOfUnicornsEN()
+showInputBox("how many unicorns do you want to buy?:", verifyPurchaseEN)
 end
 
-function promtForNameES()
+function promptForNnumerOfUnicornsES()
 showInputBox("dale nombre a la aventurera 4:", askUserIfTheyLikeNameES)
 end
 
@@ -109,21 +203,14 @@ function welcomeHeroineJP()
 end
 
 
-function welcomeHeroineEN()
+function stableAriveEN()
     --CLS()
     --LOCATE(1,1)
     RESETQUE()
-    QUESLOWPRINT(composer.getVariable( "adventurer3").."'s backstory:")
+    QUESLOWPRINT("You have:"..composer.getVariable( "gold").."grams of gold:^")
     --           "1234567890123456789012345678901234567890"
-    QUESLOWPRINT("^^"..composer.getVariable( "adventurer3").." Abandoned as a child^")
-    QUESLOWPRINT("in the magical wilderness of Everbloom ^")
-    QUESLOWPRINT("Thicket, ^")
-    QUESLOWPRINT(composer.getVariable( "adventurer3").." was raised by^")
-    QUESLOWPRINT("forest spirits who taught her ancient,^")
-    QUESLOWPRINT("untamed magic. Her powers are ^")
-    QUESLOWPRINT("formidable but unpredictable, often ^")
-    QUESLOWPRINT("causing chaos in tense moments....")
-    SLOWPRINT(100,"",promtForNameEN)
+    QUESLOWPRINT("^^each unicorn costs 100 grams of gold, how many uniicorns do you want to buy?^")
+    SLOWPRINT(100,"",promptForNnumerOfUnicornsEN)
 end
 
 function welcomeHeroineES()
@@ -147,7 +234,7 @@ function scene:show(event)
     elseif (phase == "did") then
         --cleanupInvisibleObjects(display.getCurrentStage(),sceneGroup)
         --background
-        local background = display.newImageRect( sceneGroup, "backgrounds/adventurer3.png", 1000,800 )
+        local background = display.newImageRect( sceneGroup, "backgrounds/unicorn-stable.png", 1000,800 )
 		background.x = display.contentCenterX
 		background.y = display.contentCenterY
         -- Code here runs when the scene is entirely on screen
@@ -155,9 +242,10 @@ function scene:show(event)
         if composer.getVariable( "language" ) == "English" then
             --clearBuggyObjects()
             initTextScreen(sceneGroup,"EN")
+            enableContinueButton()
             showTextArea()
             CLS()
-            welcomeHeroineEN()
+            stableAriveEN()
         elseif composer.getVariable( "language" ) == "Japanese" then
             initTextScreen(sceneGroup,"JP")
             showTextArea()

@@ -117,16 +117,24 @@ function welcomeHeroineJP()
     --LOCATE(1,1)
     RESETQUE()
     QUESLOWPRINT(composer.getVariable( "adventurer1").."のストーリー：改")
-    QUESLOWPRINT("^^"..composer.getVariable( "adventurer1").."は流星の時に、Silvergladeという改静かな村に生まれた。改"..composer.getVariable( "adventurer1").."は旅をする楽団の家族を持ち、彼女の朗らかな声とハープの響きは「星を落ち着かせる力を持つ」と言わていた。改ある日、天の精霊が夢の中に現れ、彼女の歌に魔法を唱える力を与えてくれた…。")
+    QUESLOWPRINT("^^"..composer.getVariable( "adventurer1").."は改流星の時に、Silvergladeという改静かな村に生まれた。改"..composer.getVariable( "adventurer1").."は改旅をする楽団の家族を持ち、彼女の朗らかな声とハープの響きは「星を落ち着かせる力を持つ」と言わていた。改ある日、天の精霊が夢の中に現れ、彼女の歌に魔法を唱える力を与えてくれた…。")
     SLOWPRINT(100,"",promtForNameJP)
 end
 
 function welcomeHeroineEN()
-    --CLS()
-    --LOCATE(1,1)
     RESETQUE()
+    --           "1234567890123456789012345678901234567890"
     QUESLOWPRINT(composer.getVariable( "adventurer1").."'s backstory:")
-    QUESLOWPRINT("^^"..composer.getVariable( "adventurer1")..". Born under a comet's light in the tranquil village of Silverglade, "..composer.getVariable( "adventurer1").." was raised by a family of traveling performers. Her melodious voice and harp-playing were said to charm even the stars. One fateful night, a celestial spirit appeared in her dreams, granting her the power to weave magic into her songs....")
+    QUESLOWPRINT("^^"..composer.getVariable( "adventurer1")..". Born under a^")
+    QUESLOWPRINT("comet's light in the tranquil village^")
+    QUESLOWPRINT("of Silverglade, "..composer.getVariable( "adventurer1").." was ^")
+    QUESLOWPRINT("raised by a family of traveling ^")
+    QUESLOWPRINT("performers. Her melodious voice and ^")
+    QUESLOWPRINT("harp-playing were said to charm even ^")
+    QUESLOWPRINT("the stars. One fateful night,^")
+    QUESLOWPRINT("a celestial spirit appeared in her ^")
+    QUESLOWPRINT("dreams, granting her the power to ^")
+    QUESLOWPRINT("weave magic into her songs....")
     SLOWPRINT(100,"",promtForNameEN)
 end
 
