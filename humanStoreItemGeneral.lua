@@ -12,8 +12,12 @@ local scene = composer.newScene()
 --items to customize purchase
 local itemPrice=10--10 grams of gold per kilogram of food
 local backgroundImage="backgrounds/human-shop.png"
-local itemSold="food supplies"
-local  itemCounterVariable="KG of food"
+local itemSoldEN="food supplies"
+local itemCounterVariableEN="KG of food"
+local itemSoldJP="食料"
+local itemCounterVariableJP="食料一キロ"
+local itemSoldES="suministros de comida"
+local itemCounterVariableES="\"Kilos de comida\""
 local composerVariable="KGofFood"
 local thisSceneName="humanStoreItemGeneral"
 local nextScreenName="humanStoreItemGeneral"
@@ -68,10 +72,10 @@ local function alertBoxNoClickedCompleteEN()
     shopAriveEN()
 end
 local function alertBoxNoClickedCompleteJP()
-    stableAriveJP()
+    shopAriveJP()
 end
 local function alertBoxNoClickedCompleteES()
-    stableAriveES()
+    shopAriveES()
 end
 
   
@@ -84,7 +88,7 @@ function verifyPurchaseEN(userinput)
     print("userinput:"..userinput)
     if not isInteger(userinput) then
         RESETQUE()
-        QUESLOWPRINT("^^Sorry, the number of "..itemCounterVariable.." must be a numeric value...^")
+        QUESLOWPRINT("^^Sorry, the number of "..itemCounterVariableEN.." must be a numeric value...^")
         SLOWPRINT(100,"",shopAriveEN)
     else
         local price=tonumber(userinput)*itemPrice--100 is price per item
@@ -96,84 +100,119 @@ function verifyPurchaseEN(userinput)
         else
             GoldUsed=price
             numberOfItemsPurchased=tonumber(userinput)
-            --LinuxAlertBoxElements.isVisible=false
             AlertBox(
             "",--no title
-            "You want to buy:"..userinput..", "..itemCounterVariable.." right?",
+            "You want to buy:"..userinput..", "..itemCounterVariableEN.." right?",
             alertBoxYesClickedComplete,
             alertBoxNoClickedCompleteEN
             )
-            --LinuxAlertBoxElements.isVisible=false
-            --removerInputBox()
-            --disableContinueButton()--this automatically gets enabled on the next screem so no need to enable it again
         end
     end
 end
 
-function askUserIfTheyLikeNameJP(userinput)
-composer.setVariable( "adventurer4", userinput)
-AlertBox(
-"冒険者その4",
-"名前は:"..userinput.."でよろしいですか？",
-alertBoxYesClickedComplete,
-alertBoxNoClickedCompleteJP
-)
-removerInputBox()
-disableContinueButton()--this automatically gets enabled on the next screem so no need to enable it again
-end
-function askUserIfTheyLikeNameES(userinput)
-composer.setVariable( "adventurer4", userinput)
-AlertBox(
-"la aventurera 4",
-"se llama:"..userinput..", bien？",
-alertBoxYesClickedComplete,
-alertBoxNoClickedCompleteES
-)
-removerInputBox()
-disableContinueButton()--this automatically gets enabled on the next screem so no need to enable it again
+function verifyPurchaseJP(userinput)
+    print ("display.getCurrentStage().numChildren"..display.getCurrentStage().numChildren)
+    local buggyObject=display.getCurrentStage()[display.getCurrentStage().numChildren-1]--hack to hide hte invisible object that I do't know what it is    
+    setAllObjectsHitTestable(display.getCurrentStage(), true) 
+    buggyObject.isVisible=false
+    LinuxInputBoxElements.isVisible=false
+    print("userinput:"..userinput)
+    if not isInteger(userinput) then
+        RESETQUE()
+        QUESLOWPRINT("^^すみません、"..itemCounterVariableJP.."の個数は数字じゃないといけないです…^")
+        SLOWPRINT(100,"",shopAriveEN)
+    else
+        local price=tonumber(userinput)*itemPrice--100 is price per item
+        if price>composer.getVariable( "gold") then
+            RESETQUE()
+            QUESLOWPRINT("^^すみません、金がたりないです…^")
+            SLOWPRINT(100,"",shopAriveJP)                    
+        else
+            GoldUsed=price
+            numberOfItemsPurchased=tonumber(userinput)
+            AlertBox(
+            "",--no title
+            "「"..itemCounterVariableJP.."]"..userinput.."個でいいですね？",
+            alertBoxYesClickedComplete,
+            alertBoxNoClickedCompleteJP
+            )
+        end
+    end
 end
 
-function promptForNnumerOfUnicornsJP()
-    showInputBox("ユニコーン何頭買いたいですか？：", askUserIfTheyLikeNameJP)
+function verifyPurchaseES(userinput)
+    print ("display.getCurrentStage().numChildren"..display.getCurrentStage().numChildren)
+    local buggyObject=display.getCurrentStage()[display.getCurrentStage().numChildren-1]--hack to hide hte invisible object that I do't know what it is    
+    setAllObjectsHitTestable(display.getCurrentStage(), true) 
+    buggyObject.isVisible=false
+    LinuxInputBoxElements.isVisible=false
+    print("userinput:"..userinput)
+    if not isInteger(userinput) then
+        RESETQUE()
+        QUESLOWPRINT("^^Perdon, el numero de "..itemCounterVariableES.." tiene que ser un valor numerico...^")
+        SLOWPRINT(100,"",shopAriveEN)
+    else
+        local price=tonumber(userinput)*itemPrice--100 is price per item
+        if price>composer.getVariable( "gold") then
+            RESETQUE()
+            QUESLOWPRINT("^^Perdon, no tienes suficiente oro ^")
+            QUESLOWPRINT("para hacer esa compra...^")
+            SLOWPRINT(100,"",shopAriveEN)                    
+        else
+            GoldUsed=price
+            numberOfItemsPurchased=tonumber(userinput)
+            AlertBox(
+            "",--no title
+            "Quieres comprar:"..userinput..", "..itemCounterVariableES.." verdad?",
+            alertBoxYesClickedComplete,
+            alertBoxNoClickedCompleteES
+            )
+        end
+    end
+end
+
+function promptItemCountdJP()
+    showInputBox(itemCounterVariableJP.."何個買いたいですか？", verifyPurchaseJP)
 end
 function promptItemCountdEN()
-    showInputBox("How many "..itemCounterVariable.." do you want to buy?:", verifyPurchaseEN)
+    showInputBox("How many "..itemCounterVariableEN.." do you want to buy?:", verifyPurchaseEN)
 end
 
-function promptForNnumerOfUnicornsES()
-    showInputBox("dale nombre a la aventurera 4:", askUserIfTheyLikeNameES)
+function promptItemCountdES()
+    showInputBox("cuantos "..itemCounterVariableES.." quieres comprar?:", verifyPurchaseES)
 end
-
-function welcomeHeroineJP()
-    RESETQUE()
-    QUESLOWPRINT(composer.getVariable( "adventurer3").."のストーリー：改")
-    QUESLOWPRINT("^^"..composer.getVariable( "adventurer3").."は改子供の頃「エバブルーム。シケット」の荒地に捨てられた。改"..composer.getVariable( "adventurer3").."は改森の精霊に育てられ、野生の魔法を教わった。彼女の魔法の力は強いが、失敗すると何が起こるか分からない不安定なものだった…。")
-    SLOWPRINT(100,"",promtForNameEN)
-end
-
 
 function shopAriveEN()
-    --CLS()
-    --LOCATE(1,1)
     RESETQUE()
     QUESLOWPRINT("^You have:"..composer.getVariable( "gold").." grams of gold:^")
     --           "1234567890123456789012345678901234567890"
-    QUESLOWPRINT("^^Shop Item called \""..itemSold.."\"^")
+    QUESLOWPRINT("^^Shop Item called \""..itemSoldEN.."\"^")
     QUESLOWPRINT("costs ".. itemPrice .." grams of gold ^")
-    QUESLOWPRINT("per "..itemCounterVariable..", how many ^")
-    QUESLOWPRINT(itemCounterVariable.." do you want to buy?^")
+    QUESLOWPRINT("per "..itemCounterVariableEN..", how many ^")
+    QUESLOWPRINT(itemCounterVariableEN.." do you want to buy?^")
     SLOWPRINT(100,"",promptItemCountdEN)
 end
 
-function welcomeHeroineES()
-    --CLS()
-    --LOCATE(1,1)
+function shopAriveJP()
     RESETQUE()
-    QUESLOWPRINT("la historia de "..composer.getVariable( "adventurer3")..":")
-    QUESLOWPRINT("^^"..composer.getVariable( "adventurer3").." fue abandonada de niña en el bosque magico llamado Everbloom Thicket, a "..composer.getVariable( "adventurer3").." la cuidaron los espiritus del bosque los cuales le enseñaron magia antigua y sin dominio. Sus poderes son formidables, pero inpredecibles, en moemntos tensos esa magia puede causar caos....")
-    SLOWPRINT(100,"",promtForNameEN)
+    QUESLOWPRINT("^金"..composer.getVariable( "gold").."グラムを持っている：^")
+    --           "1234567890123456789012345678901234567890"
+    QUESLOWPRINT("^^「"..itemSoldJP.."」と言うアイテムが^")
+    QUESLOWPRINT(itemCounterVariableJP.."が金".. itemPrice .."グラムする。^")
+    QUESLOWPRINT(itemCounterVariableJP.."何個買いたいのか？^")
+    SLOWPRINT(100,"",promptItemCountdJP)
 end
 
+function shopAriveES()
+    RESETQUE()
+    QUESLOWPRINT("^Tienes:"..composer.getVariable( "gold").." gramos de oro:^")
+    --           "1234567890123456789012345678901234567890"
+    QUESLOWPRINT("^^El artículo llamado \""..itemSoldES.."\"^")
+    QUESLOWPRINT("cuesta ".. itemPrice .." gramos de oro ^")
+    QUESLOWPRINT("por cada "..itemCounterVariableES..", cuantos ^")
+    QUESLOWPRINT(itemCounterVariableES.." quieres comprar?^")
+    SLOWPRINT(100,"",promptItemCountdES)
+end
 
 -- show()
 function scene:show(event)
@@ -202,12 +241,12 @@ function scene:show(event)
             initTextScreen(sceneGroup,"JP")
             showTextArea()
             CLS()
-            welcomeHeroineJP()
+            shopAriveJP()
         elseif composer.getVariable( "language" ) == "Spanish" then
             initTextScreen(sceneGroup,"ES")
             showTextArea()
             CLS()
-            welcomeHeroineES()
+            shopAriveES()
         end
 	end
 end

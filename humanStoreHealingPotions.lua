@@ -146,7 +146,7 @@ function shopAriveEN()
     --CLS()
     --LOCATE(1,1)
     RESETQUE()
-    QUESLOWPRINT("^You have:"..composer.getVariable( "gold").."grams of gold:^")
+    QUESLOWPRINT("^You have:"..composer.getVariable( "gold").." grams of gold:^")
     --           "1234567890123456789012345678901234567890"
     QUESLOWPRINT("^^Healing potions cost ".. itemPrice .." ^")
     QUESLOWPRINT("grams of gold per item, how many ^")
