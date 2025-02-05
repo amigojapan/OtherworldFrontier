@@ -19,6 +19,7 @@ local function setAllObjectsHitTestable(group, value)
     end
 end
 
+LinuxAlertBoxElements = display.newGroup()
 local Group
 function cleanup2()
     --local objects = {background, alertBox, titleText, messageText, yesButton, yesText, noButton, noText}
@@ -35,7 +36,8 @@ function cleanup2()
         group:removeSelf()
         group = nil
     end
-    setAllObjectsHitTestable(Group, false)
+    LinuxAlertBoxElements.isVisible=false
+    --setAllObjectsHitTestable(Group, false)
 end
 
 function AlertBox(title, message, onYesPress, onNoPress)
@@ -47,13 +49,14 @@ function AlertBox(title, message, onYesPress, onNoPress)
     --background:setFillColor(0, 0, 0, 0.5)
     --background.isHitTestable = true
     -- Create the alert box
-    local alertBox = display.newRoundedRect(display.contentCenterX, display.contentCenterY, 800, 400, 15)
+    local alertBox = display.newRoundedRect(LinuxAlertBoxElements,display.contentCenterX, display.contentCenterY, 800, 400, 15)
     alertBox:setFillColor(0.3)
     alertBox:setStrokeColor(0.2)
     alertBox.strokeWidth = 2
 
     -- Title text
     local titleText = display.newText({
+        group = LinuxAlertBoxElements,
         text = title,
         x = display.contentCenterX,
         y = display.contentCenterY - 100,
@@ -66,6 +69,7 @@ function AlertBox(title, message, onYesPress, onNoPress)
 
     -- Message text
     local messageText = display.newText({
+        group = LinuxAlertBoxElements,
         text = message,
         x = display.contentCenterX,
         y = display.contentCenterY - 20,
@@ -77,10 +81,11 @@ function AlertBox(title, message, onYesPress, onNoPress)
     messageText:setFillColor(1)
 
     -- Yes button
-    local yesButton = display.newRoundedRect(display.contentCenterX - 80, display.contentCenterY + 60, 100, 40, 10)
+    local yesButton = display.newRoundedRect(LinuxAlertBoxElements,display.contentCenterX - 80, display.contentCenterY + 60, 100, 40, 10)
     yesButton:setFillColor(0.5, 0.5, 0.5)
 
     local yesText = display.newText({
+        group = LinuxAlertBoxElements,
         text = "✔",
         x = display.contentCenterX - 80,
         y = display.contentCenterY + 60,
@@ -91,10 +96,11 @@ function AlertBox(title, message, onYesPress, onNoPress)
     yesText:setFillColor(1)
 
     -- No button
-    local noButton = display.newRoundedRect(display.contentCenterX + 80, display.contentCenterY + 60, 100, 40, 10)
+    local noButton = display.newRoundedRect(LinuxAlertBoxElements,display.contentCenterX + 80, display.contentCenterY + 60, 100, 40, 10)
     noButton:setFillColor(0.5, 0.5, 0.5)
 
     local noText = display.newText({
+        group = LinuxAlertBoxElements,
         text = "✘",
         x = display.contentCenterX + 80,
         y = display.contentCenterY + 60,

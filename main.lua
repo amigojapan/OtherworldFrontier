@@ -26,4 +26,6 @@ composer.setVariable( "adventurer3", "akira" )
 composer.setVariable( "adventurer4", "toma" )
 --composer.gotoScene( "nightShade" )
 --composer.gotoScene( "fiveHeroinesConversation" )
-composer.gotoScene( "unicornStable" )
+--composer.gotoScene( "unicornStable" )
+composer.gotoScene( "humanStoreItemGeneral" )
+

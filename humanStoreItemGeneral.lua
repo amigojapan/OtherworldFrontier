@@ -9,6 +9,19 @@ local scene = composer.newScene()
 -- Code outside of the scene event functions below will only be executed ONCE unless
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
 -- -----------------------------------------------------------------------------------
+--items to customize purchase
+local itemPrice=10--10 grams of gold per kilogram of food
+local backgroundImage="backgrounds/human-shop.png"
+local itemSold="food supplies"
+local  itemCounterVariable="KG of food"
+local composerVariable="KGofFood"
+local thisSceneName="humanStoreItemGeneral"
+local nextScreenName="humanStoreItemGeneral"
+
+
+local numberOfItemsPurchased
+local goldUsed
+
 function clearBuggyObjects()
 	print("Number of active display objects: " .. display.getCurrentStage().numChildren)
 	for i = 1, display.getCurrentStage().numChildren do
@@ -36,8 +49,6 @@ local sceneGroup = self.view
 -- Code here runs when the scene is first created but has not yet appeared on screen
 end
 
-local UnicornsPurchased
-local GoldUsed
 -- Handler that gets notified when the alert closes
 local function alertBoxYesClickedComplete( )
     --continue on journey
@@ -48,12 +59,13 @@ local function alertBoxYesClickedComplete( )
         params = {
         }
     }
-    composer.setVariable( "unicorncount", UnicornsPurchased)
+    composer.setVariable( composerVariable, numberOfItemsPurchased)
     composer.setVariable( "gold", composer.getVariable("gold")-GoldUsed)
-    composer.gotoScene( "humanStoreFood", options )
+    composer.removeScene( thisSceneName, options )
+    composer.gotoScene( nextScreenName, options )
 end
 local function alertBoxNoClickedCompleteEN()
-    stableAriveEN()
+    shopAriveEN()
 end
 local function alertBoxNoClickedCompleteJP()
     stableAriveJP()
@@ -72,75 +84,32 @@ function verifyPurchaseEN(userinput)
     print("userinput:"..userinput)
     if not isInteger(userinput) then
         RESETQUE()
-        QUESLOWPRINT("^^Sorry, the number of unicorns must be a numeric value...^")
-        SLOWPRINT(100,"",stableAriveEN)
-    elseif tonumber(userinput)<1 then
-        RESETQUE()
-        QUESLOWPRINT("^^Sorry, you must buy at least one unicorn...^")
-        SLOWPRINT(100,"",stableAriveEN)    
-    elseif tonumber(userinput)>=1 then
-        local price=tonumber(userinput)*100--100 is price per item
+        QUESLOWPRINT("^^Sorry, the number of "..itemCounterVariable.." must be a numeric value...^")
+        SLOWPRINT(100,"",shopAriveEN)
+    else
+        local price=tonumber(userinput)*itemPrice--100 is price per item
         if price>composer.getVariable( "gold") then
             RESETQUE()
-            QUESLOWPRINT("^^Sorry, don't have enough gold for that purchase...^")
-            SLOWPRINT(100,"",stableAriveEN)                    
+            QUESLOWPRINT("^^Sorry, dont have enough gold ^")
+            QUESLOWPRINT("for that purchase...^")
+            SLOWPRINT(100,"",shopAriveEN)                    
         else
             GoldUsed=price
-            UnicornsPurchased=tonumber(userinput)
+            numberOfItemsPurchased=tonumber(userinput)
             --LinuxAlertBoxElements.isVisible=false
             AlertBox(
             "",--no title
-            "You want to buy:"..userinput..", unicorns right?",
+            "You want to buy:"..userinput..", "..itemCounterVariable.." right?",
             alertBoxYesClickedComplete,
             alertBoxNoClickedCompleteEN
             )
             --LinuxAlertBoxElements.isVisible=false
             --removerInputBox()
-            --disableContinueButton()--this automatically gets enabled on the next screem so no need to enable it again    
+            --disableContinueButton()--this automatically gets enabled on the next screem so no need to enable it again
         end
     end
 end
 
-
-function verifyPurchaseES(userinput)
-    print ("display.getCurrentStage().numChildren"..display.getCurrentStage().numChildren)
-    local buggyObject=display.getCurrentStage()[display.getCurrentStage().numChildren-1]--hack to hide hte invisible object that I do't know what it is    
-    setAllObjectsHitTestable(display.getCurrentStage(), true) 
-    buggyObject.isVisible=false
-    LinuxInputBoxElements.isVisible=false
-    print("userinput:"..userinput)
-    if not isInteger(userinput) then
-        RESETQUE()
-        QUESLOWPRINT("^^Perdon, el numero de unicornios tiene que ser un valor numerico...^")
-        SLOWPRINT(100,"",stableAriveES)
-    elseif tonumber(userinput)<1 then
-        RESETQUE()
-        QUESLOWPRINT("^^Perdon, tienes que comprar por lo menos un unicorno...^")
-        SLOWPRINT(100,"",stableAriveES)    
-    elseif tonumber(userinput)>=1 then
-        local price=tonumber(userinput)*100--100 is price per item
-        if price>composer.getVariable( "gold") then
-            RESETQUE()
-            QUESLOWPRINT("^^Perdon, no tienes suficiente oro para hacer esa compra...^")
-            SLOWPRINT(100,"",stableAriveEN)                    
-        else
-            GoldUsed=price
-            UnicornsPurchased=tonumber(userinput)
-            --LinuxAlertBoxElements.isVisible=false
-            AlertBox(
-            "",--no title
-            "Quieres comprar:"..userinput..", unicornios verdad?",
-            alertBoxYesClickedComplete,
-            alertBoxNoClickedCompleteES
-            )
-            --LinuxAlertBoxElements.isVisible=false
-            --removerInputBox()
-            --disableContinueButton()--this automatically gets enabled on the next screem so no need to enable it again    
-        end
-    end
-end
-
---[[
 function askUserIfTheyLikeNameJP(userinput)
 composer.setVariable( "adventurer4", userinput)
 AlertBox(
@@ -163,16 +132,16 @@ alertBoxNoClickedCompleteES
 removerInputBox()
 disableContinueButton()--this automatically gets enabled on the next screem so no need to enable it again
 end
-]]
+
 function promptForNnumerOfUnicornsJP()
-    showInputBox("ユニコーン何頭買いたいですか？：", verifyPurchaseJP)
+    showInputBox("ユニコーン何頭買いたいですか？：", askUserIfTheyLikeNameJP)
 end
-function promptForNnumerOfUnicornsEN()
-    showInputBox("how many unicorns do you want to buy?:", verifyPurchaseEN)
+function promptItemCountdEN()
+    showInputBox("How many "..itemCounterVariable.." do you want to buy?:", verifyPurchaseEN)
 end
 
 function promptForNnumerOfUnicornsES()
-    showInputBox("cuantos unicornios quieres comprar?:", verifyPurchaseES)
+    showInputBox("dale nombre a la aventurera 4:", askUserIfTheyLikeNameES)
 end
 
 function welcomeHeroineJP()
@@ -183,26 +152,17 @@ function welcomeHeroineJP()
 end
 
 
-function stableAriveEN()
+function shopAriveEN()
     --CLS()
     --LOCATE(1,1)
     RESETQUE()
     QUESLOWPRINT("^You have:"..composer.getVariable( "gold").." grams of gold:^")
     --           "1234567890123456789012345678901234567890"
-    QUESLOWPRINT("^^each unicorn costs 100 grams of gold,^")
-    QUESLOWPRINT("how many unicorns do you want to buy?^")
-    SLOWPRINT(100,"",promptForNnumerOfUnicornsEN)
-end
-
-
-function stableAriveES()
-    --CLS()
-    --LOCATE(1,1)
-    RESETQUE()
-    QUESLOWPRINT("^Tienes:"..composer.getVariable( "gold").." gramos de oro:^")
-    --           "1234567890123456789012345678901234567890"
-    QUESLOWPRINT("^^cada unicornio cuesta 100 gramos de oro, cuantos unicornios quieres comprar?^")
-    SLOWPRINT(100,"",promptForNnumerOfUnicornsES)
+    QUESLOWPRINT("^^Shop Item called \""..itemSold.."\"^")
+    QUESLOWPRINT("costs ".. itemPrice .." grams of gold ^")
+    QUESLOWPRINT("per "..itemCounterVariable..", how many ^")
+    QUESLOWPRINT(itemCounterVariable.." do you want to buy?^")
+    SLOWPRINT(100,"",promptItemCountdEN)
 end
 
 function welcomeHeroineES()
@@ -226,7 +186,7 @@ function scene:show(event)
     elseif (phase == "did") then
         --cleanupInvisibleObjects(display.getCurrentStage(),sceneGroup)
         --background
-        local background = display.newImageRect( sceneGroup, "backgrounds/unicorn-stable.png", 1000,800 )
+        local background = display.newImageRect( sceneGroup, backgroundImage, 1000,800 )
 		background.x = display.contentCenterX
 		background.y = display.contentCenterY
         -- Code here runs when the scene is entirely on screen
@@ -237,17 +197,17 @@ function scene:show(event)
             enableContinueButton()
             showTextArea()
             CLS()
-            stableAriveEN()
+            shopAriveEN()
         elseif composer.getVariable( "language" ) == "Japanese" then
             initTextScreen(sceneGroup,"JP")
             showTextArea()
             CLS()
-            stableAriveEN()
+            welcomeHeroineJP()
         elseif composer.getVariable( "language" ) == "Spanish" then
             initTextScreen(sceneGroup,"ES")
             showTextArea()
             CLS()
-            stableAriveES()
+            welcomeHeroineES()
         end
 	end
 end
