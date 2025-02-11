@@ -1042,3 +1042,82 @@ la historia de akira:^^akira fue abandonada de niña en el bosque magico llamado
 ^You have:1000 grams of gold:^^^Shop Item called "food supplies"^costs 10 grams of gold ^per KG of food, how many ^KG of food do you want to buy?^
 ^You have:1000 grams of gold:^^^Shop Item called "food supplies"^costs 10 grams of gold ^per KG of food, how many ^KG of food do you want to buy?^
 ^You have:1000 grams of gold:^^^Shop Item called "food supplies"^costs 10 grams of gold ^per KG of food, how many ^KG of food do you want to buy?^
+^You have:1000 grams of gold:^^^Shop Item called "food supplies"^costs 10 grams of gold ^per KG of food, how many ^KG of food do you want to buy?^
+^You have:1000 grams of gold:^^^Shop Item called "food supplies"^costs 10 grams of gold ^per KG of food, how many ^KG of food do you want to buy?^
+^You have:900 grams of gold:^^^Shop Item called "food supplies"^costs 10 grams of gold ^per KG of food, how many ^KG of food do you want to buy?^
+^You have:1000 grams of gold:^^^Shop Item called "food supplies"^costs 10 grams of gold ^per KG of food, how many ^KG of food do you want to buy?^
+^You have:1000 grams of gold:^^^Shop Item called "food supplies"^costs 10 grams of gold ^per KG of food, how many ^KG of food do you want to buy?^
+^You have:900 grams of gold:^^^Shop Item called "food supplies"^costs 10 grams of gold ^per KG of food, how many ^KG of food do you want to buy?^
+^You have:1000 grams of gold:^^^Shop Item called "food supplies"^costs 10 grams of gold ^per KG of food, how many ^KG of food do you want to buy?^
+^You have:1000 grams of gold:^^^Shop Item called "food supplies"^costs 10 grams of gold ^per KG of food, how many ^KG of food do you want to buy?^
+^^Sorry, dont have enough gold ^for that purchase...^
+^You have:1000 grams of gold:^^^Shop Item called "food supplies"^costs 10 grams of gold ^per KG of food, how many ^KG of food do you want to buy?^
+^You have:950 grams of gold:^^^Shop Item called "food supplies"^costs 10 grams of gold ^per KG of food, how many ^KG of food do you want to buy?^
+プロローグ
+物語は「千の物語の酒場」として知られる賑やかな酒場から始まる。この酒場は大陸の南端、ミストラルズ・エンドの街に位置し、冒険者、商人、そして旅人が宝と栄光の物語を共有するために集う場所だ。この町には冒険者用ギルドがない、だがこの酒場がそのような役割を果たしていた。^^そこでは代々伝説が語り継がれていた。
+
+
+
+「北のツンドラを越えた先に『古の王冠』がある。それは神様自身が作り出したとされる神秘的な宝だ。これを手にする者には、どんな願いも叶えられると言い伝えられている。」
+
+
+
+多くの者がその宝を手に入れようと挑んだが、北への旅路は非常に危険だ。古代の森、険しい山々、呪われた荒地、
+そして凍てついたツンドラが勇者たちの前に立ちはだかる。それでもなお、主人公は秘めた思いのために、危険に満ちた旅に出た。
+
+326のストーリー:
+
+326が、
+「ブエルズ・コンバージェンス」
+（エターニアの二つの月が完全に重なる時に大地が銀色に染まる）という、一万年に一度の天体現象の時に生まれた。その現象で生まれた子はエターニアの救世主になるか、破滅に導くと言われている。。
+
+
+326が
+ミストラルズエンドの千の物語の酒場に入り、怪しい人に声掛けられた…。
+怪しい人に近づくと^^「古の王冠」
+の在りかを示す地図を売る」と言われる。
+
+326は
+彼にお金を差し出すが、何故か彼は「君のお母さんの形見が欲しい」と言う。
+「何故彼は私が母の形見を持ってることを知ってるのか？」と思いながら、326は
+秘めた思いのために、
+その申し出を受け入れることにした。。
+
+
+地図をもらってから、少し酒場を回り、４人の女性が座ってるテーブルを見かける。そこに座ることにする…
+326がそのテーブルに座って、
+皆と自己紹介を始める。。
+
+
+ここで４人の仲間の名前を決めましょう…。
+aのストーリー：
+^^aは
+流星の時に、Silvergladeという
+静かな村に生まれた。
+aは
+旅をする楽団の家族を持ち、彼女の朗らかな声とハープの響きは「星を落ち着かせる力を持つ」と言わていた。
+ある日、天の精霊が夢の中に現れ、彼女の歌に魔法を唱える力を与えてくれた…。
+Prologue^The tale begins in the bustling tavern ^known as the 'Tavern of a Thousand ^Tales', nestled on the southernmost ^edge of the continent in the city of ^Mistral's End. Adventurers, traders, ^and wanderers gather here to share ^tales of treasure and glory.  ^The town doesn't have an adventurer's^guild, but this tavern serves a ^similar role... A whispered legend ^emerges once again:^^
+^^'Beyond the Northern Tundra lies the ^Crown of Eternity, a mythical artifact ^created by God himself. It is said to ^grant unparalleled power or fulfill ^the deepest desire of whoever ^possesses it.'
+プロローグ
+物語は「千の物語の酒場」として知られる賑やかな酒場から始まる。この酒場は大陸の南端、ミストラルズ・エンドの街に位置し、冒険者、商人、そして旅人が宝と栄光の物語を共有するために集う場所だ。この町には冒険者用ギルドがない、だがこの酒場がそのような役割を果たしていた。^^そこでは代々伝説が語り継がれていた。
+
+
+
+「北のツンドラを越えた先に『古の王冠』がある。それは神様自身が作り出したとされる神秘的な宝だ。これを手にする者には、どんな願いも叶えられると言い伝えられている。」
+
+
+
+多くの者がその宝を手に入れようと挑んだが、北への旅路は非常に危険だ。古代の森、険しい山々、呪われた荒地、
+そして凍てついたツンドラが勇者たちの前に立ちはだかる。それでもなお、主人公は秘めた思いのために、危険に満ちた旅に出た。
+
+cのストーリー:
+
+cが、
+「ブエルズ・コンバージェンス」
+（エターニアの二つの月が完全に重なる時に大地が銀色に染まる）という、一万年に一度の天体現象の時に生まれた。その現象で生まれた子はエターニアの救世主になるか、破滅に導くと言われている。。
+^You have:1000 grams of gold:^^^Shop Item called "food supplies"^costs 10 grams of gold ^per KG of food, how many ^KG of food do you want to buy?^
+^You have:1000 grams of gold:^^^Shop Item called "food supplies"^costs 10 grams of gold ^per KG of food, how many ^KG of food do you want to buy?^
+^You have:950 grams of gold:^^^Shop Item called "food supplies"^costs 10 grams of gold ^per KG of food, how many ^KG of food do you want to buy?^
+^You have:950 grams of gold:^^^Shop Item called "food supplies"^costs 10 grams of gold ^per KG of food, how many ^KG of food do you want to buy?^
+^You have:1000 grams of gold:^^^Shop Item called "food supplies"^costs 10 grams of gold ^per KG of food, how many ^KG of food do you want to buy?^

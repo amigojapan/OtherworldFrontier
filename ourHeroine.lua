@@ -88,7 +88,7 @@ end
 function welcomeHeroineJP()
     RESETQUE()
     QUESLOWPRINT(composer.getVariable( "MCname").."のストーリー:")
-    QUESLOWPRINT("改改"..composer.getVariable( "MCname").."が、改「ブエルズ・コンバージェンス」改（エターニアの二つの月が完全に重なる時に大地が銀色に染まる）という、一万年に一度の天体現象の時に生まれた。その現象で生まれた子はエターニアの救世主になるか、破滅に導くと言われている。。")
+    QUESLOWPRINT("改改"..composer.getVariable( "MCname").."が、改「ブエルズ・コンバージェンス」改（エターニアの二つの月が完全に重なる時に大地が銀色に染まる）という、一万年に一度の天体現象の時に生まれた。その現象で生まれた子はエターニアの救世主になる。もしくは破滅に導くと言われている。。")
     SLOWPRINT(100,"",storyContinuesJP)
 end
 function storyContinuesJP()
