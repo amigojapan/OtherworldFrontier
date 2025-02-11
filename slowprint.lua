@@ -292,11 +292,13 @@ function SLOWPRINT(timeInMilllisecods,string,callbackFunctionWhenFinished)
     end
     stringForSlowPrint=stringForSlowPrint..string
     --log the story into a file
+    --[[
     file = io.open("testRead.txt","a")
     local tmp=stringForSlowPrint:gsub("^","\n")
     local tmp=tmp:gsub("改","\n")
     file:write(tmp)
     file:close()
+    ]]
     --hack to make the slowprint work, otherwise it is jittery
     --hack fix, it does nto want to work form columb 1
     --repeat
