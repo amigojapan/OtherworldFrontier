@@ -235,7 +235,7 @@ def add_days(min, max):
     random_result2_food = random.randint(1, 10)
     random_result2_day = random.randint(1, 10)
     print('As a result, you eat '+str(random_result2_food)+' lbs extra food.')
-    print('It also took up eatra '+str(random_result2_day)+' days.')
+    print('It also took up eaxtra '+str(random_result2_day)+' days.')
     if a_health_num == 1:
       print('And you also lose 1 health')
       health_num -= 1

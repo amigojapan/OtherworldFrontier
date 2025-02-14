@@ -4,9 +4,9 @@ update histoty
 --3.22:
 Yeah! The fisrt beta version is published!
 --3.23:
-1.add customize mode
+1.add カスタマイズ mode
 2.add op mode
-3.adjust the value of easy mode and impossible mode in order
+3.adjust the value of 簡単 mode and 不可能 mode in order
 to make the game more reasonable and defiant.
 4.fix a bug which may make year input goes wrong
 5.fix some descriptions' problems
@@ -47,7 +47,7 @@ they make mistake on spelling or they type something which is not an available c
 1.bug fix: the year input can be nothing
 2.now the date is shown more clearly
 --4.6:
-1.bug fix:in customize mode, the input for food and health may cause erro
+1.bug fix:in カスタマイズ mode, the input for food and health may cause erro
 
 future plan:
 1.simplize the code
@@ -75,44 +75,44 @@ import time
 #import smtplib send email import
 
 #welcom player
-print('ゲーム「オレゴントレイル」へようこそ！')
+print('「オレゴントレイル」へようこそ！')
 
 #asking name
-player_name = input('あなたの名前は何ですか？:')
+player_name = input('名前は？:')
 while len(player_name) >= 0:
   if len(player_name) > 1:
-    print(str(player_name)+"? It is a good name.")
+    print(str(player_name)+"？いい名前だ！")
     break
   if len(player_name) == 1:
-    player_name_choice = input(str(player_name)+"? Are you kidding me? Only one letter?(y/n):")
-    if player_name_choice == "y" or player_name_choice == "Y":
-      print("Ok...")
+    player_name_choice = input(str(player_name)+"? 名前は一文字でいいのか（はい/いいえ）:")
+    if player_name_choice == "はい":
+      print("わかった…")
       break
-    if player_name_choice == "n" or player_name_choice == "N":
-      player_name = input('あなたの名前は何ですか？:')
+    if player_name_choice == "いいえ":
+      player_name = input('名前は？:')
   else:
-    print("You do not type anything, try again")
-    player_name = input('あなたの名前は何ですか？:')
+    print("もう一度入力してね。")
+    player_name = input('名前は？:')
 
 #easter eggs for name
 if player_name == 'Meriwether Lewis':
   year_set = 1803
-  mode_choice = 'impossible'
+  mode_choice = '不可能'
 else:
-  year_set = input('お好きな年を入力してください:')
+  year_set = input('好きな年を入力して（半額文字）:')
   if year_set.isdigit():
     return_num = 0
   else:
     return_num = 1
   while return_num == 1:
-    print('エラーです。もう一度試してください！')
-    year_set = input('お好きな年を入力してください:')
+    print('エラー。もう一度試して！')
+    year_set = input('好きな年を入力して（半額文字）:')
     if year_set.isdigit():
       return_num = 0
     else:
       return_num = 1
   year_set = int(year_set)
-  print('どのモードでプレイしますか？')
+  print('どのモードでプレイする？')
   mode_choice = input('(簡単,普通,難しい,不可能,カスタマイズ):')
 
 #leap year function
@@ -131,28 +131,28 @@ else:
 '''
 
 while len(mode_choice) >= 0: 
-#easy mode:
-  if mode_choice == 'easy':
+#簡単 mode:
+  if mode_choice == '簡単':
     food_num = 1000
     health_num = 10
     break
 #noraml mode:
-  elif mode_choice == 'normal':
+  elif mode_choice == '普通':
     food_num = 500
     health_num = 5
     break
-#hard mode:
-  elif mode_choice == 'hard':
+#難しい mode:
+  elif mode_choice == '難しい':
     food_num = 300
     health_num = 4
     break
-#impossible mode:
-  elif mode_choice == 'impossible':
+#不可能 mode:
+  elif mode_choice == '不可能':
     food_num = 150
     health_num = 3
     break
-#customize mode:
-  elif mode_choice == 'customize':
+#カスタマイズ mode:
+  elif mode_choice == 'カスタマイズ':
     #food number take in
     food_num = input('どれくらいの食料が欲しいですか:')
     if food_num.isdigit():
@@ -160,22 +160,22 @@ while len(mode_choice) >= 0:
     else:
       return_cm_num = 1
     while return_cm_num == 1:
-      print('エラーです。もう一度試してください！')
-      food_num = input('どれくらいの食料が欲しいですか:')
+      print('エラー。もう一度試して！')
+      food_num = input('どれくらいの食料が欲しいのか（半額文字）:')
       if food_num.isdigit():
         return_cm_num = 0
       else:
         return_cn_num = 1
     food_num = int(food_num)
     #health number take in
-    health_num = input('どれくらいの体力が欲しいですか:')
+    health_num = input('どれくらいの体力が欲しいの（半額文字）:')
     if health_num.isdigit():
       return_cm_num2 = 0
     else:
       return_cm_num2 = 1
     while return_cm_num2 == 1:
-      print('エラーです。もう一度試してください！')
-      health_num = input('どれくらいの体力が欲しいですか:')
+      print('エラー。もう一度試して！')
+      health_num = input('どれくらいの体力が欲しいのか（半額文字）:')
       if health_num.isdigit():
         return_cm_num2 = 0
       else:
@@ -184,7 +184,7 @@ while len(mode_choice) >= 0:
     break
 #erro?
   else:
-    print("Bad input, try again!")
+    print("もう一度入力してね!")
     mode_choice = input('(簡単,普通,難しい,不可能,カスタマイズ):')
     
 
@@ -202,7 +202,7 @@ travel_total_num = 0
 rest_total_num = 0
 hunt_total_num = 0
 status_total_num = 0
-month_appear = 'March'
+month_appear = '３月'
 
 #add days:
 def add_days(min, max):
@@ -218,7 +218,7 @@ def add_days(min, max):
   global acident_appear
 
   random_result = random.randint(min, max)
-  print('現在',random_result,"days passed..")
+  print('現在',random_result,"日にちがたった…")
   days_pass_min = days_pass
   check_big = days_pass + random_result
 
@@ -227,17 +227,17 @@ def add_days(min, max):
     a_number = random.randint(1, 3)
     a_health_num = random.randint(1, 2)
     if a_number == 1:
-      print('この期間中に川を渡りました。')
+      print('この期間中に川を渡たった。')
     if a_number == 2:
-      print('この期間中に赤痢にかかりました。')
+      print('この期間中に赤痢にかかった。')
     if a_number == 3:
-      print('この期間中、美しい女性に会い、楽しい時間を過ごしました。')
+      print('この期間中、美しい女性に会い、楽しい時間を過ごした。')
     random_result2_food = random.randint(1, 10)
     random_result2_day = random.randint(1, 10)
-    print('その結果、あなたは'+str(random_result2_food)+'ポンドの余分な食料を消費しました。')
-    print('また、追加で'+str(random_result2_day)+'日かかりました。')
+    print('その結果、'+str(random_result2_food)+'ポンドの余分な食料を消費した。')
+    print('また、追加で'+str(random_result2_day)+'日にちがかかった。')
     if a_health_num == 1:
-      print('さらに、体力が1減少しました。')
+      print('さらに、体力が1単位減った。')
       health_num -= 1
     food_num = food_num - random_result2_food - random_result2_day*5
     days_pass += random_result2_day
@@ -246,10 +246,10 @@ def add_days(min, max):
   check_big = days_pass + random_result
   if health_d1 >= days_pass_min and health_d1 <= check_big:
     health_num -= 1
-    print('残念ながら、この期間中に体力が1減少しました。')
+    print('残念ながら、この期間中に体力が1減単位減った。')
   if health_d2 >= days_pass_min and health_d2 <= check_big:
     health_num -= 1
-    print('残念ながら、この期間中に体力が1減少しました。')
+    print('残念ながら、この期間中に体力が1減単位減った。')
 
 
   days_pass += random_result
@@ -294,7 +294,7 @@ def hunt(hunting_food):
   global hunt_total_num
   add_days(2,5)
   hunting_food = hunting_food + 100
-  print('獲得: 100ポンドの食料')
+  print('100ポンドの食料を獲得した！')
   hunt_total_num += 1
   return hunting_food
 
@@ -302,32 +302,33 @@ def hunt(hunting_food):
 def month_appear_fun():
   global month_appear
   if month_num == 1:
-    month_appear = 'January'
+    month_appear = '１月'
   elif month_num == 2:
-    month_appear = 'February'
+    month_appear = '２月'
   elif month_num == 3:
-    month_appear = 'March'
+    month_appear = '３月'
   elif month_num == 4:
-    month_appear = 'April'
+    month_appear = '４月'
   elif month_num == 5:
-    month_appear = 'May'
+    month_appear = '５月'
   elif month_num == 6:
-    month_appear = 'June'
+    month_appear = '６月'
   elif month_num == 7:
-    month_appear = 'July'
+    month_appear = '７月'
   elif month_num == 8:
-    month_appear = 'August'
+    month_appear = '８月'
   elif month_num == 9:
-    month_appear = 'September'
+    month_appear = '９月'
   elif month_num == 10:
-    month_appear = 'October'
+    month_appear = '１０月'
   elif month_num == 11:
-    month_appear = 'November'
+    month_appear = '１１月'
   elif month_num == 12:
-    month_appear = 'December'
+    month_appear = '１２月'
   return month_appear
 
 #loading part
+'''
 print('--------------------------------------')
 print('Now Loding...')
 time.sleep(0.5)
@@ -344,61 +345,56 @@ time.sleep(2)
 print('Successfully!')
 time.sleep(0.5)
 print('Now game is ready!')
-print('--------------------------------------')
-print('Attention:')
-print('We will be recreating Oregon Trail! The goal is to travel from NYC to')
-print('Oregon (2000 miles) by Dec 31st. However, the trail is arduous. Each')
-print('day costs you food and health. You can huntand rest, but you have to')
-print('get there before winter. GOOD LUCK!')
-print('--------------------------------------')
+'''
+print('ーーーーーーーーーーーーーーーーーーーーーーーーーーーーー')
+print('これから、歴史に基づく「オレゴントレール」を再現します')
+print('ニューヨークからオレゴンまで２０００マイルの旅です。')
+print('しかし、旅路が厳しいし、冬の前まで着かなきゃいけないです。')
+print('毎日がHPや食料がかかります。頑張って下さい！')
+print('ーーーーーーーーーーーーーーーーーーーーーーーーーーーーー')
 
 #main
 while player_move_distance < 2000 and food_num > 0 and health_num > 0 and month_num < 13:
   month_appear_fun()
   if food_num <= 50:
-    print('警告！あなたは現在'+ str(food_num) + " lbs food now.")
-    print('狩りが必要です。')
+    print('警告！あなたは現在'+ str(food_num) + "の食料あります。")
+    print('狩りしてください。')
   if health_num <= 2:
-    print('警告！あなたは現在'+ str(health_num) + " health now.")
+    print('警告！あなたは現在'+ str(health_num) + "HPあります。")
     print('休息が必要です。')
-  print(str(player_name) + '、現在の日時は' + month_appear + ' '+str(days_pass) + ', ' + str(year_set) + ", and you have travled " + str(player_move_distance) + " miles.")
+  print(str(player_name) + '、現在は' + month_appear + ' '+str(days_pass) + ', ' + str(year_set) + "年,  移動距離は" + str(player_move_distance) + "マイル。")
   choice = input('あなたの選択:')
-  if choice == 'travel':
+  if choice == '移動':
     player_move_distance = travle1(player_move_distance)
-  elif choice == 'rest':
+  elif choice == '休憩':
     if health_num < 5:
-      print("You get 1 heath!")
+      print("HP一つ回復！")
       health_num = rest(health_num)
     if health_num >= 5:
-      print("Your health is full, the maximum number for health is 5!")
-  elif choice == 'hunt':
+      print("HPがマックスです！")
+  elif choice == '狩り':
     food_num = hunt(food_num)
-  elif choice == 'status':
-    print('-親愛なる' + str(player_name) + '、現在の日時は'+str(month_num)+'/'+str(days_pass)+'/'+str(year_set)+".")
-    print('-食料:',food_num,"lbs")
-    print('-体力:',health_num)
+  elif choice == '状況':
+    print('-親愛なる' + str(player_name) + '、現在の日時は'+str(month_num)+'月'+str(days_pass)+'日'+str(year_set)+"年。")
+    print('-食料:',food_num,"ポンド")
+    print('-HP:',health_num)
     print('-移動距離:',player_move_distance)
     distance_left = 2000 - player_move_distance
-    print('-'+str(total_days) +'日が経過しました。')
-    print('-You have travled ' + str(player_move_distance) + " miles, there is still " + str(distance_left) + 'マイルの距離があります。')
+    print('-'+str(total_days) +'日が経った。')
+    print('-移動距離は' + str(player_move_distance) + "マイル、 残り" + str(distance_left) + 'マイルの距離があります。')
     status_total_num += 1
-  elif choice == 'help':
+  elif choice == 'help' or choice == 'ヘルプ':
     print('[移動]: ランダムで30-60マイル移動し、3-7日を要します（ランダム）。')
     print('[休息]: 体力を1回復（最大5まで）し、2-5日を要します（ランダム）。')
     print('[狩り]: 100ポンドの食料を追加し、2-5日を要します（ランダム）。')
     print('[状況]: 食料、体力、移動距離、日数を表示します。')
     print('[終了]: ゲームを終了します。')
-  elif choice == 'quit':
+  elif choice == '終了':
     quit_choice = input('本当に終了しますか？(y/n):')
     if quit_choice == 'y':
       print('ゲームオーバー...あなたが終了したなんて信じられません...')
       break
-  elif choice == 'suicide':
-    quit_choice2 = input('本当ですか？(y/n):')
-    if quit_choice2 == 'y':
-      print('ゲームオーバー...あなたは自殺しました...')
-      break
-  elif choice == 'easter egg':
+  elif choice == 'イースターエッグ':
     print("　　　　　　　　　　　　　＿＿＿ r -v ､ _＿＿＿")
     print("　　　　　　　　- ﾆ 二_ ` ､_::: -‐`…‐'´- _::::::::::::::7")
     print("　　　　　　　　__ 　-―` 　　　　　　　　　　｀ヽ:::/")
@@ -420,14 +416,15 @@ while player_move_distance < 2000 and food_num > 0 and health_num > 0 and month_
     print("　　　　　　　　 　l　 ヽ　　|　ゝハ:::::::ハ │|　/　 |")
     print('verson:1.3.1')
     print('author: Yudong Lin')
+    print('和訳: amigojapan')
     print('Good at: Game world view disign and value balance for the game')
     print('Have three-year-experience on developing and maintaining minecraft server')
     print('Technical nerd change the world!')
     print('Any bug reports please email:yoshino1347716570@gmail.com')
     print('Thanks for playing!')
   else:
-    print("This Choice is not available, please try again.")
-  print('--------------------------------------')
+    print("そういう選択はありません。「ヘルプ」を打って下さい。")
+  print('ーーーーーーーーーーーーーーーーーーーーーーーーーーーーー')
 #succeed!
 if player_move_distance >= 2000:
   print('素晴らしい！あなたはオレゴンに到着しました')
@@ -440,9 +437,9 @@ if health_num <= 0:
   print('ゲームオーバー、体力が尽きました。')
 
 if month_num >= 13:
-  print('ゲームオーバー、時間切れです！')
+  print('到着ぜすに冬が来ました、ゲームオーバーです！')
   
-print('ゲーム全体を通して、あなたは:')
+print('ゲームステータス:')
 print('移動 ' + str(travel_total_num) +' 回。')
 print('休息 ' + str(rest_total_num) +' 回。')
 print('狩り ' + str(hunt_total_num) +' 回。')
