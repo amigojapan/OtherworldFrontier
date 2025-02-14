@@ -1,3 +1,4 @@
+local composer = require("composer")
 -----------------------------------------------------------------------------------------
 --
 -- main.lua
@@ -13,6 +14,7 @@ okButton=nil
 inputBuffer=""
 local _callback=nil
 LinuxInputBoxElements = display.newGroup()
+--[[
 function setAllObjectsHitTestable(group, value)
     value = value or false -- Default to false if no value is provided
     for i = 1, group.numChildren do
@@ -31,14 +33,19 @@ function setAllObjectsHitTestable(group, value)
         end
     end
 end
+]]
 
-
+function inputAccepted()
+	LinuxInputBoxElements.iHitTestable=false
+	LinuxInputBoxElements.isVisible=false
+	composer.setVariable("inputBuffer",inputBuffer)
+	composer.removeScene("LinuxScreenKeyboard")
+	composer.gotoScene(composer.getSceneName( "previous" ))
+end
 function okButtonTouchListener( event )
 	if event.phase == "ended" then
 		print("ok clicked!")
-		_callback(inputBuffer)
-		--okButton.isVisible=false
-		--removerInputBox()
+		inputAccepted()
 	end
     return true  -- Prevents tap/touch propagation to underlying objects
 end
@@ -105,7 +112,7 @@ function logDisplayObjects()
 end
 function removerInputBox(event)
     -- Set all objects back to being hit-testable
-    setAllObjectsHitTestable(display.getCurrentStage(), true)
+    --setAllObjectsHitTestable(display.getCurrentStage(), true)
 
     -- Remove rectBorder
     if rectBorder and rectBorder.removeSelf then
@@ -155,8 +162,9 @@ local action = {}
 function addInputToBuffer(downkey)
 	if downkey == "enter" then
 		print("inputBuffer:"..inputBuffer)
-		_callback(inputBuffer)
-		inputBuffer=""
+		inputAccepted()
+		--_callback(inputBuffer)
+		--inputBuffer=""
 		downkey=""
 		--removerInputBox()
 		return
@@ -227,6 +235,7 @@ function clickOnScreenKeys(event)
 		print(event.target.text)
 		addInputToBuffer(event.target.text)
 	end
+	return true
 end
 
 function bringUpScreenKeyboard()
@@ -330,11 +339,11 @@ function showInputBox(prompt,callback,predefinedBuffer)
 	end
 	inputBuffer=predefinedBuffer
 	--disable isHitTestable for all display objects
-	setAllObjectsHitTestable(display.getCurrentStage(),false)
+	--setAllObjectsHitTestable(display.getCurrentStage(),false)
 	print("All objects set to isHitTestable = false")
 	
 	_callback=callback
-	if okButton == nil then
+	--if okButton == nil then
 		--**fix bug of second click on ok button , it is nill and it crashes
 		
 		local paint = {
@@ -344,7 +353,7 @@ function showInputBox(prompt,callback,predefinedBuffer)
 		okButton = display.newRect(LinuxInputBoxElements, offsetx, offsety, 200, 100 )
 		okButton.fill = paint
 		okButton:addEventListener( "touch", okButtonTouchListener )  -- Add a "touch" listener to the obj
-	end
+	--end
 	okButton.isVisible=true
 	drawBorder(display.contentCenterX, display.contentCenterY, 1000-100, 800-50)
 	drawInputPrompt(display.contentCenterX, display.contentCenterY, 1000-100, 800-50,prompt)
@@ -371,3 +380,4 @@ showInputBox("your prompt:",callback)
 ]]
 
 --try adding a group to every object in here to it can be hid easily... for everything later (a way to fix the black ares)
+--now the keybnoard is responding to lciks twice, it hsould be once

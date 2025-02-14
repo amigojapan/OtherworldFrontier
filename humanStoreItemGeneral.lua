@@ -1,5 +1,5 @@
 local composer = require("composer")
-require("LinuxInputBox")
+--require("LinuxInputBox")
 require("LinuxAlertBox")
 require("slowprint")
 require("helperFunctions")
@@ -25,24 +25,6 @@ local nextScreenName="humanStoreItemGeneral"
 
 local numberOfItemsPurchased
 local goldUsed
-
-function clearBuggyObjects()
-	print("Number of active display objects: " .. display.getCurrentStage().numChildren)
-	for i = 1, display.getCurrentStage().numChildren do
-		print("Object " .. i .. ": " .. tostring(display.getCurrentStage()[i]))
-		--display.getCurrentStage()[2].isVisible=false--hack to hide hte invisible object that I do't know what it is
-		if i==display.getCurrentStage().numChildren then
-			local buggyObject=display.getCurrentStage()[i]
-			if buggyObject then
-                buggyObject.isVisible=false
-            end
-			--buggyObject:removeSelf()
-			--buggyObject=nil
-		end
-	end
-end
-
-
 -- -----------------------------------------------------------------------------------
 -- Scene event functions
 -- -----------------------------------------------------------------------------------
@@ -50,12 +32,16 @@ end
 -- create()
 function scene:create(event)
 local sceneGroup = self.view
--- Code here runs when the scene is first created but has not yet appeared on screen
+    -- Code here runs when the scene is first created but has not yet appeared on screen
+    if composer.getVariable("inputBuffer") ==nil then
+        composer.setVariable("inputBuffer", "input unset")
+    end
 end
 
 -- Handler that gets notified when the alert closes
 local function alertBoxYesClickedComplete( )
     --continue on journey
+    composer.setVariable("inputBuffer", "input unset")
     local options =
     {
         effect = "fade",
@@ -69,6 +55,7 @@ local function alertBoxYesClickedComplete( )
     composer.gotoScene( nextScreenName, options )
 end
 local function alertBoxNoClickedCompleteEN()
+    enableContinueButton()
     shopAriveEN()
 end
 local function alertBoxNoClickedCompleteJP()
@@ -80,13 +67,14 @@ end
 
   
 function verifyPurchaseEN(userinput)
-    print ("display.getCurrentStage().numChildren"..display.getCurrentStage().numChildren)
-    local buggyObject=display.getCurrentStage()[display.getCurrentStage().numChildren-1]--hack to hide hte invisible object that I do't know what it is    
-    setAllObjectsHitTestable(display.getCurrentStage(), true) 
-    buggyObject.isVisible=false
-    LinuxInputBoxElements.isVisible=false
+    --print ("display.getCurrentStage().numChildren"..display.getCurrentStage().numChildren)
+    --local buggyObject=display.getCurrentStage()[display.getCurrentStage().numChildren-1]--hack to hide hte invisible object that I do't know what it is    
+    --setAllObjectsHitTestable(display.getCurrentStage(), true) 
+    --buggyObject.isVisible=false
+    --LinuxInputBoxElements.isVisible=false
     print("userinput:"..userinput)
     if not isInteger(userinput) then
+        print("is not integer")
         RESETQUE()
         QUESLOWPRINT("^^Sorry, the number of "..itemCounterVariableEN.." must be a numeric value...^")
         SLOWPRINT(100,"",shopAriveEN)
@@ -96,7 +84,8 @@ function verifyPurchaseEN(userinput)
             RESETQUE()
             QUESLOWPRINT("^^Sorry, dont have enough gold ^")
             QUESLOWPRINT("for that purchase...^")
-            SLOWPRINT(100,"",shopAriveEN)                    
+            SLOWPRINT(100,"",shopAriveEN)
+            enableContinueButton()                    
         else
             GoldUsed=price
             numberOfItemsPurchased=tonumber(userinput)
@@ -172,14 +161,17 @@ function verifyPurchaseES(userinput)
 end
 
 function promptItemCountdJP()
-    showInputBox(itemCounterVariableJP.."何個買いたいですか？", verifyPurchaseJP)
+    --showInputBox(itemCounterVariableJP.."何個買いたいですか？", verifyPurchaseJP)
 end
 function promptItemCountdEN()
-    showInputBox("How many "..itemCounterVariableEN.." do you want to buy?:", verifyPurchaseEN)
+    composer.setVariable("inputBuffer","input unset")
+    composer.setVariable("inputBoxPrompt","How many "..itemCounterVariableEN.." do you want to buy?:")
+    composer.gotoScene("LinuxScreenKeyboardScene")
+    disableContinueButton()
 end
 
 function promptItemCountdES()
-    showInputBox("cuantos "..itemCounterVariableES.." quieres comprar?:", verifyPurchaseES)
+    --showInputBox("cuantos "..itemCounterVariableES.." quieres comprar?:", verifyPurchaseES)
 end
 
 function shopAriveEN()
@@ -223,12 +215,34 @@ function scene:show(event)
         -- Code here runs when the scene is still off screen (but is about to come on screen)
 
     elseif (phase == "did") then
-        --cleanupInvisibleObjects(display.getCurrentStage(),sceneGroup)
+        -- Code here runs when the scene is entirely on screen
         --background
         local background = display.newImageRect( sceneGroup, backgroundImage, 1000,800 )
-		background.x = display.contentCenterX
-		background.y = display.contentCenterY
-        -- Code here runs when the scene is entirely on screen
+        background.x = display.contentCenterX
+        background.y = display.contentCenterY
+        
+        if composer.getVariable("inputBuffer") ~= "input unset" then           
+            if composer.getVariable( "language" ) == "English" then
+                initTextScreen(sceneGroup,"EN")
+                --enableContinueButton()    
+                showTextArea()
+                CLS()
+                disableContinueButton()
+                verifyPurchaseEN(composer.getVariable("inputBuffer"))
+                return
+            elseif composer.getVariable( "language" ) == "Japanese" then
+                initTextScreen(sceneGroup,"JP")
+                showTextArea()
+                CLS()
+                shopAriveJP()
+            elseif composer.getVariable( "language" ) == "Spanish" then
+                initTextScreen(sceneGroup,"ES")
+                showTextArea()
+                CLS()
+                shopAriveES()
+            end
+        end
+        --cleanupInvisibleObjects(display.getCurrentStage(),sceneGroup)
         print("language:"..composer.getVariable( "language" ))
         if composer.getVariable( "language" ) == "English" then
             --clearBuggyObjects()
