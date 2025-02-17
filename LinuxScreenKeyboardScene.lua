@@ -22,9 +22,6 @@ end
 
 -- Handler that gets notified when the alert closes
 function inputDone(input)
-    composer.setVariable("inputBuffer",inputBuffer)
-	composer.removeScene("LinuxScreenKeyboard")
-	composer.gotoScene(composer.getSceneName( "previous" ))
 end 
 -- show()
 function scene:show(event)

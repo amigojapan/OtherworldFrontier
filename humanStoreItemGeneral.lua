@@ -295,3 +295,4 @@ scene:addEventListener("destroy", scene)
 -- -----------------------------------------------------------------------------------
 
 return scene
+--first fix this to be all langauges, then fix the same stuff for the parts of the game that are finished
