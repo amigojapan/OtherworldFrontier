@@ -10,18 +10,17 @@ local scene = composer.newScene()
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
 -- -----------------------------------------------------------------------------------
 --items to customize purchase
-local itemPrice=10--10 grams of gold per kilogram of food
-local backgroundImage="backgrounds/human-shop.png"
-local itemSoldEN="food supplies"
-local itemCounterVariableEN="KG of food"
-local itemSoldJP="食料"
-local itemCounterVariableJP="食料一キロ"
-local itemSoldES="suministros de comida"
-local itemCounterVariableES="\"Kilos de comida\""
-local composerVariable="KGofFood"
-local thisSceneName="buyStoreItemGeneral"
-local nextScreenName="buyStoreItemGeneral"
-
+local composerVariable=composer.getVariable("setVariable")
+local backgroundImage=composer.getVariable("backgroundImage")
+local nextScreenName=composer.getVariable("nextScreenName")
+local itemPrice=composer.getVariable("itemPrice")--10 grams of gold per kilogram of food
+local itemSoldEN=composer.getVariable("itemSoldEN")
+local itemCounterVariableEN=composer.getVariable("itemCounterVariableEN")
+local itemSoldJP=composer.getVariable("itemSoldJP")
+local itemCounterVariableJP=composer.getVariable("itemCounterVariableJP")
+local itemSoldES=composer.getVariable("itemSoldES")
+local itemCounterVariableES=composer.getVariable("itemCounterVariableES")
+local thisSceneName="current"
 
 local numberOfItemsPurchased
 local goldUsed
@@ -39,7 +38,7 @@ local sceneGroup = self.view
 end
 
 -- Handler that gets notified when the alert closes
-local function alertBoxYesClickedComplete( )
+local function alertBoxYesClickedComplete()
     --continue on journey
     composer.setVariable("inputBuffer", "input unset")
     local options =
@@ -52,6 +51,7 @@ local function alertBoxYesClickedComplete( )
     composer.setVariable( composerVariable, numberOfItemsPurchased)
     composer.setVariable( "gold", composer.getVariable("gold")-GoldUsed)
     composer.removeScene( thisSceneName, options )
+    print("going to scene:"..nextScreenName)
     composer.gotoScene( nextScreenName, options )
 end
 local function alertBoxNoClickedCompleteEN()
