@@ -79,15 +79,29 @@ function askUserIfTheyLikeNameES(userinput)
     disableContinueButton()--this automatically gets enabled on the next screem so no need to enable it again
 end
 
+composer.setVariable("setVariable","MCname")
+composer.setVariable("backgroundImage","backgrounds/you.png")
+composer.setVariable("nextScreenName","ourHeroine")
+composer.setVariable("prompt1EN","Your name is ")
+composer.setVariable("prompt2EN","right?")
+composer.setVariable("prompt1JP","あなたの名前は:")
+composer.setVariable("prompt2JP","でよろしいですか？")
+composer.setVariable("prompt1ES","Tu nombre es ")
+composer.setVariable("prompt2ES"," verdad?")
+
+
 function promtForNameJP()
-    showInputBox("あなたの名前を入力して下さい：", askUserIfTheyLikeNameJP)
+    composer.gotoScene( "nameAdventurer" )
+    --showInputBox("あなたの名前を入力して下さい：", askUserIfTheyLikeNameJP)
 end
 function promtForNameEN()
-    showInputBox("what is your name?:", askUserIfTheyLikeNameEN)
+    composer.gotoScene( "nameAdventurer" )
+    --showInputBox("what is your name?:", askUserIfTheyLikeNameEN)
 end
 
 function promtForNameES()
-    showInputBox("Como te llamas?:", askUserIfTheyLikeNameES)
+    composer.gotoScene( "nameAdventurer" )
+    --showInputBox("Como te llamas?:", askUserIfTheyLikeNameES)
 end
 
 function prologueEN()

@@ -8,6 +8,16 @@ local scene = composer.newScene()
 -- Code outside of the scene event functions below will only be executed ONCE unless
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
 -- -----------------------------------------------------------------------------------
+composer.setVariable("setVariable","adventurer2")
+composer.setVariable("backgroundImage","backgrounds/adventurer2.png")
+composer.setVariable("nextScreenName","Adventurer2introduction")
+composer.setVariable("prompt1EN","Adventurer 2's name is ")
+composer.setVariable("prompt2EN"," right?")
+composer.setVariable("prompt1JP","冒険者その2の名前は:")
+composer.setVariable("prompt2JP","でよろしいですか？")
+composer.setVariable("prompt1ES","El nombre de la aventurera 2 es ")
+composer.setVariable("prompt2ES"," verdad?")
+
 function clearBuggyObjects()
 	print("Number of active display objects: " .. display.getCurrentStage().numChildren)
 	for i = 1, display.getCurrentStage().numChildren do
@@ -46,24 +56,39 @@ end
 
 -- Handler that gets notified when the alert closes
 local function alertBoxYesClickedComplete( )
---continue on journey
-local options =
-{
-    effect = "fade",
-    time = 400,
-    params = {
+    --continue on journey
+    local options =
+    {
+        effect = "fade",
+        time = 400,
+        params = {
+        }
     }
-}
-composer.gotoScene( "Adventurer2introduction", options )
+    composer.gotoScene( "Adventurer2introduction", options )
 end
+
+function promptForNameJP()
+    composer.gotoScene( "nameAdventurer" )
+    --showInputBox("あなたの名前を入力して下さい：", askUserIfTheyLikeNameJP)
+end
+function promptForNameEN()
+    composer.gotoScene( "nameAdventurer" )
+    --showInputBox("what is your name?:", askUserIfTheyLikeNameEN)
+end
+
+function promptForNameES()
+    composer.gotoScene( "nameAdventurer" )
+    --showInputBox("Como te llamas?:", askUserIfTheyLikeNameES)
+end
+
 local function alertBoxNoClickedCompleteEN()
-promtForNameEN()
+    promptForNameEN()
 end
 local function alertBoxNoClickedCompleteJP()
-promtForNameJP()
+    promptForNameJP()
 end
 local function alertBoxNoClickedCompleteES()
-promtForNameES()
+    promptForNameES()
 end
 
 function askUserIfTheyLikeNameEN(userinput)
@@ -101,16 +126,6 @@ removerInputBox()
 disableContinueButton()--this automatically gets enabled on the next screem so no need to enable it again
 end
 
-function promtForNameJP()
-showInputBox("冒険者その２に名前を付けましょう：", askUserIfTheyLikeNameJP)
-end
-function promtForNameEN()
-showInputBox("please name adventurer2:", askUserIfTheyLikeNameEN)
-end
-
-function promtForNameES()
-showInputBox("dale nombre a la aventurera 2:", askUserIfTheyLikeNameES)
-end
 
 function welcomeHeroineJP()
     --CLS()
@@ -118,7 +133,7 @@ function welcomeHeroineJP()
     RESETQUE()
     QUESLOWPRINT(composer.getVariable( "adventurer1").."のストーリー：改")
     QUESLOWPRINT("^^"..composer.getVariable( "adventurer1").."は改流星の時に、Silvergladeという改静かな村に生まれた。改"..composer.getVariable( "adventurer1").."は改旅をする楽団の家族を持ち、彼女の朗らかな声とハープの響きは「星を落ち着かせる力を持つ」と言わていた。改ある日、天の精霊が夢の中に現れ、彼女の歌に魔法を唱える力を与えてくれた…。")
-    SLOWPRINT(100,"",promtForNameJP)
+    SLOWPRINT(100,"",promptForNameJP)
 end
 
 function welcomeHeroineEN()
@@ -135,7 +150,7 @@ function welcomeHeroineEN()
     QUESLOWPRINT("a celestial spirit appeared in her ^")
     QUESLOWPRINT("dreams, granting her the power to ^")
     QUESLOWPRINT("weave magic into her songs....")
-    SLOWPRINT(100,"",promtForNameEN)
+    SLOWPRINT(100,"",promptForNameEN)
 end
 
 function welcomeHeroineES()
@@ -144,7 +159,7 @@ function welcomeHeroineES()
     RESETQUE()
     QUESLOWPRINT("la historia de "..composer.getVariable( "adventurer1")..":")
     QUESLOWPRINT("^^"..composer.getVariable( "adventurer1")..". Nacida bajo la luz de un cometa en el tranquilo pueblo de Silverglade, "..composer.getVariable( "adventurer1").." fue creada por un grupo de musicos ambulantes. Su voz melodica y su abilidad para tocar la harpa fue renombrada, se dice que hasta podria pacificar a las estrellas. Una noche especial, un espiritu celestial aparecio en sus sueños, dandole el poder de integrar la magia a su musica....")
-    SLOWPRINT(100,"",promtForNameES)
+    SLOWPRINT(100,"",promptForNameES)
 end
 
 

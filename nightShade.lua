@@ -87,6 +87,17 @@ function spotsTableWithFourHeroinesES()
     QUESLOWPRINT("Con el mapa en tus manos, recorres un poco la taberna y encuentras una mesa donde se sientan cuatro chicas....")
     SLOWPRINT(100,"", gotoFiveHeroinsTable)
 end
+
+function spotsTableWithFourHeroinesEN()
+    RESETQUE()
+    --           "1234567890123456789012345678901234567890"
+    QUESLOWPRINT("^^With the map in hand, you wander ^")
+    QUESLOWPRINT("around the tavern and find a table ^")
+    QUESLOWPRINT("where four girls are seated....")
+
+    SLOWPRINT(100,"", gotoFiveHeroinsTable)
+end
+
 function nightShadeEN()
     RESETQUE()
     --           "1234567890123456789012345678901234567890"
@@ -99,14 +110,6 @@ function nightShadeEN()
     QUESLOWPRINT(" knows about it, you decide to ^")
     QUESLOWPRINT("accept the deal..")    
     SLOWPRINT(100,"",spotsTableWithFourHeroinesEN)
-end
-function spotsTableWithFourHeroinesEN()
-    RESETQUE()
-    --           "1234567890123456789012345678901234567890"
-    QUESLOWPRINT("^^With the map in hand, you wander ^")
-    QUESLOWPRINT("around the tavern and find a table ^")
-    QUESLOWPRINT("where four girls are seated....")
-    SLOWPRINT(100,"", gotoFiveHeroinsTable)
 end
 
 

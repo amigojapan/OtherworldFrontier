@@ -15,6 +15,7 @@ characterTimer=nil
 function continue()
     if printing==false then
         timer.cancel(characterTimer)
+        print(tostring(callbackFunction))
         callbackFunction()
         print("continue next")
     else
@@ -250,10 +251,12 @@ end
 
 function isAscii()
     local ch=treatAsAscii(oneline)
-    if string.byte(ch)<148 then--148 seems like hte last valid ascii character to me
-        return true
-    else
-        return false
+    if string.byte(ch) then
+        if string.byte(ch)<148 then--148 seems like hte last valid ascii character to me
+            return true
+        else
+            return false
+        end
     end
 end
 
@@ -287,6 +290,8 @@ end
 --utf8.len(stringForSlowPrint)>40
 function SLOWPRINT(timeInMilllisecods,string,callbackFunctionWhenFinished)
     callbackFunction=callbackFunctionWhenFinished
+    print("hereX")
+    print(tostring(callbackFunction))
     if stringForSlowPrint==nil then
         stringForSlowPrint=""
     end
@@ -305,7 +310,6 @@ function SLOWPRINT(timeInMilllisecods,string,callbackFunctionWhenFinished)
         --LOCATE(cursor.Line,2)
         if string.len(stringForSlowPrint)>columns then
             oneline = string.sub(stringForSlowPrint, 1, #stringForSlowPrint)--80 shoudl be two characters in utf8???
-            print("here1")
             stringForSlowPrint=string.sub(stringForSlowPrint, columns, #stringForSlowPrint)
             characterTimer=timer.performWithDelay( timeInMilllisecods, coPrintOneCharOfSlowPrint, 0, "charTimer" )
         else
@@ -334,6 +338,7 @@ function disableContinueButton()
     print("disableContinueButton() called")
     lblContinue.isVisible=false
     lblContinue.isHitTestable=false
+    lblContinue:removeSelf()
 end
 function enableContinueButton()
     print("enableContinueButton() called")

@@ -8,6 +8,17 @@ local scene = composer.newScene()
 -- Code outside of the scene event functions below will only be executed ONCE unless
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
 -- -----------------------------------------------------------------------------------
+composer.setVariable("setVariable","adventurer4")
+composer.setVariable("backgroundImage","backgrounds/adventurer4.png")
+composer.setVariable("nextScreenName","Adventurer4introduction")
+composer.setVariable("prompt1EN","Adventurer 4's name is ")
+composer.setVariable("prompt2EN"," right?")
+composer.setVariable("prompt1JP","冒険者その4の名前は:")
+composer.setVariable("prompt2JP","でよろしいですか？")
+composer.setVariable("prompt1ES","El nombre de la aventurera 4 es ")
+composer.setVariable("prompt2ES"," verdad?")
+
+
 function clearBuggyObjects()
 	print("Number of active display objects: " .. display.getCurrentStage().numChildren)
 	for i = 1, display.getCurrentStage().numChildren do
@@ -46,13 +57,13 @@ local options =
 composer.gotoScene( "Adventurer4introduction", options )
 end
 local function alertBoxNoClickedCompleteEN()
-promtForNameEN()
+promptForNameEN()
 end
 local function alertBoxNoClickedCompleteJP()
-promtForNameJP()
+promptForNameJP()
 end
 local function alertBoxNoClickedCompleteES()
-promtForNameES()
+promptForNameES()
 end
 
 function askUserIfTheyLikeNameEN(userinput)
@@ -89,23 +100,24 @@ alertBoxNoClickedCompleteES
 removerInputBox()
 disableContinueButton()--this automatically gets enabled on the next screem so no need to enable it again
 end
-
-function promtForNameJP()
-showInputBox("冒険者その１に名前を付けましょう：", askUserIfTheyLikeNameJP)
+function promptForNameJP()
+    composer.gotoScene( "nameAdventurer" )
+    --showInputBox("あなたの名前を入力して下さい：", askUserIfTheyLikeNameJP)
 end
-function promtForNameEN()
-showInputBox("please name adventurer4:", askUserIfTheyLikeNameEN)
-end
-
-function promtForNameES()
-showInputBox("dale nombre a la aventurera 4:", askUserIfTheyLikeNameES)
+function promptForNameEN()
+    composer.gotoScene( "nameAdventurer" )
+    --showInputBox("what is your name?:", askUserIfTheyLikeNameEN)
 end
 
+function promptForNameES()
+    composer.gotoScene( "nameAdventurer" )
+    --showInputBox("Como te llamas?:", askUserIfTheyLikeNameES)
+end
 function welcomeHeroineJP()
     RESETQUE()
     QUESLOWPRINT(composer.getVariable( "adventurer3").."のストーリー：改")
     QUESLOWPRINT("^^"..composer.getVariable( "adventurer3").."は改子供の頃「エバブルーム。シケット」の荒地に捨てられた。改"..composer.getVariable( "adventurer3").."は改森の精霊に育てられ、野生の魔法を教わった。彼女の魔法の力は強いが、失敗すると何が起こるか分からない不安定なものだった…。")
-    SLOWPRINT(100,"",promtForNameEN)
+    SLOWPRINT(100,"",promptForNameEN)
 end
 
 
@@ -123,7 +135,7 @@ function welcomeHeroineEN()
     QUESLOWPRINT("untamed magic. Her powers are ^")
     QUESLOWPRINT("formidable but unpredictable, often ^")
     QUESLOWPRINT("causing chaos in tense moments....")
-    SLOWPRINT(100,"",promtForNameEN)
+    SLOWPRINT(100,"",promptForNameEN)
 end
 
 function welcomeHeroineES()
@@ -132,7 +144,7 @@ function welcomeHeroineES()
     RESETQUE()
     QUESLOWPRINT("la historia de "..composer.getVariable( "adventurer3")..":")
     QUESLOWPRINT("^^"..composer.getVariable( "adventurer3").." fue abandonada de niña en el bosque magico llamado Everbloom Thicket, a "..composer.getVariable( "adventurer3").." la cuidaron los espiritus del bosque los cuales le enseñaron magia antigua y sin dominio. Sus poderes son formidables, pero inpredecibles, en moemntos tensos esa magia puede causar caos....")
-    SLOWPRINT(100,"",promtForNameEN)
+    SLOWPRINT(100,"",promptForNameEN)
 end
 
 

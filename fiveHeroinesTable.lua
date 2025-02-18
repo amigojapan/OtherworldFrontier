@@ -9,6 +9,30 @@ local scene = composer.newScene()
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
 -- -----------------------------------------------------------------------------------
 
+composer.setVariable("setVariable","adventurer1")
+composer.setVariable("backgroundImage","backgrounds/adventurer1.png")
+composer.setVariable("nextScreenName","Adventurer1introduction")
+composer.setVariable("prompt1EN","Adventurer 1's name is ")
+composer.setVariable("prompt2EN"," right?")
+composer.setVariable("prompt1JP","冒険者その１の名前は:")
+composer.setVariable("prompt2JP","でよろしいですか？")
+composer.setVariable("prompt1ES","El nombre de la aventurera 1 es ")
+composer.setVariable("prompt2ES"," verdad?")
+
+
+function promptForNameJP()
+    composer.gotoScene( "nameAdventurer" )
+    --showInputBox("あなたの名前を入力して下さい：", askUserIfTheyLikeNameJP)
+end
+function promptForNameEN()
+    composer.gotoScene( "nameAdventurer" )
+    --showInputBox("what is your name?:", askUserIfTheyLikeNameEN)
+end
+
+function promptForNameES()
+    composer.gotoScene( "nameAdventurer" )
+    --showInputBox("Como te llamas?:", askUserIfTheyLikeNameES)
+end
 function gotoFiveHeroinsTable()
         --continue on journey
         local options =
@@ -43,70 +67,6 @@ local function alertBoxYesClickedComplete( )
 	}
 	composer.gotoScene( "Adventurer1introduction", options )
 end
-local function alertBoxNoClickedCompleteEN()
-    promtForNameEN()
-end
-local function alertBoxNoClickedCompleteJP()
-    promtForNameJP()
-end
-local function alertBoxNoClickedCompleteES()
-    promtForNameES()
-end
-
-function askUserIfTheyLikeNameEN(userinput)
-    composer.setVariable( "adventurer1", userinput)
-    AlertBox(
-    "Adventurer1",
-    "Her name is:"..userinput..", alright?",
-    alertBoxYesClickedComplete,
-    alertBoxNoClickedCompleteEN
-    )
-    removerInputBox()
-    disableContinueButton()--this automatically gets enabled on the next screem so no need to enable it again
-end
-
-function askUserIfTheyLikeNameJP(userinput)
-    composer.setVariable( "adventurer1", userinput)
-    AlertBox(
-    "冒険者その１",
-    "名前は:"..userinput.."でいいですね？",
-    alertBoxYesClickedComplete,
-    alertBoxNoClickedCompleteJP
-    )
-    removerInputBox()
-    disableContinueButton()--this automatically gets enabled on the next screem so no need to enable it again
-end
-function askUserIfTheyLikeNameES(userinput)
-    composer.setVariable( "adventurer1", userinput)
-    AlertBox(
-    "la aventurera 1",
-    "se llama:"..userinput..", bien？",
-    alertBoxYesClickedComplete,
-    alertBoxNoClickedCompleteES
-    )
-    removerInputBox()
-    disableContinueButton()--this automatically gets enabled on the next screem so no need to enable it again
-end
-
-function promtForNameJP()
-    showInputBox("冒険者その１に名前を付けましょう：", askUserIfTheyLikeNameJP)
-end
-function promtForNameEN()
-    showInputBox("please name adventurer1:", askUserIfTheyLikeNameEN)
-end
-
-function promtForNameES()
-    showInputBox("dale nombre a la aventurera1:", askUserIfTheyLikeNameES)
-end
-function welcomeHeroineEN()
-    --CLS()
-    --LOCATE(1,1)
-    RESETQUE()
-    QUESLOWPRINT(composer.getVariable( "MCname").."'s backstory:")
-    QUESLOWPRINT("^^"..composer.getVariable( "MCname").." was born under a rare celestial event known as the Veil's Convergence, where the twin moons of Eternia aligned perfectly, casting the land in an eerie silver glow. This alignment was said to herald the arrival of those destined to shape the world's fate—be it for salvation or destruction.")
-    SLOWPRINT(50,"",welcomeHeroineEN)
-end
-
 function letsNameOur4HeroinesJP()
     RESETQUE()
     QUESLOWPRINT("改改地図をもらってから、少し酒場を回ってから、４人の女の人が座ってるテーブルを見かける。そこに座ることにする…")
@@ -114,7 +74,7 @@ function letsNameOur4HeroinesJP()
 end
 function introductionsJP()
     RESETQUE()
-    QUESLOWPRINT(composer.getVariable( "MCname").."がテーブルに座ると皆が自公紹介する。")    
+    QUESLOWPRINT(composer.getVariable( "MCname").."がテーブルに座ると皆が自公紹介する。。")    
     SLOWPRINT(50,"", letsNameOur4HeroinesJP)
 end
 
@@ -126,7 +86,7 @@ end
 function introductionsJP()
     RESETQUE()
     QUESLOWPRINT("改改ここで４人の仲間の名前を決めましょう…。")
-    SLOWPRINT(50,"", promtForNameJP)
+    SLOWPRINT(50,"", promptForNameJP)
 end
 
 
@@ -138,7 +98,7 @@ end
 function introductionsES()
     RESETQUE()
     QUESLOWPRINT("^^ahora dales nombre a las 4 chicas....")
-    SLOWPRINT(50,"", promtForNameES)
+    SLOWPRINT(50,"", promptForNameES)
 end
 function ourFiveHeroinesMeetEN()
     RESETQUE()
@@ -149,17 +109,7 @@ function iEN()
     print("introductionsEN called")
     RESETQUE()
     QUESLOWPRINT("^^here is where you get to name the other 4 girls....")
-    SLOWPRINT(50,"",promtForNameEN)
-end
-
-
-
-function welcomeHeroineES()
-    --CLS()
-    --LOCATE(1,1)
-    RESETQUE()
-    QUESLOWPRINT("ahora ponle nombre a las otras 4 heroinas...")
-    SLOWPRINT(50,"",welcomeHeroineEN)
+    SLOWPRINT(50,"",promptForNameEN)
 end
 
 -- show()

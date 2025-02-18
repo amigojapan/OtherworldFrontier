@@ -8,6 +8,16 @@ local scene = composer.newScene()
 -- Code outside of the scene event functions below will only be executed ONCE unless
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
 -- -----------------------------------------------------------------------------------
+composer.setVariable("setVariable","adventurer3")
+composer.setVariable("backgroundImage","backgrounds/adventurer3.png")
+composer.setVariable("nextScreenName","Adventurer3introduction")
+composer.setVariable("prompt1EN","Adventurer 3's name is ")
+composer.setVariable("prompt2EN"," right?")
+composer.setVariable("prompt1JP","冒険者その3の名前は:")
+composer.setVariable("prompt2JP","でよろしいですか？")
+composer.setVariable("prompt1ES","El nombre de la aventurera 3 es ")
+composer.setVariable("prompt2ES"," verdad?")
+
 function clearBuggyObjects()
 	print("Number of active display objects: " .. display.getCurrentStage().numChildren)
 	for i = 1, display.getCurrentStage().numChildren do
@@ -46,13 +56,13 @@ local options =
 composer.gotoScene( "Adventurer3introduction", options )
 end
 local function alertBoxNoClickedCompleteEN()
-promtForNameEN()
+    promptForNameEN()
 end
 local function alertBoxNoClickedCompleteJP()
-promtForNameJP()
+    promptForNameJP()
 end
 local function alertBoxNoClickedCompleteES()
-promtForNameES()
+    promptForNameES()
 end
 
 function askUserIfTheyLikeNameEN(userinput)
@@ -90,15 +100,18 @@ removerInputBox()
 disableContinueButton()--this automatically gets enabled on the next screem so no need to enable it again
 end
 
-function promtForNameJP()
-showInputBox("冒険者その１に名前を付けて：", askUserIfTheyLikeNameJP)
+function promptForNameJP()
+    composer.gotoScene( "nameAdventurer" )
+    --showInputBox("あなたの名前を入力して下さい：", askUserIfTheyLikeNameJP)
 end
-function promtForNameEN()
-showInputBox("please name adventurer3:", askUserIfTheyLikeNameEN)
+function promptForNameEN()
+    composer.gotoScene( "nameAdventurer" )
+    --showInputBox("what is your name?:", askUserIfTheyLikeNameEN)
 end
 
-function promtForNameES()
-showInputBox("dale nombre a la aventurera 3:", askUserIfTheyLikeNameES)
+function promptForNameES()
+    composer.gotoScene( "nameAdventurer" )
+    --showInputBox("Como te llamas?:", askUserIfTheyLikeNameES)
 end
 
 function welcomeHeroineJP()
@@ -107,7 +120,7 @@ function welcomeHeroineJP()
     RESETQUE()
     QUESLOWPRINT(composer.getVariable( "adventurer2").."のストーリー：改")
     QUESLOWPRINT("^^"..composer.getVariable( "adventurer2").."は改軍事の街の「アイロンリーチ」で改育てられた。エリートの騎士になるように改幼い頃から洗脳されていたが、ある日、彼女は自分の軍隊が魔王と手を組むことを企んでいたことを知って、魔法の剣「アストラルブレード」を持ち出し、街を逃げ出した…。")
-    SLOWPRINT(100,"",promtForNameJP)
+    SLOWPRINT(100,"",promptForNameJP)
 end
 
 function welcomeHeroineEN()
@@ -124,7 +137,7 @@ function welcomeHeroineEN()
     QUESLOWPRINT("with dark forces, she fled, taking ^")
     QUESLOWPRINT("with her the enchanted sword called^")  
     QUESLOWPRINT("\"The Astral Blade\"....")
-    SLOWPRINT(100,"",promtForNameEN)
+    SLOWPRINT(100,"",promptForNameEN)
 end
 
 function welcomeHeroineES()
@@ -133,7 +146,7 @@ function welcomeHeroineES()
     RESETQUE()
     QUESLOWPRINT("La historia de ".. composer.getVariable( "adventurer2")..":")
     QUESLOWPRINT("^^"..composer.getVariable( "adventurer2").." crecio en la cuidad militaristica llamada Ironreach, trataron de forzarla a ser una soldada caballera. pero, cuando se dio cuenta de los planes malevolos de su orden de unirse con las fuerzas de las tinieblas , se escapo, y se llevo la espada encandada llamada \"Astral Blade\"")
-    SLOWPRINT(100,"",promtForNameEN)
+    SLOWPRINT(100,"",promptForNameEN)
 end
 
 

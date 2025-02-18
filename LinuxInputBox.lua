@@ -45,6 +45,7 @@ end
 function okButtonTouchListener( event )
 	if event.phase == "ended" then
 		print("ok clicked!")
+		removerInputBox()
 		inputAccepted()
 	end
     return true  -- Prevents tap/touch propagation to underlying objects
@@ -133,9 +134,11 @@ function removerInputBox(event)
     end
 
     -- Remove editBuffer
-    if editBuffer and editBuffer.removeSelf then
-        editBuffer:removeSelf()
-        editBuffer = nil
+    if editBuffer then
+		if editBuffer.removeSelf then
+			editBuffer:removeSelf()
+			editBuffer = nil
+		end
     end
 
     -- Remove okButton
@@ -162,7 +165,9 @@ local action = {}
 function addInputToBuffer(downkey)
 	if downkey == "enter" then
 		print("inputBuffer:"..inputBuffer)
+		removerInputBox()
 		inputAccepted()
+		
 		--_callback(inputBuffer)
 		--inputBuffer=""
 		downkey=""

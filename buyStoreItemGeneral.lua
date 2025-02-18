@@ -19,8 +19,8 @@ local itemCounterVariableJP="食料一キロ"
 local itemSoldES="suministros de comida"
 local itemCounterVariableES="\"Kilos de comida\""
 local composerVariable="KGofFood"
-local thisSceneName="humanStoreItemGeneral"
-local nextScreenName="humanStoreItemGeneral"
+local thisSceneName="buyStoreItemGeneral"
+local nextScreenName="buyStoreItemGeneral"
 
 
 local numberOfItemsPurchased
@@ -59,33 +59,31 @@ local function alertBoxNoClickedCompleteEN()
     shopAriveEN()
 end
 local function alertBoxNoClickedCompleteJP()
+    enableContinueButton()
     shopAriveJP()
 end
 local function alertBoxNoClickedCompleteES()
+    enableContinueButton()
     shopAriveES()
 end
 
-  
+
 function verifyPurchaseEN(userinput)
-    --print ("display.getCurrentStage().numChildren"..display.getCurrentStage().numChildren)
-    --local buggyObject=display.getCurrentStage()[display.getCurrentStage().numChildren-1]--hack to hide hte invisible object that I do't know what it is    
-    --setAllObjectsHitTestable(display.getCurrentStage(), true) 
-    --buggyObject.isVisible=false
-    --LinuxInputBoxElements.isVisible=false
     print("userinput:"..userinput)
     if not isInteger(userinput) then
         print("is not integer")
         RESETQUE()
-        QUESLOWPRINT("^^Sorry, the number of "..itemCounterVariableEN.." must be a numeric value...^")
+        QUESLOWPRINT("^^Sorry, the number of "..itemCounterVariableEN.." must be a numeric value...^")                    
         SLOWPRINT(100,"",shopAriveEN)
+        enableContinueButton()
     else
         local price=tonumber(userinput)*itemPrice--100 is price per item
         if price>composer.getVariable( "gold") then
             RESETQUE()
-            QUESLOWPRINT("^^Sorry, dont have enough gold ^")
-            QUESLOWPRINT("for that purchase...^")
-            SLOWPRINT(100,"",shopAriveEN)
-            enableContinueButton()                    
+            QUESLOWPRINT("^^Sorry, you don't have enough gold ^")
+            QUESLOWPRINT("for that purchase...^")                
+            SLOWPRINT(100,"",shopAriveEN)    
+            enableContinueButton()
         else
             GoldUsed=price
             numberOfItemsPurchased=tonumber(userinput)
@@ -99,23 +97,22 @@ function verifyPurchaseEN(userinput)
     end
 end
 
+
 function verifyPurchaseJP(userinput)
-    print ("display.getCurrentStage().numChildren"..display.getCurrentStage().numChildren)
-    local buggyObject=display.getCurrentStage()[display.getCurrentStage().numChildren-1]--hack to hide hte invisible object that I do't know what it is    
-    setAllObjectsHitTestable(display.getCurrentStage(), true) 
-    buggyObject.isVisible=false
-    LinuxInputBoxElements.isVisible=false
     print("userinput:"..userinput)
     if not isInteger(userinput) then
+        print("is not integer")
         RESETQUE()
         QUESLOWPRINT("^^すみません、"..itemCounterVariableJP.."の個数は数字じゃないといけないです…^")
-        SLOWPRINT(100,"",shopAriveEN)
+        SLOWPRINT(100,"",shopAriveJP)
+        enableContinueButton()                    
     else
         local price=tonumber(userinput)*itemPrice--100 is price per item
         if price>composer.getVariable( "gold") then
             RESETQUE()
             QUESLOWPRINT("^^すみません、金がたりないです…^")
-            SLOWPRINT(100,"",shopAriveJP)                    
+            SLOWPRINT(100,"",shopAriveJP)
+            enableContinueButton()                    
         else
             GoldUsed=price
             numberOfItemsPurchased=tonumber(userinput)
@@ -129,24 +126,24 @@ function verifyPurchaseJP(userinput)
     end
 end
 
+
+
 function verifyPurchaseES(userinput)
-    print ("display.getCurrentStage().numChildren"..display.getCurrentStage().numChildren)
-    local buggyObject=display.getCurrentStage()[display.getCurrentStage().numChildren-1]--hack to hide hte invisible object that I do't know what it is    
-    setAllObjectsHitTestable(display.getCurrentStage(), true) 
-    buggyObject.isVisible=false
-    LinuxInputBoxElements.isVisible=false
     print("userinput:"..userinput)
     if not isInteger(userinput) then
+        print("is not integer")
         RESETQUE()
         QUESLOWPRINT("^^Perdon, el numero de "..itemCounterVariableES.." tiene que ser un valor numerico...^")
-        SLOWPRINT(100,"",shopAriveEN)
+        SLOWPRINT(100,"",shopAriveES)
+        enableContinueButton()                    
     else
         local price=tonumber(userinput)*itemPrice--100 is price per item
         if price>composer.getVariable( "gold") then
             RESETQUE()
             QUESLOWPRINT("^^Perdon, no tienes suficiente oro ^")
             QUESLOWPRINT("para hacer esa compra...^")
-            SLOWPRINT(100,"",shopAriveEN)                    
+            SLOWPRINT(100,"",shopAriveES)                    
+            enableContinueButton()                    
         else
             GoldUsed=price
             numberOfItemsPurchased=tonumber(userinput)
@@ -161,7 +158,10 @@ function verifyPurchaseES(userinput)
 end
 
 function promptItemCountdJP()
-    --showInputBox(itemCounterVariableJP.."何個買いたいですか？", verifyPurchaseJP)
+    composer.setVariable("inputBuffer","input unset")
+    composer.setVariable("inputBoxPrompt","How many "..itemCounterVariableEN.." do you want to buy?:")
+    composer.gotoScene("LinuxScreenKeyboardScene")
+    disableContinueButton()
 end
 function promptItemCountdEN()
     composer.setVariable("inputBuffer","input unset")
@@ -171,7 +171,10 @@ function promptItemCountdEN()
 end
 
 function promptItemCountdES()
-    --showInputBox("cuantos "..itemCounterVariableES.." quieres comprar?:", verifyPurchaseES)
+    composer.setVariable("inputBuffer","input unset")
+    composer.setVariable("inputBoxPrompt","How many "..itemCounterVariableEN.." do you want to buy?:")
+    composer.gotoScene("LinuxScreenKeyboardScene")
+    disableContinueButton()
 end
 
 function shopAriveEN()
@@ -224,7 +227,6 @@ function scene:show(event)
         if composer.getVariable("inputBuffer") ~= "input unset" then           
             if composer.getVariable( "language" ) == "English" then
                 initTextScreen(sceneGroup,"EN")
-                --enableContinueButton()    
                 showTextArea()
                 CLS()
                 disableContinueButton()
@@ -234,13 +236,17 @@ function scene:show(event)
                 initTextScreen(sceneGroup,"JP")
                 showTextArea()
                 CLS()
-                shopAriveJP()
+                disableContinueButton()
+                verifyPurchaseJP(composer.getVariable("inputBuffer"))
+                return
             elseif composer.getVariable( "language" ) == "Spanish" then
                 initTextScreen(sceneGroup,"ES")
                 showTextArea()
                 CLS()
-                shopAriveES()
-            end
+                disableContinueButton()
+                verifyPurchaseES(composer.getVariable("inputBuffer"))
+                return
+           end
         end
         --cleanupInvisibleObjects(display.getCurrentStage(),sceneGroup)
         print("language:"..composer.getVariable( "language" ))
