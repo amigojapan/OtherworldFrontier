@@ -20,7 +20,6 @@ local itemSoldJP=composer.getVariable("itemSoldJP")
 local itemCounterVariableJP=composer.getVariable("itemCounterVariableJP")
 local itemSoldES=composer.getVariable("itemSoldES")
 local itemCounterVariableES=composer.getVariable("itemCounterVariableES")
-local thisSceneName="current"
 
 local numberOfItemsPurchased
 local goldUsed
@@ -50,9 +49,9 @@ local function alertBoxYesClickedComplete()
     }
     composer.setVariable( composerVariable, numberOfItemsPurchased)
     composer.setVariable( "gold", composer.getVariable("gold")-GoldUsed)
-    composer.removeScene( thisSceneName, options )
+    composer.removeScene( "current", options )
     print("going to scene:"..nextScreenName)
-    composer.gotoScene( nextScreenName, options )
+    composer.gotoScene( "unicornStableGeneral", options )
 end
 local function alertBoxNoClickedCompleteEN()
     enableContinueButton()
