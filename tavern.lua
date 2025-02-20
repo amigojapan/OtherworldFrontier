@@ -138,7 +138,7 @@ function monogatari2EN()
     QUESLOWPRINT("journey. Whether for riches, ^")
     QUESLOWPRINT("redemption, or renown, the stakes are^")
     QUESLOWPRINT("high, and the path ahead is fraught ^")
-    QUESLOWPRINT("with danger.")
+    QUESLOWPRINT("with danger..")
     SLOWPRINT(50,"",promtForNameEN)
 end
 
