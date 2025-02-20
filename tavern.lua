@@ -83,11 +83,11 @@ composer.setVariable("setVariable","MCname")
 composer.setVariable("backgroundImage","backgrounds/you.png")
 composer.setVariable("nextScreenName","ourHeroine")
 composer.setVariable("prompt1EN","Your name is ")
-composer.setVariable("prompt2EN","right?")
+composer.setVariable("prompt2EN",", right?")
 composer.setVariable("prompt1JP","あなたの名前は:")
 composer.setVariable("prompt2JP","でよろしいですか？")
 composer.setVariable("prompt1ES","Tu nombre es ")
-composer.setVariable("prompt2ES"," verdad?")
+composer.setVariable("prompt2ES",", verdad?")
 
 
 function promtForNameJP()

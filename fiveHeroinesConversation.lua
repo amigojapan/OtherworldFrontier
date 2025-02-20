@@ -17,7 +17,7 @@ function gotoUnicornStable()       --continue on journey
             params = {
             }
         }
-        composer.gotoScene( "unicornStable", options )
+        composer.gotoScene( "unicornStableGeneral", options )
 end
 
 -- -----------------------------------------------------------------------------------

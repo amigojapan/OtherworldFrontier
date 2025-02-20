@@ -8,16 +8,16 @@ local scene = composer.newScene()
 -- Code outside of the scene event functions below will only be executed ONCE unless
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
 -- -----------------------------------------------------------------------------------
-composer.setVariable("setVariable","KGofFood")
+composer.setVariable("setVariable","NumberOFHPPotions")
 composer.setVariable("backgroundImage","backgrounds/human-shop.png")
-composer.setVariable("nextScreenName","HPPotionsShopGeneral")
-composer.setVariable("itemPrice",10)--10 grams of gold per kilogram of food
-composer.setVariable("itemSoldEN","food supplies")
-composer.setVariable("itemCounterVariableEN","KG of food")
-composer.setVariable("itemSoldJP","食料")
-composer.setVariable("itemCounterVariableJP","食料一キロ")
-composer.setVariable("itemSoldES","suministros de comida")
-composer.setVariable("itemCounterVariableES","\"Kilos de comida\"")
+composer.setVariable("nextScreenName","MPPotionsShopGeneral")
+composer.setVariable("itemPrice",30)--10 grams of gold per kilogram of food
+composer.setVariable("itemSoldEN","MP Potion")
+composer.setVariable("itemCounterVariableEN","Bottle of MP potion")
+composer.setVariable("itemSoldJP","MPポーション")
+composer.setVariable("itemCounterVariableJP","MPポーションボットル一本")
+composer.setVariable("itemSoldES","Pocion de MP")
+composer.setVariable("itemCounterVariableES","\"Botellas de pocion de MP\"")
 print("hereY")
 
 

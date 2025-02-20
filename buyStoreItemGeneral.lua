@@ -49,9 +49,9 @@ local function alertBoxYesClickedComplete()
     }
     composer.setVariable( composerVariable, numberOfItemsPurchased)
     composer.setVariable( "gold", composer.getVariable("gold")-GoldUsed)
-    composer.removeScene( "current", options )
+    composer.removeScene( composer.getSceneName("current") )
     print("going to scene:"..nextScreenName)
-    composer.gotoScene( "unicornStableGeneral", options )
+    composer.gotoScene( nextScreenName, options )
 end
 local function alertBoxNoClickedCompleteEN()
     enableContinueButton()
@@ -182,8 +182,8 @@ function shopAriveEN()
     --           "1234567890123456789012345678901234567890"
     QUESLOWPRINT("^^Shop Item called \""..itemSoldEN.."\"^")
     QUESLOWPRINT("costs ".. itemPrice .." grams of gold ^")
-    QUESLOWPRINT("per "..itemCounterVariableEN..", how many ^")
-    QUESLOWPRINT(itemCounterVariableEN.." do you want to buy?^")
+    QUESLOWPRINT("per \""..itemCounterVariableEN.."\", how many ^")
+    QUESLOWPRINT("\""..itemCounterVariableEN.."\" do you want to buy?^")
     SLOWPRINT(100,"",promptItemCountdEN)
 end
 
