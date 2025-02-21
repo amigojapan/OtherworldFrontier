@@ -15,7 +15,7 @@ display.setStatusBar( display.HiddenStatusBar )
 math.randomseed( os.time() )
 
 -- Go to the menu screen
-composer.gotoScene( "title" )
+--composer.gotoScene( "title" )
 composer.setVariable( "language", "English" )
 composer.setVariable( "MCname", "amigojapan" )
 composer.setVariable( "gold", 1000 )
@@ -30,3 +30,4 @@ composer.setVariable( "adventurer4", "toma" )
 --composer.gotoScene( "ourHeroine" )
 --composer.gotoScene( "nameAdventurer" )
 --composer.gotoScene("unicornStableGeneral")
+composer.gotoScene("mainGameScreen")

@@ -113,7 +113,7 @@ end
 
 function adventurer2saysJP()
     RESETQUE()
-    QUESLOWPRINT("^^"..composer.getVariable( "adventurer2").."も改「店で物資を調達しなきゃね」と言った。。")
+    QUESLOWPRINT("^^"..composer.getVariable( "adventurer2").."も改「店で必要なものをそろわなきゃ」と言った。。")
     SLOWPRINT(50,"",adventurer3saysJP)
 end
 

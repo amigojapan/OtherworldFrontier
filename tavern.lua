@@ -215,7 +215,7 @@ function monogatari2ES()
     QUESLOWPRINT("travesía. Ya sea por riquezas,^")
     QUESLOWPRINT("redención o renombre, el riesgo es^")
     QUESLOWPRINT("alto, y el camino por delante está^")
-    QUESLOWPRINT("plagado con peligros.")
+    QUESLOWPRINT("plagado con peligros..")
     SLOWPRINT(50,"",promtForNameES)
 end
 
