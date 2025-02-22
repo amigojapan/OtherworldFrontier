@@ -336,9 +336,14 @@ function QUESLOWPRINT(string)
 end
 function disableContinueButton()
     print("disableContinueButton() called")
-    lblContinue.isVisible=false
-    lblContinue.isHitTestable=false
-    lblContinue:removeSelf()
+    if lblContinue then    
+        lblContinue.isVisible=false
+        lblContinue.isHitTestable=false
+        if lblContinue.removeSelf then
+            lblContinue:removeSelf()
+            lblContinue=nil
+        end
+    end
 end
 function enableContinueButton()
     print("enableContinueButton() called")
