@@ -35,6 +35,20 @@ function gameloop()
         caravan.x=newx;
         caravan.y=newy;
     end
+    --event someoen gets cursed, curses should be healed by either resting or using an HPpotion,
+        --or the healer girl can use soem of her MP to heal someone
+        --otherwise HP of hte cursed girl will keep on draning until she dies
+    --event you get robbed, potions and gold can dissapear
+    --event attacked by angry goblin)change background image maybe? instead of switching to another scene, each adventurer should have a different attack power. like hte girl form ironreach shoudl have most power to easily defeat goblins, or maybe the tamer can tame them or the girl; that can call divine power can scare them away)
+        --for this it woudl be easiest to make attack be by ironrech girl, tame by tamer, scare by divine power girl
+        --tame and divine power shoudl cost MP of those girls oh yeah and mayeb hte random girl too         
+    --handle unicorns getting tired, it should be that the more unicorns you have the more they share the workload of  pulling the caravan
+        --if the unicorns get too tired they can die, maybe each unicon can have it's own HP
+        --healer girl can heal a unicon using MP
+        --you can heal all unicon using HPpotions
+    --make a status window(showTextarea()) for you to see how your unicorns are doing, how long before hte turnda freezes too
+    --add obstacles atounf caravan's route so you cant go off the route, maybe even have an accident if you go off it
+        --I am lazy but the pbest way to do this would be to have a n event of fallling in a ditch, and time going by to restore getting back on the path
     local randomNumber=math.random(1,10000)
     if randomNumber<5 then -- this should happen 5 percent of tiem time?
         testEvent()
