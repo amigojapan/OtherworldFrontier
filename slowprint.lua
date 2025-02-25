@@ -347,8 +347,10 @@ function disableContinueButton()
 end
 function enableContinueButton()
     print("enableContinueButton() called")
-    lblContinue.isVisible=true
-    lblContinue.isHitTestable=true
+    if lblContinue then
+        lblContinue.isVisible=true
+        lblContinue.isHitTestable=true
+    end
     if Lang=="JP" then
         aspectRatio = 8
         fontWH = 8 * aspectRatio
