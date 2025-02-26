@@ -9,8 +9,8 @@ settings =
 	{
 		-- Supported values for orientation:
 		-- portrait, portraitUpsideDown, landscapeLeft, landscapeRight
-		default = "portrait",
-		supported = { "portrait", },
+		default = "landscapeLeft",
+		supported = { "landscapeLeft", },
 	},
 
 	--
@@ -22,6 +22,10 @@ settings =
 		{
 			"android.permission.INTERNET",
 		},
+		activity =
+        {
+            ["android:screenOrientation"] = "landscape",
+        },
 	},
 
 	--

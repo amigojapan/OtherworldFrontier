@@ -132,7 +132,7 @@ end
 function adventureBeginsJP()
     RESETQUE()
     QUESLOWPRINT("^^そして、ここから冒険が始まる…。")
-    SLOWPRINT(50,"",adventureBeginsEN)
+    SLOWPRINT(50,"",gotoUnicornStable)
 end
 
 
@@ -178,7 +178,7 @@ function adventurer4saysEN()
     RESETQUE()
     --           "1234567890123456789012345678901234567890"
     QUESLOWPRINT("^^"..composer.getVariable( "adventurer4").." silently nodded.")
-    SLOWPRINT(50,"",adventureBeginsEN)
+    SLOWPRINT(50,"",adventureBeginsEN)--**make it go to the unicorn stable
 end
 
 function adventureBeginsEN()
@@ -220,7 +220,7 @@ end
 function adventureBeginsES()
     RESETQUE()
     QUESLOWPRINT("^^y asi comienza la aventura....")
-    SLOWPRINT(50,"",adventureBeginsES)
+    SLOWPRINT(50,"",gotoUnicornStable)
 end
 
 -- show()

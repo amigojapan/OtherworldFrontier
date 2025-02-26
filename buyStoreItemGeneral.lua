@@ -47,7 +47,7 @@ local function alertBoxYesClickedComplete()
         params = {
         }
     }
-    composer.setVariable( composerVariable, numberOfItemsPurchased)
+    composer.setVariable( composerVariable, composer.getVariable(composerVariable) + numberOfItemsPurchased)
     composer.setVariable( "gold", composer.getVariable("gold")-GoldUsed)
     composer.removeScene( composer.getSceneName("current") )
     print("going to scene:"..nextScreenName)

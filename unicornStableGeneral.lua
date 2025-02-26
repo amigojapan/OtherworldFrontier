@@ -16,10 +16,10 @@ composer.setVariable("nextScreenName","FoodSuppliesShopGeneral")
 composer.setVariable("itemPrice",100)--100 grams of gold per unicorn
 composer.setVariable("itemSoldEN","unicorn")
 composer.setVariable("itemCounterVariableEN","unicorn")
-composer.setVariable("itemSoldJP","食料")
-composer.setVariable("itemCounterVariableJP","食料一キロ")
-composer.setVariable("itemSoldES","suministros de comida")
-composer.setVariable("itemCounterVariableES","\"Kilos de comida\"")
+composer.setVariable("itemSoldJP","ユニコーン")
+composer.setVariable("itemCounterVariableJP","「ユニコーン一頭」")
+composer.setVariable("itemSoldES","unicornios")
+composer.setVariable("itemCounterVariableES","\"unicornios\"")
 
 
 -- -----------------------------------------------------------------------------------

@@ -8,9 +8,9 @@ local scene = composer.newScene()
 -- Code outside of the scene event functions below will only be executed ONCE unless
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
 -- -----------------------------------------------------------------------------------
-composer.setVariable("setVariable","NumberOFHPPotions")
+composer.setVariable("setVariable","MPpotions")
 composer.setVariable("backgroundImage","backgrounds/human-shop.png")
-composer.setVariable("nextScreenName","MPPotionsShopGeneral")
+composer.setVariable("nextScreenName","mainGameScreen")
 composer.setVariable("itemPrice",30)--10 grams of gold per kilogram of food
 composer.setVariable("itemSoldEN","MP Potion")
 composer.setVariable("itemCounterVariableEN","Bottle of MP potion")

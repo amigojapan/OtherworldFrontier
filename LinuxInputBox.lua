@@ -257,7 +257,8 @@ function bringUpScreenKeyboard()
 	table.insert(keysTable, "0")
 	table.insert(keysTable, "-")
 	table.insert(keysTable, "<<")
-	local xoffset=100--initial position of keys
+	local xoffsetinitial=500
+	local xoffset=xoffsetinitial+100--initial position of keys
 	local yoffset=200
 	for key, value in ipairs(keysTable) do
 		local lable = display.newText(LinuxInputBoxElements, value, xoffset, yoffset, "fonts/ume-tgc5.ttf", 50 )
@@ -267,7 +268,7 @@ function bringUpScreenKeyboard()
 		xoffset=xoffset+50
 	end
 	yoffset=yoffset+50
-	xoffset=125
+	xoffset=xoffsetinitial+125
 	keysTable={}
 	table.insert(keysTable, "q")
 	table.insert(keysTable, "w")
@@ -287,7 +288,7 @@ function bringUpScreenKeyboard()
 		xoffset=xoffset+50
 	end
 	yoffset=yoffset+50
-	xoffset=150
+	xoffset=xoffsetinitial+150
 	keysTable={}
 	table.insert(keysTable, "d")
 	table.insert(keysTable, "a")
@@ -307,7 +308,7 @@ function bringUpScreenKeyboard()
 		xoffset=xoffset+50
 	end
 	yoffset=yoffset+50
-	xoffset=175
+	xoffset=xoffsetinitial+175
 	keysTable={}
 	table.insert(keysTable, "z")
 	table.insert(keysTable, "x")
@@ -325,7 +326,7 @@ function bringUpScreenKeyboard()
 		xoffset=xoffset+50
 	end
 	yoffset=yoffset+50
-	xoffset=350
+	xoffset=xoffsetinitial+350
 	local lable = display.newText(LinuxInputBoxElements, "space", xoffset, yoffset, "fonts/ume-tgc5.ttf", 50 )
 	lable:setFillColor( 0.82, 0.86, 1 )
 	lable:addEventListener( "touch", clickOnScreenKeys )
@@ -349,7 +350,7 @@ function showInputBox(prompt,callback,predefinedBuffer)
 	
 	_callback=callback
 	--if okButton == nil then
-		--**fix bug of second click on ok button , it is nill and it crashes
+		--**(I have not run into this bug anymore)fix bug of second click on ok button , it is nil and it crashes
 		
 		local paint = {
 			type = "image",

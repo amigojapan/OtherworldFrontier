@@ -16,23 +16,136 @@ local granualrMovement=0.5
 local caravanMoveInMilliseconds=1000
 local caravanMovePixels=1
 local caravan=nil
+-- Constants
+local INITIAL_HP = 100        -- starting HP for each unicorn
+local BASE_FATIGUE_RATE = 10  -- base rate at which unicorns get tired (HP lost per unit speed per second)
+
+-- Global unicorn table
+local unicorns = {}
+
+------------------------------------------------------------
+-- Function: createUnicorns
+-- Description:
+--   Initializes the unicorns table based on the value of
+--   composer.getVariable("NumberOfUnicorns").
+------------------------------------------------------------
+local function createUnicorns()
+    local numUnicorns = composer.getVariable("NumberOfUnicorns") or 1
+    unicorns = {}  -- reset table
+
+    for i = 1, numUnicorns do
+        local unicorn = {
+            id = i,
+            hp = INITIAL_HP,
+            alive = true
+            -- You can add additional properties (like display objects) here.
+        }
+        table.insert(unicorns, unicorn)
+    end
+end
+
+------------------------------------------------------------
+-- Function: calculateFatigueRate
+-- Description:
+--   Determines how fast each unicorn gets tired based on the
+--   current speed of the caravan and the number of unicorns.
+--
+-- Parameters:
+--   speed - the current speed of the caravan (e.g., pixels per second)
+--
+-- Returns:
+--   fatigueRate - HP lost per second by each unicorn.
+------------------------------------------------------------
+local function calculateFatigueRate(speedL)--sppedL I am ignoring, I know why it starts out with a value like 200
+    -- Get the number of unicorns. We assume the variable is kept updated.
+    local numUnicorns = composer.getVariable("NumberOfUnicorns") or #unicorns
+    -- More unicorns share the load, so each one gets tired less.
+    local fatigueRate = (speed * BASE_FATIGUE_RATE) / numUnicorns
+    --print("speed:"..speed.." fatigueRate:"..fatigueRate)
+    return fatigueRate
+end
+
+
+------------------------------------------------------------
+-- Function: killUnicorn
+-- Description:
+--   Called when a unicorn’s HP reaches 0. Handles cleanup such
+--   as removing the unicorn from the display and updating the
+--   total unicorn count.
+--
+-- Parameters:
+--   unicorn - the unicorn that has died.
+------------------------------------------------------------
+local function killUnicorn(unicorn)
+    if composer.getVariable( "language" ) == "English" then
+        message="your unicorns have died!"--.. composer.getVariable("NumberOfUnicorns") .. " remaining."zzz
+    elseif composer.getVariable( "language" ) == "Japanese" then
+        message="ユニコーンが死んだ！"--.. composer.getVariable("NumberOfUnicorns") .. " remaining."zzz
+    elseif composer.getVariable( "language" ) == "Spanish" then
+        message="tus unicornios han muerto!"--.. composer.getVariable("NumberOfUnicorns") .. " remaining."zzz
+    end
+    pauseAndShowQuickMessage(message)
+
+    
+    -- Optionally, remove the unicorn’s display object here.
+    -- e.g., if unicorn.displayObject then unicorn.displayObject:removeSelf() end
+
+    -- Update the total number of unicorns.
+    local currentCount = composer.getVariable("NumberOfUnicorns") or #unicorns
+    composer.setVariable("NumberOfUnicorns", currentCount - 1)
+end
+
+------------------------------------------------------------
+-- Function: updateUnicornHP
+-- Description:
+--   Updates the HP for a single unicorn based on the elapsed
+--   time (dt) and the current speed.
+--
+-- Parameters:
+--   unicorn - the unicorn table entry.
+--   dt      - delta time (in seconds) since the last update.
+--   speed   - the current speed of the caravan.
+------------------------------------------------------------
+local restRestoreRate= 0.1
+local function updateUnicornHP(unicorn, dt, speedL)
+    if unicorn.alive then
+        local fatigueRate = calculateFatigueRate(speed)
+        unicorn.hp = unicorn.hp - fatigueRate * dt
+        print("unicorn:" .. unicorn.id.." HP:".. unicorn.hp)
+        if unicorn.hp <= 0 then
+            unicorn.hp = 0
+            unicorn.alive = false
+            killUnicorn(unicorn)
+        end
+        if speed == 0 and unicorn.hp <= INITIAL_HP then
+            unicorn.hp=unicorn.hp+restRestoreRate
+        end
+    end
+end
+
+------------------------------------------------------------
+-- Function: updateAllUnicorns
+-- Description:
+--   Should be called every frame (or at fixed intervals) to
+--   update each unicorn's HP.
+--
+-- Parameters:
+--   dt    - delta time (in seconds) since the last update.
+--   speed - the current speed of the caravan.
+------------------------------------------------------------
+local function updateAllUnicorns(dt, speed)
+    for i, unicorn in ipairs(unicorns) do
+        updateUnicornHP(unicorn, dt, speed)
+    end
+end
+
+------------------------------------------------------------
+-- Example usage in your game loop:
+------------------------------------------------------------
+
 
 -- Function to handle the curse event
 function curseEvent()
-    local characters = composer.getVariable("characters")
-    local eligibleCharacters = {}
-    for i, char in ipairs(characters) do
-        if not char.isCursed then
-            table.insert(eligibleCharacters, i)
-        end
-    end
-    if #eligibleCharacters > 0 then
-        local index = eligibleCharacters[math.random(1, #eligibleCharacters)]
-        characters[index].isCursed = true
-        local message = characters[index].name .. " has been cursed!"
-        pauseAndShowQuickMessage(message)
-        -- Optionally, display a message to the player using showTextArea()
-    end
 end
 
 function  unPauseGame()
@@ -46,6 +159,7 @@ function pauseAndShowQuickMessage(message)
     gamePaused=true
     showTextArea()
     CLS()
+    message=message.."."--just a quick hack to handle the need to have an extra character or some reaosn in the SLOWPRINT
     SLOWPRINT(50,message,unPauseGame)
     enableContinueButton()
 end
@@ -58,7 +172,14 @@ function robberyEvent()
         if gold > 0 then
             local amount = math.random(1, gold)
             composer.setVariable("gold", gold - amount)
-            local message = "You have been robbed of " .. amount .. " gold!"
+            local message 
+            if composer.getVariable( "language" ) == "English" then
+                message= "You have been robbed of " .. amount .. " grams gold!"
+            elseif composer.getVariable( "language" ) == "Japanese" then
+                message= amount .. "グラムの金が盗まれた！"
+            elseif composer.getVariable( "language" ) == "Spanish" then
+                message= "Te han robado " .. amount .. " gramos de oro!"
+            end            
             pauseAndShowQuickMessage(message)
         end
     elseif itemToSteal == "HPpotions" then
@@ -66,7 +187,14 @@ function robberyEvent()
         if HPpotions > 0 then
             local amount = math.random(1, HPpotions)
             composer.setVariable("HPpotions", HPpotions - amount)
-            local message = "You have been robbed of " .. amount .. " HP potions!"
+            local message
+            if composer.getVariable( "language" ) == "English" then
+                message = "You have been robbed of " .. amount .. " HP potions!"
+            elseif composer.getVariable( "language" ) == "Japanese" then
+                message = amount .. "個のHPポーションが盗まれた！"
+            elseif composer.getVariable( "language" ) == "Spanish" then
+                message = "Te han robado " .. amount .. " pociones de HP!"
+            end            
             pauseAndShowQuickMessage(message)
         end
     elseif itemToSteal == "MPpotions" then
@@ -74,7 +202,14 @@ function robberyEvent()
         if MPpotions > 0 then
             local amount = math.random(1, MPpotions)
             composer.setVariable("MPpotions", MPpotions - amount)
-            local message = "You have been robbed of " .. amount .. " MP potions!"
+            local message
+            if composer.getVariable( "language" ) == "English" then
+                message = "You have been robbed of " .. amount .. " MP potions!"
+            elseif composer.getVariable( "language" ) == "Japanese" then
+                message = amount .. "個のMPポーションが盗まれた！"
+            elseif composer.getVariable( "language" ) == "Spanish" then
+                message = "Te han robado " .. amount .. " pociones de MP!"
+            end
             pauseAndShowQuickMessage(message)
         end
     end
@@ -99,11 +234,11 @@ function gameloop()
         caravan.x=newx;
         caravan.y=newy;
     end
-    --event someoen gets cursed, curses should be healed by either resting or using an HPpotion,
-        --or the healer girl can use soem of her MP to heal someone
-        --otherwise HP of hte cursed girl will keep on draning until she dies
-    --event you get robbed, potions and gold can dissapear
-    --event attacked by angry goblin)change background image maybe? instead of switching to another scene, each adventurer should have a different attack power. like hte girl form ironreach shoudl have most power to easily defeat goblins, or maybe the tamer can tame them or the girl; that can call divine power can scare them away)
+    --(partly done)event someoen gets cursed, curses should be healed by either resting or using an HPpotion,
+        --(pending)or the healer girl can use soem of her MP to heal someone
+        --(pending)otherwise HP of hte cursed girl will keep on draning until she dies
+    --(done)event you get robbed, potions and gold can dissapear
+    --(pending)event attacked by angry goblin)change background image maybe? instead of switching to another scene, each adventurer should have a different attack power. like hte girl form ironreach shoudl have most power to easily defeat goblins, or maybe the tamer can tame them or the girl; that can call divine power can scare them away)
         --for this it woudl be easiest to make attack be by ironrech girl, tame by tamer, scare by divine power girl
         --tame and divine power shoudl cost MP of those girls oh yeah and mayeb hte random girl too         
         --when you get attacked by goblins, you will get to choose who y ou wnat to solev the problem, the warrior by attackign hte golin, the tamer by appaeaseing the goblin, or the saiotn by scaring away the goblins with divine light or hte random girl which gives 50 percent success 50 percent failue.... but if one of them dies, you wont be able to use her powers anymroe
@@ -112,16 +247,17 @@ function gameloop()
         --healer girl can heal a unicon using MP
         --you can heal all unicon using HPpotions
         --cada unicornio va a tenenr sus propoio "HP"(que son los puntos de vida) entre mas unicornios tengas menos se van a cansar porque comparten jalar a la caravana, y entre mas rapido vayas se cansan mas rapido
-        --each unicorn will have its own HP the more unicorns you have the less they will get tired because they share to pulling the caravan, and the faster you go the faster they get tired. when one gets too tired he will die.
-    --make a status window(showTextarea()) for you to see how your unicorns are doing, how long before hte turnda freezes too
-    --add obstacles atounf caravan's route so you cant go off the route, maybe even have an accident if you go off it
+        --each unicorn depending on composer.getVariable("NumberOfUnicorns")  will have its own HP the more unicorns you have the less they will get tired because they share to pulling the caravan, and the faster you go the faster they get tired. when one gets too tired he will die.
+    --(pending)make a status window(showTextarea()) for you to see how your unicorns are doing, how long before hte turnda freezes too
+    --(penging)add obstacles atounf caravan's route so you cant go off the route, maybe even have an accident if you go off it
         --I am lazy but the pbest way to do this would be to have a n event of fallling in a ditch, and time going by to restore getting back on the path
-    --add trading on route?
+    --(nah)add trading on route?
+    
     -- Random event triggers
     local randomNumber = math.random(1, 10000)
-    if randomNumber < 500 then
+    if randomNumber < 100 then
         curseEvent()
-    elseif randomNumber < 1000 then
+    elseif randomNumber < 200 then
         robberyEvent()
     end
     -- Handle HP draining for cursed characters
@@ -131,16 +267,45 @@ function gameloop()
         if char.isCursed then
             char.HP = char.HP - 1 -- Drain 1 HP per second
             if char.HP <= 0 then
-                local message = char.name .. " has died from the curse!"
+                local message
+                if composer.getVariable( "language" ) == "English" then
+                    message = char.name .. " has died from the curse!"
+                elseif composer.getVariable( "language" ) == "Japanese" then
+                    message = char.name .. "が呪いによって死んだ！"
+                elseif composer.getVariable( "language" ) == "Spanish" then
+                    message = char.name .. " ha muerto de la maldición!"
+                end
                 pauseAndShowQuickMessage(message)        
-                table.remove(characters, i)
-                -- Optionally, handle game over if all characters die
+                --table.remove(characters, i)
+                char.isAlive=false
+                -- Optionally, handle game over if MC dies
             end
         end
     end
 end
 
 local gameLoopTimer= timer.performWithDelay( caravanMoveInMilliseconds, gameloop, 0 )
+
+local lastTime = system.getTimer() -- Get the current time in milliseconds
+
+-- In your game loop or an "enterFrame" listener:
+local function updateFrame(event)
+    if gamePaused then
+		return
+	end
+    if composer.getVariable("NumberOfUnicorns") <= 0 then
+        speed=0
+    end
+    local currentTime = system.getTimer() -- Current time
+    local dt = (currentTime - lastTime) / 1000 -- Convert to seconds
+    lastTime = currentTime -- Update lastTime for the next frame
+
+    --ah, this was the spped chatgpt set...local currentSpeed = 200 -- Replace with your caravan's actual speed logic
+    updateAllUnicorns(dt, currentSpeed)
+end
+
+-- Start the game loop listener.
+Runtime:addEventListener("enterFrame", updateFrame)
 
 -- -----------------------------------------------------------------------------------
 -- Scene event functions
@@ -155,11 +320,11 @@ local sceneGroup = self.view
     end
     -- Initialize the characters table using names from Composer variables
     local characters = {
-        {name = composer.getVariable("MCname") or "Default MC", HP = 100, maxHP = 100, MP = 50, maxMP = 50, isCursed = false},
-        {name = composer.getVariable("adventurer1") or "Default Adv1", HP = 80, maxHP = 80, MP = 70, maxMP = 70, isCursed = false},
-        {name = composer.getVariable("adventurer2") or "Default Adv2", HP = 90, maxHP = 90, MP = 60, maxMP = 60, isCursed = false},
-        {name = composer.getVariable("adventurer3") or "Default Adv3", HP = 70, maxHP = 70, MP = 40, maxMP = 40, isCursed = false},
-        {name = composer.getVariable("adventurer4") or "Default Adv4", HP = 60, maxHP = 60, MP = 30, maxMP = 30, isCursed = false}
+        {name = composer.getVariable("MCname") or "Default MC", isAlive=true, HP = 100, maxHP = 100, MP = 50, maxMP = 50, isCursed = false},
+        {name = composer.getVariable("adventurer1") or "Default Adv1", isAlive=true, HP = 80, maxHP = 80, MP = 70, maxMP = 70, isCursed = false},
+        {name = composer.getVariable("adventurer2") or "Default Adv2", isAlive=true, HP = 90, maxHP = 90, MP = 60, maxMP = 60, isCursed = false},
+        {name = composer.getVariable("adventurer3") or "Default Adv3", isAlive=true, HP = 70, maxHP = 70, MP = 40, maxMP = 40, isCursed = false},
+        {name = composer.getVariable("adventurer4") or "Default Adv4", isAlive=true, HP = 60, maxHP = 60, MP = 30, maxMP = 30, isCursed = false}
     }
     composer.setVariable("characters", characters)
 end
@@ -175,7 +340,7 @@ local function alertBoxYesClickedComplete()
         params = {
         }
     }
-    composer.setVariable( composerVariable, numberOfItemsPurchased)
+    --composer.setVariable( composerVariable, numberOfItemsPurchased)
     composer.setVariable( "gold", composer.getVariable("gold")-GoldUsed)
     composer.removeScene( composer.getSceneName("current") )
     print("going to scene:"..nextScreenName)
@@ -205,43 +370,58 @@ function gameStartEN()
     QUESLOWPRINT("^Stear the caravan carefully, ^")
     QUESLOWPRINT("Follow the red line.^")
     QUESLOWPRINT("Set the unicorn running speed.^")
-    QUESLOWPRINT("Take resrts to restore HP.^")
+    QUESLOWPRINT("Take resrts to ^restore HP of the unicorns.^")
     QUESLOWPRINT("If you run out of food, go hunting^")
     QUESLOWPRINT("If you run out of unicorns, you can ^")
     QUESLOWPRINT("tame a wild unicorn.^")
-    QUESLOWPRINT("If you run out of food, go hunting.^")
     QUESLOWPRINT("Use potions wisely.^")
     QUESLOWPRINT("You must reach \"The valley of ^")
     QUESLOWPRINT("eternity\" before the \"Northern ^")
     QUESLOWPRINT("Tundra\" freezes over....")
-    SLOWPRINT(100,"",showControls)
+    SLOWPRINT(50,"",showControls)
 end
 
 function gameStartJP()
     RESETQUE()
-    QUESLOWPRINT("^金"..composer.getVariable( "gold").."グラムを持っている：^")
     --           "1234567890123456789012345678901234567890"
-    QUESLOWPRINT("^^「"..itemSoldJP.."」と言うアイテムが^")
-    QUESLOWPRINT(itemCounterVariableJP.."が金".. itemPrice .."グラムする。^")
-    QUESLOWPRINT(itemCounterVariableJP.."何個買いたいのか？^")
-    SLOWPRINT(100,"",promptItemCountdJP)
+    QUESLOWPRINT("^気をつけて馬車を操縦して、 ^")
+    QUESLOWPRINT("赤い線に添って移動して。^")
+    QUESLOWPRINT("ユニコーンの走るす速度をセットして。^")
+    QUESLOWPRINT("ユニコーンのHPを回復するため、^")
+    QUESLOWPRINT("よく馬車を完全に止めて。^")
+    QUESLOWPRINT("食べ物が切れたら、狩猟して。^")
+    QUESLOWPRINT("ユニコーンが死んだら、^")
+    QUESLOWPRINT("野生のユニコーンを飼いならして。^")
+    QUESLOWPRINT("ポーションを上手く使って。^")
+    QUESLOWPRINT("「北のツンドラ」が氷る前に、^")
+    QUESLOWPRINT("\"The valley of　eternity\"に^")
+    QUESLOWPRINT("着かなきゃいけない。。。。")
+    SLOWPRINT(50,"",showControls)
 end
 
 function gameStartES()
     RESETQUE()
-    QUESLOWPRINT("^Tienes:"..composer.getVariable( "gold").." gramos de oro:^")
     --           "1234567890123456789012345678901234567890"
-    QUESLOWPRINT("^^El artículo llamado \""..itemSoldES.."\"^")
-    QUESLOWPRINT("cuesta ".. itemPrice .." gramos de oro ^")
-    QUESLOWPRINT("por cada "..itemCounterVariableES..", cuantos ^")
-    QUESLOWPRINT(itemCounterVariableES.." quieres comprar?^")
-    SLOWPRINT(100,"",promptItemCountdES)
+    QUESLOWPRINT("^Maneja el timon de la caravans con^")
+    QUESLOWPRINT("cuidado, Sigue la linea roja.^")
+    QUESLOWPRINT("Tu decides la ^velocidad de los unicornios^")
+    QUESLOWPRINT("Descansa para reponer ^el HP de los unicornios.^")
+    QUESLOWPRINT("Si se te acaba la comida, ve de caseria.^")
+    QUESLOWPRINT("Si se te acaban los unicornios, ^")
+    QUESLOWPRINT("puedes domar unicornios salvajes.^")
+    QUESLOWPRINT("Usa tus pociones sabiamente.^")
+    QUESLOWPRINT("Tienes que llegar a \"The valley of ^")
+    QUESLOWPRINT("eternity\" de que la \"Northern ^")
+    QUESLOWPRINT("Tundra\" antes de que se conjele....")
+    SLOWPRINT(50,"",showControls)
 end
 function unicornsFaster()
     speed=speed+granualrMovement
 end
 function unicornsSlower()
-    speed=speed-granualrMovement
+    if not (speed <= 0) then
+        speed=speed-granualrMovement
+    end
 end
 
 local function myUpTouchListener( event )
@@ -264,28 +444,80 @@ local function myDownTouchListener( event )
     end
     return true  -- Prevents tap/touch propagation to underlying objects
 end
+local function showStatus()
+    local unicornHP
+    for i, unicorn in ipairs(unicorns) do
+        unicornHP=unicorn.hp
+    end
+    
+    local message
+    if composer.getVariable( "language" ) == "English" then
+        message = "#unicorns:".. composer.getVariable("NumberOfUnicorns").. " speed:" .. speed .. " unicorn HP:" .. math.floor(unicornHP).."^"
+    elseif composer.getVariable( "language" ) == "Japanese" then
+        message = "ユニコーンの数は".. composer.getVariable("NumberOfUnicorns").. " 速さは" .. speed .. " ユニコーンのHP:" .. math.floor(unicornHP).."^"
+    elseif composer.getVariable( "language" ) == "Spanish" then
+        message = "# de unicornios:".. composer.getVariable("NumberOfUnicorns").. " velocidad:" .. speed .. " HP de los unicornios:" .. math.floor(unicornHP).."^"
+    end
+
+    local characters = composer.getVariable("characters")
+    --name = composer.getVariable("MCname") or "Default MC", HP = 100, maxHP = 100, MP = 50, maxMP = 50, isCursed = false
+    for i, char in ipairs(characters) do
+        message=message..char.name 
+        if char.isAlive==false then
+            if composer.getVariable( "language" ) == "English" then
+                message = message.." is dead.^"
+            elseif composer.getVariable( "language" ) == "Japanese" then
+                message = message.."が死んだ。^"
+            elseif composer.getVariable( "language" ) == "Spanish" then
+                message = message.." ha muerto.^"
+            end        
+        else
+            if char.isCursed then
+                if composer.getVariable( "language" ) == "English" then
+                    message=message.." is cursed."
+                elseif composer.getVariable( "language" ) == "Japanese" then
+                    message=message.."が呪われてる。"
+                elseif composer.getVariable( "language" ) == "Spanish" then
+                    message=message.." esta maldecida."
+                end            
+            end
+            if composer.getVariable( "language" ) == "English" then
+                message=message .. " HP:".. char.HP .. " MP:" .. char.MP .. "^"
+            elseif composer.getVariable( "language" ) == "Japanese" then
+                message=message .. " HP:".. char.HP .. " MP:" .. char.MP .. "^"
+            elseif composer.getVariable( "language" ) == "Spanish" then
+                message=message .. " HP:".. char.HP .. " MP:" .. char.MP .. "^"
+            end            
+
+            
+        end
+    end
+    if composer.getVariable( "language" ) == "English" then
+        message=message.."You have:^Gold:" .. composer.getVariable("gold") .. " grams.^HP pontions:" .. composer.getVariable("HPpotions") .. "^MP potions:" ..  composer.getVariable("MPpotions")
+    elseif composer.getVariable( "language" ) == "Japanese" then
+        message=message.."所有物:^金：" .. composer.getVariable("gold") .. "グラム。^HPポーション：" .. composer.getVariable("HPpotions") .. "^MPポーション：" ..  composer.getVariable("MPpotions")
+    elseif composer.getVariable( "language" ) == "Spanish" then
+        message=message.."Tienes:^oro:" .. composer.getVariable("gold") .. " gramos.^pociones de HP:" .. composer.getVariable("HPpotions") .. "^pociones de MP:" ..  composer.getVariable("MPpotions")
+    end            
+    pauseAndShowQuickMessage(message)
+end
+
 local function myFireTouchListener( event )
     if ( event.phase == "began" ) then
-		if fireTimerMagic then
-			timer.cancel( fireTimerMagic )
-		end
-		fireball()
-		currentButton=myFireButton
-		fireTimerMagic = timer.performWithDelay( (timeForMoveInMilliseconds+100)*speed, fireball, 0 )
-        print( "object touched = " .. tostring(event.target) )  -- "event.target" is the touched object
 	elseif ( event.phase == "moved" ) then
-		if isWithinBounds(myFireButton, event) == false then
-			if fireTimerMagic then
-				timer.cancel( fireTimerMagic )
-			end
-		end
 	elseif ( event.phase == "ended" or event.phase == "moved" or event.phase == "cancelled") then
-		if fireTimerMagic then
-			timer.cancel( fireTimerMagic )
-		end
+            showStatus()
     end
     return true  -- Prevents tap/touch propagation to underlying objects
 end
+if system.getInfo("environment") == "device" then
+    arcYPosition=50
+    arcXPosition=850
+else
+    arcYPosition=50
+    arcXPosition=50
+end
+
 arcYPosition=50
 arcXPosition=50
 arc = display.newImage( "img/arc.png", arcXPosition, arcYPosition )
@@ -319,12 +551,20 @@ arc:addEventListener( "touch", dragObject )
 local function tapListener( event )
  
     -- Code executed when the button is tapped
-    print( "x: " .. tostring(event.x) .. "y: " .. tostring(event.y) )  -- "event.target" is the tapped object
+    local message="x: " .. tostring(event.x) .. "y: " .. tostring(event.y)
+    --pauseAndShowQuickMessage(message)
+    print(message)  -- "event.target" is the tapped object
     return true
 end
 local mistralsEnd={}
-mistralsEnd.x=411.92584228516
-mistralsEnd.y=765.43487548828
+if system.getInfo("environment") == "device" then
+    mistralsEnd.x=897.89
+    mistralsEnd.y=773.03
+else
+    mistralsEnd.x=411.92584228516
+    mistralsEnd.y=765.43487548828    
+end
+
 
 -- show()
 function scene:show(event)
@@ -336,6 +576,9 @@ function scene:show(event)
 
     elseif (phase == "did") then
         -- Code here runs when the scene is entirely on screen
+        -- Call this once when starting the scene or when unicorn count changes.
+        createUnicorns()
+
         --buttons
         offsetx=450
         offsety=300
@@ -412,7 +655,6 @@ function scene:show(event)
             --clearBuggyObjects()
             gamePaused=true
             initTextScreen(sceneGroup,"EN")
-            --enableContinueButton()
             showTextArea()
             CLS()
             gameStartEN()

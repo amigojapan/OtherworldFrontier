@@ -7,12 +7,13 @@ application =
 {
 	content =
 	{
-		width = 768,
-		height = 1024, 
+		width = 1024,
+		height = 1724, 
 		scale = "letterbox",
 		fps = 60,
 		default = "landscape", supported = { "landscape" },
 		--[[
+		scale = "letterbox",
 		imageSuffix =
 		{
 			    ["@2x"] = 2,
