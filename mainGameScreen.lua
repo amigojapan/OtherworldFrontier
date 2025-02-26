@@ -561,8 +561,10 @@ if system.getInfo("environment") == "device" then
     mistralsEnd.x=897.89
     mistralsEnd.y=773.03
 else
-    mistralsEnd.x=411.92584228516
-    mistralsEnd.y=765.43487548828    
+    mistralsEnd.x=897.89
+    mistralsEnd.y=773.03
+    --mistralsEnd.x=411.92584228516
+    --mistralsEnd.y=765.43487548828    
 end
 
 
