@@ -12,6 +12,140 @@ local lblContinue=nil
 Lang=nil
 textZoneRectangle=nil
 characterTimer=nil
+function replaceStringOfRomajiWithDoubleWidthCHaracters(str)
+    local doubleWidthString
+    --！＂＃＄％＆＇（）＊＋，－．／０１２３４５６７８９：；＜＝＞？＠［＼］＾＿｀｛｜｝～￠￡￢￣￤￥￦ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚ
+    doubleWidthString = str.rep("!", "！")
+    doubleWidthString = str.rep("\"", "＂")
+    doubleWidthString = str.rep("#", "＃")
+    doubleWidthString = str.rep("$", "＄")
+    doubleWidthString = str.rep("%", "％")
+    doubleWidthString = str.rep("&", "＆")
+    doubleWidthString = str.rep("'", "＇")
+    doubleWidthString = str.rep("(", "（")
+    doubleWidthString = str.rep(")", "）")
+    doubleWidthString = str.rep("*", "＊")
+    doubleWidthString = str.rep("+", "＋")
+    doubleWidthString = str.rep(",", "，")
+    doubleWidthString = str.rep("-", "－")
+    doubleWidthString = str.rep(".", "．")
+    doubleWidthString = str.rep("/", "／")
+    --０１２３４５６７８９
+    doubleWidthString = str.rep("!", "０")
+    doubleWidthString = str.rep("!", "１")
+    doubleWidthString = str.rep("!", "２")
+    doubleWidthString = str.rep("!", "３")
+    doubleWidthString = str.rep("!", "４")
+    doubleWidthString = str.rep("!", "５")
+    doubleWidthString = str.rep("!", "６")
+    doubleWidthString = str.rep("!", "７")
+    doubleWidthString = str.rep("!", "８")
+    doubleWidthString = str.rep("!", "９")
+    --：；＜＝＞？＠［＼］＿｀｛｜｝～￥
+    --omitted symbols ＾ because used for newline.￠￡￢￣￤￦ cause I dont know how to type them
+    doubleWidthString = str.rep(":", "：")
+    doubleWidthString = str.rep(";", "；")
+    doubleWidthString = str.rep("<", "＜")
+    doubleWidthString = str.rep("=", "＝")
+    doubleWidthString = str.rep(">", "＞")
+    doubleWidthString = str.rep("?", "？")
+    doubleWidthString = str.rep("@", "＠")
+    doubleWidthString = str.rep("[]", "［")
+    doubleWidthString = str.rep("\\", "＼")
+    doubleWidthString = str.rep("]", "］")
+    doubleWidthString = str.rep("!", "＿")
+    doubleWidthString = str.rep("`", "｀")
+    doubleWidthString = str.rep("{", "｛")
+    doubleWidthString = str.rep("|", "｜")
+    doubleWidthString = str.rep("}", "｝")
+    doubleWidthString = str.rep("~", "～")
+    doubleWidthString = str.rep("¥", "￥")
+    --ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ
+    doubleWidthString = str.rep("A", "Ａ")
+    doubleWidthString = str.rep("B", "Ｂ")
+    doubleWidthString = str.rep("C", "Ｃ")
+    doubleWidthString = str.rep("D", "Ｄ")
+    doubleWidthString = str.rep("E", "Ｅ")
+    doubleWidthString = str.rep("F", "Ｆ")
+    doubleWidthString = str.rep("G", "Ｇ")
+    doubleWidthString = str.rep("H", "Ｈ")
+    doubleWidthString = str.rep("I", "Ｉ")
+    doubleWidthString = str.rep("J", "Ｊ")
+    doubleWidthString = str.rep("K", "Ｋ")
+    doubleWidthString = str.rep("L", "Ｌ")
+    doubleWidthString = str.rep("M", "Ｍ")
+    doubleWidthString = str.rep("N", "Ｎ")
+    doubleWidthString = str.rep("O", "Ｏ")
+    doubleWidthString = str.rep("P", "Ｐ")
+    doubleWidthString = str.rep("Q", "Ｑ")
+    doubleWidthString = str.rep("R", "Ｒ")
+    doubleWidthString = str.rep("S", "Ｓ")
+    doubleWidthString = str.rep("T", "Ｔ")
+    doubleWidthString = str.rep("U", "Ｕ")
+    doubleWidthString = str.rep("V", "Ｖ")
+    doubleWidthString = str.rep("W", "Ｗ")
+    doubleWidthString = str.rep("X", "Ｘ")
+    doubleWidthString = str.rep("Y", "Ｙ")
+    doubleWidthString = str.rep("Z", "Ｚ")
+    --ａｂｃｄｅｆｇｈｉｊ
+    doubleWidthString = str.rep("a", "ａ")
+    doubleWidthString = str.rep("b", "ｂ")
+    doubleWidthString = str.rep("c", "ｃ")
+    doubleWidthString = str.rep("d", "ｄ")
+    doubleWidthString = str.rep("e", "ｅ")
+    doubleWidthString = str.rep("f", "ｆ")
+    doubleWidthString = str.rep("g", "ｇ")
+    doubleWidthString = str.rep("h", "ｈ")
+    doubleWidthString = str.rep("i", "ｉ")
+    doubleWidthString = str.rep("j", "ｊ")
+    --ｋｌｍｎｏｐｑ
+    doubleWidthString = str.rep("k", "ｋ")
+    doubleWidthString = str.rep("l", "ｌ")
+    doubleWidthString = str.rep("m", "ｍ")
+    doubleWidthString = str.rep("n", "ｎ")
+    doubleWidthString = str.rep("o", "ｏ")
+    doubleWidthString = str.rep("p", "ｐ")
+    doubleWidthString = str.rep("q", "ｑ")
+    --ｒｓｔｕｖｗｘｙｚ
+    doubleWidthString = str.rep("r", "ｒ")
+    doubleWidthString = str.rep("s", "ｓ")
+    doubleWidthString = str.rep("t", "ｔ")
+    doubleWidthString = str.rep("u", "ｕ")
+    doubleWidthString = str.rep("v", "ｖ")
+    doubleWidthString = str.rep("w", "ｗ")
+    doubleWidthString = str.rep("x", "ｘ")
+    doubleWidthString = str.rep("y", "ｙ")
+    doubleWidthString = str.rep("z", "ｚ")
+    return doubleWidthString
+end
+function replaceStringOfRomajiWithDoubleWidthCHaracters2(str)
+    -- Define a mapping of single-width to double-width characters
+    local mapping = {
+        ["!"] = "！", ["\""] = "＂", ["#"] = "＃", ["$"] = "＄", ["%"] = "％",
+        ["&"] = "＆", ["'"] = "＇", ["("] = "（", [")"] = "）", ["*"] = "＊",
+        ["+"] = "＋", [","] = "，", ["-"] = "－", ["."] = "．", ["/"] = "／",
+        ["0"] = "０", ["1"] = "１", ["2"] = "２", ["3"] = "３", ["4"] = "４",
+        ["5"] = "５", ["6"] = "６", ["7"] = "７", ["8"] = "８", ["9"] = "９",
+        [":"] = "：", [";"] = "；", ["<"] = "＜", ["="] = "＝", [">"] = "＞",
+        ["?"] = "？", ["@"] = "＠", ["["] = "［", ["\\"] = "＼", ["]"] = "］",
+        ["_"] = "＿", ["`"] = "｀", ["{"] = "｛", ["|"] = "｜", ["}"] = "｝",
+        ["~"] = "～", ["¥"] = "￥",
+        ["A"] = "Ａ", ["B"] = "Ｂ", ["C"] = "Ｃ", ["D"] = "Ｄ", ["E"] = "Ｅ",
+        ["F"] = "Ｆ", ["G"] = "Ｇ", ["H"] = "Ｈ", ["I"] = "Ｉ", ["J"] = "Ｊ",
+        ["K"] = "Ｋ", ["L"] = "Ｌ", ["M"] = "Ｍ", ["N"] = "Ｎ", ["O"] = "Ｏ",
+        ["P"] = "Ｐ", ["Q"] = "Ｑ", ["R"] = "Ｒ", ["S"] = "Ｓ", ["T"] = "Ｔ",
+        ["U"] = "Ｕ", ["V"] = "Ｖ", ["W"] = "Ｗ", ["X"] = "Ｘ", ["Y"] = "Ｙ",
+        ["Z"] = "Ｚ",
+        ["a"] = "ａ", ["b"] = "ｂ", ["c"] = "ｃ", ["d"] = "ｄ", ["e"] = "ｅ",
+        ["f"] = "ｆ", ["g"] = "ｇ", ["h"] = "ｈ", ["i"] = "ｉ", ["j"] = "ｊ",
+        ["k"] = "ｋ", ["l"] = "ｌ", ["m"] = "ｍ", ["n"] = "ｎ", ["o"] = "ｏ",
+        ["p"] = "ｐ", ["q"] = "ｑ", ["r"] = "ｒ", ["s"] = "ｓ", ["t"] = "ｔ",
+        ["u"] = "ｕ", ["v"] = "ｖ", ["w"] = "ｗ", ["x"] = "ｘ", ["y"] = "ｙ",
+        ["z"] = "ｚ"
+    }
+    -- Replace each character using the mapping
+    return (str:gsub(".", function(c) return mapping[c] or c end))
+end
 function continue()
     if printing==false then
         timer.cancel(characterTimer)
@@ -296,6 +430,9 @@ function SLOWPRINT(timeInMilllisecods,string,callbackFunctionWhenFinished)
         stringForSlowPrint=""
     end
     stringForSlowPrint=stringForSlowPrint..string
+    if Lang=="JP" then
+        stringForSlowPrint=replaceStringOfRomajiWithDoubleWidthCHaracters2(stringForSlowPrint)
+    end
     --log the story into a file
     --[[
     file = io.open("testRead.txt","a")
