@@ -143,6 +143,8 @@ function replaceStringOfRomajiWithDoubleWidthCHaracters2(str)
         ["u"] = "ｕ", ["v"] = "ｖ", ["w"] = "ｗ", ["x"] = "ｘ", ["y"] = "ｙ",
         ["z"] = "ｚ"
     }
+    --**add doubel width space
+    --**add camping, add tame  wild unicorn, add paczel
     -- Replace each character using the mapping
     return (str:gsub(".", function(c) return mapping[c] or c end))
 end

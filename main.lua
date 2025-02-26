@@ -39,6 +39,6 @@ end
 if composer.getVariable("MPpotions") == nil then
     composer.setVariable("MPpotions", 0)
 end
-composer.setVariable("NumberOfUnicorns", 0)
+composer.setVariable("NumberOfUnicorns", 2)
 composer.setVariable("KGofFood", 0)
 --composer.gotoScene("mainGameScreen")
