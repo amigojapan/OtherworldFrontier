@@ -15,9 +15,8 @@ local function gotoMenu()
 	composer.gotoScene( "menu" )
 end
 
-
-local function gotoDifficulty()
-	composer.gotoScene( "chooseStudyLanguage" )
+local function gotoTavern()
+	composer.gotoScene( "tavern" )
 end
 -- -----------------------------------------------------------------------------------
 -- Scene event functions
@@ -51,7 +50,7 @@ function scene:create( event )
 
 	local highScoresButton = display.newText( sceneGroup, "Continue!", display.contentCenterX, 720, "fonts/ume-tgc5.ttf", 44 )
 	highScoresButton:setFillColor( 0.75, 0.78, 1 )
-	highScoresButton:addEventListener( "tap", gotoDifficulty )
+	highScoresButton:addEventListener( "tap", gotoTavern )
 
 	local playButton = display.newText( sceneGroup, "<<", 300, 50, "fonts/ume-tgc5.ttf", 44 )
 	playButton:setFillColor( 0.82, 0.86, 1 )

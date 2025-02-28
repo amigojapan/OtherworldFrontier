@@ -163,6 +163,16 @@ function pauseAndShowQuickMessage(message)
     SLOWPRINT(50,message,unPauseGame)
     enableContinueButton()
 end
+function pauseAndShowQuickMessageFast(message)
+    RESETQUE()
+    gamePaused=true
+    showTextArea()
+    CLS()
+    message=message.."."--just a quick hack to handle the need to have an extra character or some reaosn in the SLOWPRINT
+    PRINTFAST(message,100,100)
+    enableContinueButton()
+end
+
 -- Function to handle the robbery event
 function robberyEvent()
     local items = {"gold", "HPpotions", "MPpotions"}
@@ -498,8 +508,9 @@ local function showStatus()
         message=message.."所有物:^金：" .. composer.getVariable("gold") .. "グラム。^HPポーション：" .. composer.getVariable("HPpotions") .. "^MPポーション：" ..  composer.getVariable("MPpotions")
     elseif composer.getVariable( "language" ) == "Spanish" then
         message=message.."Tienes:^oro:" .. composer.getVariable("gold") .. " gramos.^pociones de HP:" .. composer.getVariable("HPpotions") .. "^pociones de MP:" ..  composer.getVariable("MPpotions")
-    end            
-    pauseAndShowQuickMessage(message)
+    end
+    pauseAndShowQuickMessageFast(message)        
+    --pauseAndShowQuickMessage(message)
 end
 
 local function myFireTouchListener( event )

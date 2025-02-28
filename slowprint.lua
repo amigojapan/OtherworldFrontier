@@ -141,9 +141,9 @@ function replaceStringOfRomajiWithDoubleWidthCHaracters2(str)
         ["k"] = "ｋ", ["l"] = "ｌ", ["m"] = "ｍ", ["n"] = "ｎ", ["o"] = "ｏ",
         ["p"] = "ｐ", ["q"] = "ｑ", ["r"] = "ｒ", ["s"] = "ｓ", ["t"] = "ｔ",
         ["u"] = "ｕ", ["v"] = "ｖ", ["w"] = "ｗ", ["x"] = "ｘ", ["y"] = "ｙ",
-        ["z"] = "ｚ"
+        ["z"] = "ｚ",[" "] = "　"
     }
-    --**add doubel width space
+    --(Done)add doubel width space
     --**add camping, add tame  wild unicorn, add paczel
     -- Replace each character using the mapping
     return (str:gsub(".", function(c) return mapping[c] or c end))
@@ -356,6 +356,92 @@ function PRINT(STR)
 end
 
 
+
+function PRINTFAST(STR)
+    if Lang=="JP" then
+        STR=replaceStringOfRomajiWithDoubleWidthCHaracters2(STR)
+    end
+    -- Eliminate newlines and prepare the string
+    STRING = STR:gsub("\n", "^")
+    printing = true
+    STRING = STRING:gsub("なし", "")
+    
+    -- Define magicnum2 for Japanese language handling
+    local magicnum2
+    if Lang == "JP" then
+        magicnum2 = columns * 3  -- Adjusts column width for Japanese characters
+    end
+    
+    -- Split STRING by '^'
+    local parts = {}
+    local start = 1
+    while true do
+        local pos = STRING:find("%^", start)
+        if pos then
+            table.insert(parts, STRING:sub(start, pos - 1))
+            start = pos + 1
+        else
+            table.insert(parts, STRING:sub(start))
+            break
+        end
+    end
+    
+    -- Print each part
+    for i, part in ipairs(parts) do
+        -- Call NEWENDLINE() before printing all parts except the first
+        if i > 1 then
+            NEWENDLINE()
+        end
+        while #part > 0 do
+            -- Calculate the remaining space on the current line
+            local remainingSpace
+            if Lang == "JP" then
+                remainingSpace = magicnum2 - cursor.Column + 1
+            else
+                remainingSpace = columns - cursor.Column + 1
+            end
+            local toPrint = part:sub(1, remainingSpace)
+            
+            -- Determine if the text is ASCII for spacing adjustments
+            local characterWasAscii = isAscii2(toPrint)
+            
+            -- Get the current line text
+            local currentLine = tableLines[cursor.Line].text
+            
+            -- Concatenate text correctly
+            local textbefore = currentLine:sub(1, cursor.Column - 1)
+            local textafter
+            if characterWasAscii and Lang == "JP" then
+                textafter = currentLine:sub((cursor.Column + #toPrint) + 1)
+            else
+                textafter = currentLine:sub(cursor.Column + #toPrint)
+            end
+            local updatedLine = textbefore .. toPrint .. textafter
+            
+            -- Handle scrolling if at the second-to-last line
+            if cursor.Line == rows - 1 then
+                NEWENDLINE()
+                LOCATE(cursor.Line - 1, 1)
+            end
+            tableLines[cursor.Line].text = updatedLine
+            
+            -- Remove the printed portion from the part
+            part = part:sub(#toPrint + 1)
+            
+            -- Update cursor position
+            if #part > 0 then
+                cursor.Line = cursor.Line + 1
+                if cursor.Line > rows then
+                    NEWENDLINE()
+                    cursor.Line = rows
+                end
+                cursor.Column = 1
+            else
+                cursor.Column = cursor.Column + #toPrint
+            end
+        end
+    end
+end
 
 local oneline
 local character

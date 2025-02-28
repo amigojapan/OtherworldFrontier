@@ -26,7 +26,7 @@ print( "ORIENTATION: "..system.orientation )
 function sendToDIfferentTrialStates()
 	local trialState=trialAlgorythm()
 	if trialState == "Free version" or trialState == "Trial period valid" then
-		composer.gotoScene( "chooseStudyLanguage" )
+		composer.gotoScene( "tavern" )
 	elseif trialState == "Trial period over" then
 		composer.gotoScene( "trialPeriodOver" )
 	elseif trialState == "Trial period start" then
