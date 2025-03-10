@@ -433,6 +433,7 @@ function gameStartES()
     SLOWPRINT(50,"",showControls)
 end
 local campingButton
+local tameUnicornButton
 function unicornsFaster()
     speed=speed+granualrMovement
     print("speed:"..speed)
@@ -449,7 +450,7 @@ function healCusedCharacterByIndex(index,message)
         local characters = composer.getVariable("characters")
         char=characters[index] 
         if char.isAlive then
-            if true then --char.isCursed
+            if char.isCursed then
                 message=message..char.name
                 if composer.getVariable( "language" ) == "English" then
                     message=message.." has been healed from the curse!^"
@@ -488,8 +489,9 @@ function campOverNighht()
     elseif composer.getVariable( "language" ) == "Japanese" then
         message="一日過ぎた。HPが回復した。改"
     elseif composer.getVariable( "language" ) == "Spanish" then
-        message="Paso un dia.HP restaurado.^"
+        message="Paso un dia. HP restaurado.^"
     end            
+    --**add time going by when camping when time system is done
     message=healCusedCharacterByIndex(1,message)
     message=healCusedCharacterByIndex(2,message)
     message=healCusedCharacterByIndex(3,message)
@@ -503,21 +505,71 @@ function campOverNighht()
     healAllUnicornsHP()
     pauseAndShowQuickMessage(message)
 end
-local function myCampingTouchListener( event )
+function tameAUnicorn()
+    local message
+    local characters = composer.getVariable("characters")
+    char=characters[2]--tamer 
+    if char.MP<30 then
+        message="You need 30 MP to cast this spell"
+        pauseAndShowQuickMessage(message)
+        return
+    end
+    if char.isAlive==false then
+        if composer.getVariable( "language" ) == "English" then
+            message=char.name.." is dead, only she has the magic to tame a wild unicorn.^"
+        elseif composer.getVariable( "language" ) == "Japanese" then
+            message=char.name.."が死んでる、彼女にしか野生のユニコーン飼いならす魔法がない。改"
+        elseif composer.getVariable( "language" ) == "Spanish" then
+            message=char.name.." ha muerto, solo ella tiene la magia para rominar a un unicornio salvaje.^"
+        end
+        pauseAndShowQuickMessage(message)
+        return 
+    end
+    dice=math.random(1,100)
+    if dice < 80 then
+        message=char.name.." plays her harp and it tamed a unicorn"
+        composer.setVariable("NumberOfUnicorns",composer.getVariable("NumberOfUnicorns")+1)
+    else
+        message="The magic failed.^"
+        dice=math.random(1,100)
+        if dice < 10 then
+            message=message.." and " .. char.name.." died.^"
+            char.isAlive=false
+        end
+    end
+    if char.isAlive then
+        message=message.." the magic took 30 MP."
+    end
+    characters[2]=char--tamer
+    composer.setVariable("characters", characters)
+    pauseAndShowQuickMessage(message)
+end
+local function menuButtonTouchListener( event )
     if ( event.phase == "began" ) then
         print( "object touched = " .. tostring(event.target) )  -- "event.target" is the touched object
 	elseif ( event.phase == "moved" ) then
 		--if isWithinBounds(myUpButton, event) == false then
 		--end
 	elseif ( event.phase == "ended" or event.phase == "moved" or event.phase == "cancelled") then
-		hideRestingMenu()
-        campOverNighht()
+        print("event.target.myName:"..event.target.myName)
+        if event.target.myName=="campingButton" then
+            hideRestingMenu()
+            campOverNighht()
+        end
+        if event.target.myName=="tameUnicornButton" then
+            hideRestingMenu()
+            tameAUnicorn()
+        end
     end
     return true  -- Prevents tap/touch propagation to underlying objects
 end
 
 function hideRestingMenu()
+    if not campingButton then
+        return
+    end
     campingButton.isVisible=false
+    tameUnicornButton.isVisible=false
 end
 
 function showRestingMenu()
@@ -530,9 +582,21 @@ function showRestingMenu()
         }
         campingButton = display.newRect( offsetx, offsety, 200, 200 )
         campingButton.fill = paint
-        campingButton:addEventListener( "touch", myCampingTouchListener ) 
+        campingButton.myName="campingButton"
+        campingButton:addEventListener( "touch", menuButtonTouchListener ) 
+
+        local paint = {
+            type = "image",
+            filename = "img/taming-wild-unicorn.png"
+        }
+        offsetx=offsetx+250--50 is space between buttons
+        tameUnicornButton = display.newRect( offsetx, offsety, 200, 200 )
+        tameUnicornButton.fill = paint
+        tameUnicornButton.myName="tameUnicornButton"
+        tameUnicornButton:addEventListener( "touch", menuButtonTouchListener ) 
     else
         campingButton.isVisible=true
+        tameUnicornButton.isVisible=true
     end 
 end
 
