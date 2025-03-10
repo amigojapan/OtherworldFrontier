@@ -111,7 +111,7 @@ local function updateUnicornHP(unicorn, dt, speedL)
     if unicorn.alive then
         local fatigueRate = calculateFatigueRate(speed)
         unicorn.hp = unicorn.hp - fatigueRate * dt
-        print("unicorn:" .. unicorn.id.." HP:".. unicorn.hp)
+        --print("unicorn:" .. unicorn.id.." HP:".. unicorn.hp)
         if unicorn.hp <= 0 then
             unicorn.hp = 0
             unicorn.alive = false
@@ -152,6 +152,9 @@ function  unPauseGame()
     disableContinueButton()
     hideTextArea()
     gamePaused=false
+    if speed==0 then
+        showRestingMenu()
+    end
 end
 
 function pauseAndShowQuickMessage(message)
@@ -244,9 +247,11 @@ function gameloop()
         caravan.x=newx;
         caravan.y=newy;
     end
-    --(partly done)event someoen gets cursed, curses should be healed by either resting or using an HPpotion,
-        --(pending)or the healer girl can use soem of her MP to heal someone
-        --(pending)otherwise HP of hte cursed girl will keep on draning until she dies
+    --(partly done)event someoen gets cursed, curses should be healed by either
+        --(pending)camping 30 percent chance or 
+        --(pending)using an HPpotion 100 percent chance,
+        --(pending)or the healer girl can use soem of her MP to heal someone 100 percent uses 30 MP
+        --(done)otherwise HP of hte cursed girl will keep on draning until she dies
     --(done)event you get robbed, potions and gold can dissapear
     --(pending)event attacked by angry goblin)change background image maybe? instead of switching to another scene, each adventurer should have a different attack power. like hte girl form ironreach shoudl have most power to easily defeat goblins, or maybe the tamer can tame them or the girl; that can call divine power can scare them away)
         --for this it woudl be easiest to make attack be by ironrech girl, tame by tamer, scare by divine power girl
@@ -262,7 +267,9 @@ function gameloop()
     --(penging)add obstacles atounf caravan's route so you cant go off the route, maybe even have an accident if you go off it
         --I am lazy but the pbest way to do this would be to have a n event of fallling in a ditch, and time going by to restore getting back on the path
     --(nah)add trading on route?
-    
+    --**add camping, add tame  wild unicorn, add paczel
+    -- Replace each character using the mapping
+
     -- Random event triggers
     local randomNumber = math.random(1, 10000)
     if randomNumber < 100 then
@@ -425,12 +432,118 @@ function gameStartES()
     QUESLOWPRINT("Tundra\" antes de que se conjele....")
     SLOWPRINT(50,"",showControls)
 end
+local campingButton
 function unicornsFaster()
     speed=speed+granualrMovement
+    print("speed:"..speed)
+    if campingButton then
+        if campingButton.isVisible then
+            hideRestingMenu()
+        end
+    end
 end
+
+function healCusedCharacterByIndex(index,message)
+    dice=math.random(1,100)
+    if dice<=30 then
+        local characters = composer.getVariable("characters")
+        char=characters[index] 
+        if char.isAlive then
+            if true then --char.isCursed
+                message=message..char.name
+                if composer.getVariable( "language" ) == "English" then
+                    message=message.." has been healed from the curse!^"
+                elseif composer.getVariable( "language" ) == "Japanese" then
+                    message=message.."の呪いがとけた！改"
+                elseif composer.getVariable( "language" ) == "Spanish" then
+                    message=message.." se ha aliviado de la maldicion!^"
+                end            
+            end
+        end
+    end
+    return message
+end
+function healCharacterHPByIndex(index)
+    local characters = composer.getVariable("characters")
+    char=characters[index] 
+    if char.isAlive then
+        if true then --char.isCursed
+            char.HP=100       
+        end
+    end
+end
+
+local function healAllUnicornsHP()
+    for i, unicorn in ipairs(unicorns) do
+        if unicorn.alive then
+            unicorn.hp = 100
+        end
+    end
+end
+
+function campOverNighht()
+    local message
+    if composer.getVariable( "language" ) == "English" then
+        message="A day went by. HP restored^"
+    elseif composer.getVariable( "language" ) == "Japanese" then
+        message="一日過ぎた。HPが回復した。改"
+    elseif composer.getVariable( "language" ) == "Spanish" then
+        message="Paso un dia.HP restaurado.^"
+    end            
+    message=healCusedCharacterByIndex(1,message)
+    message=healCusedCharacterByIndex(2,message)
+    message=healCusedCharacterByIndex(3,message)
+    message=healCusedCharacterByIndex(4,message)
+    message=healCusedCharacterByIndex(5,message)
+    healCharacterHPByIndex(1)
+    healCharacterHPByIndex(2)
+    healCharacterHPByIndex(3)
+    healCharacterHPByIndex(4)
+    healCharacterHPByIndex(5)
+    healAllUnicornsHP()
+    pauseAndShowQuickMessage(message)
+end
+local function myCampingTouchListener( event )
+    if ( event.phase == "began" ) then
+        print( "object touched = " .. tostring(event.target) )  -- "event.target" is the touched object
+	elseif ( event.phase == "moved" ) then
+		--if isWithinBounds(myUpButton, event) == false then
+		--end
+	elseif ( event.phase == "ended" or event.phase == "moved" or event.phase == "cancelled") then
+		hideRestingMenu()
+        campOverNighht()
+    end
+    return true  -- Prevents tap/touch propagation to underlying objects
+end
+
+function hideRestingMenu()
+    campingButton.isVisible=false
+end
+
+function showRestingMenu()
+    if not campingButton then
+        offsetx=300
+        offsety=700
+        local paint = {
+            type = "image",
+            filename = "img/camping.png"
+        }
+        campingButton = display.newRect( offsetx, offsety, 200, 200 )
+        campingButton.fill = paint
+        campingButton:addEventListener( "touch", myCampingTouchListener ) 
+    else
+        campingButton.isVisible=true
+    end 
+end
+
+
 function unicornsSlower()
-    if not (speed <= 0) then
+    print("speed:"..speed)
+    if speed > 0 then
         speed=speed-granualrMovement
+    end
+    if speed <= 0 then
+        showRestingMenu()
     end
 end
 
@@ -441,7 +554,8 @@ local function myUpTouchListener( event )
 		--if isWithinBounds(myUpButton, event) == false then
 		--end
 	elseif ( event.phase == "ended" or event.phase == "moved" or event.phase == "cancelled") then
-		unicornsFaster()
+		print("Unicorns faster!")
+        unicornsFaster()
     end
     return true  -- Prevents tap/touch propagation to underlying objects
 end
@@ -518,6 +632,7 @@ local function myFireTouchListener( event )
 	elseif ( event.phase == "moved" ) then
 	elseif ( event.phase == "ended" or event.phase == "moved" or event.phase == "cancelled") then
             showStatus()
+            hideRestingMenu()
     end
     return true  -- Prevents tap/touch propagation to underlying objects
 end
