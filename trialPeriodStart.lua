@@ -16,7 +16,7 @@ local function gotoMenu()
 end
 
 local function gotoTavern()
-	composer.gotoScene( "tavern" )
+	composer.gotoScene( "chooseDifficulty" )
 end
 -- -----------------------------------------------------------------------------------
 -- Scene event functions

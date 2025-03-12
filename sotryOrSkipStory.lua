@@ -1,5 +1,4 @@
 require("i18n_dict")
-require("trial")
 local composer = require( "composer" )
 
 local scene = composer.newScene()
@@ -8,68 +7,14 @@ local scene = composer.newScene()
 -- Code outside of the scene event functions below will only be executed ONCE unless
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
 -- -----------------------------------------------------------------------------------
-local characterTimer=nil
-function gotoMenu()
-	timer.cancel(characterTimer)
-	local options =
-	{
-		effect = "fade",
-		time = 400,
-		params = {
-		}
-	}
-	composer.gotoScene( "menu", options )
-end
-
 
 print( "ORIENTATION: "..system.orientation )
-function sendToDIfferentTrialStates()
-	local trialState=trialAlgorythm()
-	if trialState == "Free version" or trialState == "Trial period valid" then
-		composer.gotoScene( "chooseDifficulty" )--composer.gotoScene( "tavern" )
-	elseif trialState == "Trial period over" then
-		composer.gotoScene( "trialPeriodOver" )
-	elseif trialState == "Trial period start" then
-		composer.gotoScene( "trialPeriodStart" )
-	end
+local function gotoStory()
+	composer.gotoScene( "tavern" )
 end
 
-local function gotoSettingsMenu()
-	composer.gotoScene( "SettingsMenu" )
-end
-
-local function setDefaultSpeed()
-	speed = composer.getVariable( "speed" )
-	if not speed then
-		speed="1"
-	end
-	print("speed:"..speed)
-	composer.setVariable( "speed", speed )
-end
-
-
-function gotoStudyLanguageRomajiInRomaji()
-	composer.setVariable( "language", "Romaji" )
-	sendToDIfferentTrialStates()
-end
-
-local function gotoGameEnglish()
-	composer.setVariable( "language", "English" )
-	sendToDIfferentTrialStates()
-end
-
-local function gotoGameJapanese()
-	composer.setVariable( "language", "Japanese" )
-	sendToDIfferentTrialStates()
-end
-
-local function gotoGameSpanish()
-	composer.setVariable( "language", "Spanish" )
-	sendToDIfferentTrialStates()
-end
-
-local function gotoHighScores()
-	composer.gotoScene( "scoresScreen" )
+local function gotoSkipStory()
+	composer.gotoScene( "mainGameScreen" )
 end
 
 
@@ -112,14 +57,37 @@ audio.reserveChannels( 1 )
 		
 	elseif ( phase == "did" ) then
 		-- Code here runs when the scene is entirely on screen
-		print("Removed scene title")
+		print("Removed scene menu")
 		--composer.removeScene( "game" )
 		local background = display.newImageRect( sceneGroup, "backgrounds/Otherword-Frontier-Intro-screen.png", 1400,800 )
 		background.x = display.contentCenterX
 		background.y = display.contentCenterY
-		local lblTitle = display.newText( sceneGroup, "Otherworld Frontier", display.contentCenterX, display.contentCenterY, "fonts/ume-tgc5.ttf", 130 )
-		lblTitle:setFillColor( 0, 0,0 )
-		characterTimer=timer.performWithDelay( 5000, gotoMenu, 1  )
+		ordersRectangle = display.newRect(sceneGroup,display.contentCenterX, display.contentCenterY, 1500-100, 800-50 )
+		ordersRectangle.strokeWidth = 5
+		ordersRectangle:setFillColor( 0, 0 , 0, 0.5 )
+		ordersRectangle:setStrokeColor( 1, 0, 0 )
+		
+		offsetY=300
+		local lblTitle = display.newText( sceneGroup, "choose,選択して下さい、escoje", display.contentCenterX, offsetY, "fonts/ume-tgc5.ttf", 50 )
+		lblTitle:setFillColor( 0.82, 0.86, 1 )
+		
+		offsetY=offsetY+300
+		local btnStory = display.newText( sceneGroup, "Story Mode、ストリーモード, Modo de historia", display.contentCenterX, offsetY, "fonts/ume-tgc5.ttf", 40 )
+		btnStory:setFillColor( 0.82, 0.86, 1 )
+		btnStory:addEventListener( "tap", gotoStory )
+		offsetY=offsetY+50
+		local btnSkipSotry = display.newText( sceneGroup, "Skip Story、ストリーを飛ばす, No ver historia", display.contentCenterX, offsetY, "fonts/ume-tgc5.ttf", 40 )
+		btnSkipSotry:setFillColor( 0.82, 0.86, 1 )
+		btnSkipSotry:addEventListener( "tap", gotoSkipStory )
+		offsetY=offsetY+100
+		local lblHope = display.newText( sceneGroup, "We would like you to see the story at least once.", display.contentCenterX, offsetY, "fonts/ume-tgc5.ttf", 40 )
+		lblHope:setFillColor( 1, 1, 0 )
+		offsetY=offsetY+50
+		local lblHope = display.newText( sceneGroup, "一回はストリーを見て欲しいです。", display.contentCenterX, offsetY, "fonts/ume-tgc5.ttf", 40 )
+		lblHope:setFillColor( 1, 1, 0 )
+		offsetY=offsetY+50
+		local lblHope = display.newText( sceneGroup, "Nos gustaria que lean la historia por lo menos una vez.", display.contentCenterX, offsetY, "fonts/ume-tgc5.ttf", 40 )
+		lblHope:setFillColor( 1, 1, 0 )
 	end
 end
 

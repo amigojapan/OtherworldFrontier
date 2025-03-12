@@ -146,6 +146,23 @@ end
 
 -- Function to handle the curse event
 function curseEvent()
+    local message
+    girlNumber=math.random(1,5)
+    local characters = composer.getVariable("characters")
+    local char = characters[girlNumber]
+    if char.isCursed then
+        --already cursed
+        return
+    end
+    char.isCursed=true
+    if composer.getVariable( "language" ) == "English" then
+        message = char.name .. " has been cursed!"
+    elseif composer.getVariable( "language" ) == "Japanese" then
+        message = char.name .. "が呪われた！"
+    elseif composer.getVariable( "language" ) == "Spanish" then
+        message = char.name .. " ha sido maldicha!"
+    end
+    pauseAndShowQuickMessage(message)
 end
 
 function  unPauseGame()
@@ -247,55 +264,35 @@ function gameloop()
         caravan.x=newx;
         caravan.y=newy;
     end
-    --(partly done)event someoen gets cursed, curses should be healed by either
-        --(pending)camping 30 percent chance or 
-        --(pending)using an HPpotion 100 percent chance,
-        --(pending)or the healer girl can use soem of her MP to heal someone 100 percent uses 30 MP
-        --(done)otherwise HP of hte cursed girl will keep on draning until she dies
-    --(done)event you get robbed, potions and gold can dissapear
-    --(pending)event attacked by angry goblin)change background image maybe? instead of switching to another scene, each adventurer should have a different attack power. like hte girl form ironreach shoudl have most power to easily defeat goblins, or maybe the tamer can tame them or the girl; that can call divine power can scare them away)
-        --for this it woudl be easiest to make attack be by ironrech girl, tame by tamer, scare by divine power girl
-        --tame and divine power shoudl cost MP of those girls oh yeah and mayeb hte random girl too         
-        --when you get attacked by goblins, you will get to choose who y ou wnat to solev the problem, the warrior by attackign hte golin, the tamer by appaeaseing the goblin, or the saiotn by scaring away the goblins with divine light or hte random girl which gives 50 percent success 50 percent failue.... but if one of them dies, you wont be able to use her powers anymroe
-    --handle unicorns getting tired, it should be that the more unicorns you have the more they share the workload of  pulling the caravan
-        --if the unicorns get too tired they can die, maybe each unicon can have it's own HP
-        --healer girl can heal a unicon using MP
-        --you can heal all unicon using HPpotions
-        --cada unicornio va a tenenr sus propoio "HP"(que son los puntos de vida) entre mas unicornios tengas menos se van a cansar porque comparten jalar a la caravana, y entre mas rapido vayas se cansan mas rapido
-        --each unicorn depending on composer.getVariable("NumberOfUnicorns")  will have its own HP the more unicorns you have the less they will get tired because they share to pulling the caravan, and the faster you go the faster they get tired. when one gets too tired he will die.
-    --(pending)make a status window(showTextarea()) for you to see how your unicorns are doing, how long before hte turnda freezes too
-    --(penging)add obstacles atounf caravan's route so you cant go off the route, maybe even have an accident if you go off it
-        --I am lazy but the pbest way to do this would be to have a n event of fallling in a ditch, and time going by to restore getting back on the path
-    --(nah)add trading on route?
-    --**add camping, add tame  wild unicorn, add paczel
-    -- Replace each character using the mapping
 
     -- Random event triggers
     local randomNumber = math.random(1, 10000)
-    if randomNumber < 100 then
+    if randomNumber < 1000 then
         curseEvent()
-    elseif randomNumber < 200 then
+    elseif randomNumber < 1010 then
         robberyEvent()
     end
     -- Handle HP draining for cursed characters
     local characters = composer.getVariable("characters")
     for i = #characters, 1, -1 do
         local char = characters[i]
-        if char.isCursed then
-            char.HP = char.HP - 1 -- Drain 1 HP per second
-            if char.HP <= 0 then
-                local message
-                if composer.getVariable( "language" ) == "English" then
-                    message = char.name .. " has died from the curse!"
-                elseif composer.getVariable( "language" ) == "Japanese" then
-                    message = char.name .. "が呪いによって死んだ！"
-                elseif composer.getVariable( "language" ) == "Spanish" then
-                    message = char.name .. " ha muerto de la maldición!"
+        if char.isAlive then
+            if char.isCursed then
+                char.HP = char.HP - 1 -- Drain 1 HP per second
+                if char.HP <= 0 then
+                    local message
+                    if composer.getVariable( "language" ) == "English" then
+                        message = char.name .. " has died from the curse!"
+                    elseif composer.getVariable( "language" ) == "Japanese" then
+                        message = char.name .. "が呪いによって死んだ！"
+                    elseif composer.getVariable( "language" ) == "Spanish" then
+                        message = char.name .. " ha muerto de la maldición!"
+                    end
+                    pauseAndShowQuickMessage(message)        
+                    --table.remove(characters, i)
+                    char.isAlive=false
+                    -- Optionally, handle game over if MC dies
                 end
-                pauseAndShowQuickMessage(message)        
-                --table.remove(characters, i)
-                char.isAlive=false
-                -- Optionally, handle game over if MC dies
             end
         end
     end
@@ -455,10 +452,11 @@ function healCusedCharacterByIndex(index,message)
                 if composer.getVariable( "language" ) == "English" then
                     message=message.." has been healed from the curse!^"
                 elseif composer.getVariable( "language" ) == "Japanese" then
-                    message=message.."の呪いがとけた！改"
+                    message=message.."の呪いが解けた！改"
                 elseif composer.getVariable( "language" ) == "Spanish" then
                     message=message.." se ha aliviado de la maldicion!^"
-                end            
+                end
+                char.isCursed=false            
             end
         end
     end
@@ -468,8 +466,9 @@ function healCharacterHPByIndex(index)
     local characters = composer.getVariable("characters")
     char=characters[index] 
     if char.isAlive then
-        if true then --char.isCursed
-            char.HP=100       
+        if char.isCursed then
+            char.HP=100
+            --this does not belogn here char.isCursed=false
         end
     end
 end
@@ -510,7 +509,13 @@ function tameAUnicorn()
     local characters = composer.getVariable("characters")
     char=characters[2]--tamer 
     if char.MP<30 then
-        message="You need 30 MP to cast this spell"
+        if composer.getVariable( "language" ) == "English" then
+            message=char.name .. " needs 30 MP to cast this spell."
+        elseif composer.getVariable( "language" ) == "Japanese" then
+            message=char.name .. "がその呪文を唱えるには３０MPが必要。"
+        elseif composer.getVariable( "language" ) == "Spanish" then
+            message=char.name .. "　necesita 30 MP para usar esa magia."
+        end
         pauseAndShowQuickMessage(message)
         return
     end
@@ -540,8 +545,59 @@ function tameAUnicorn()
     if char.isAlive then
         message=message.." the magic took 30 MP."
     end
-    characters[2]=char--tamer
-    composer.setVariable("characters", characters)
+    char.MP=char.MP-30
+    pauseAndShowQuickMessage(message)
+end
+function unCurseTeam()
+    local characters = composer.getVariable("characters") 
+    local message=""
+    healerChar=characters[5]
+    if healerChar.isAlive==false then
+        if composer.getVariable( "language" ) == "English" then
+            message=healerChar.name.." is dead, only she can cast the uncurse spell.^"
+        elseif composer.getVariable( "language" ) == "Japanese" then
+            message=healerChar.name.."が死んだ。彼女しか呪いを解ける魔法が使えない。改"
+        elseif composer.getVariable( "language" ) == "Spanish" then
+            message=healerChar.name.." ha muerto, sole ella puede usar la magia para quitar las maldiciones.^"
+        end
+        pauseAndShowQuickMessage(message)
+        return
+    end
+    if healerChar.MP<30 then
+        if composer.getVariable( "language" ) == "English" then
+            message=healerChar.name.." must have 30MP to cast the uncurse spell.^"
+        elseif composer.getVariable( "language" ) == "Japanese" then
+            message=healerChar.name.."が３０MPがないと呪いを解ける呪文が唱えない。改"
+        elseif composer.getVariable( "language" ) == "Spanish" then
+            message=healerChar.name.." tiene que tener 30 MP pare poder hacer el invocar de quitar las maldiciones.^"
+        end
+        pauseAndShowQuickMessage(message)
+        return
+    end
+    healerChar.MP=healerChar.MP-30
+    if composer.getVariable( "language" ) == "English" then
+        message=healerChar.name.." casts an uncurseing spell on the group!^this spell drained 30 MP"
+    elseif composer.getVariable( "language" ) == "Japanese" then
+        message=healerChar.name.."が呪いを解ける呪文を皆に唱える！改"
+    elseif composer.getVariable( "language" ) == "Spanish" then
+        message=healerChar.name.." invoca el hechizo de quitar maldiciones al grupo!^"
+    end            
+    for girlNumber=1,5,1 do--init,maxval,step
+        char=characters[girlNumber]
+        if char.isAlive then
+            if char.isCursed then
+                message=message..char.name
+                if composer.getVariable( "language" ) == "English" then
+                    message=message.." has been healed from the curse!^"
+                elseif composer.getVariable( "language" ) == "Japanese" then
+                    message=message.."の呪いが解けた！改"
+                elseif composer.getVariable( "language" ) == "Spanish" then
+                    message=message.." se ha aliviado de la maldicion!^"
+                end
+                char.isCursed=false            
+            end
+        end
+    end
     pauseAndShowQuickMessage(message)
 end
 local function menuButtonTouchListener( event )
@@ -560,6 +616,14 @@ local function menuButtonTouchListener( event )
             hideRestingMenu()
             tameAUnicorn()
         end
+        if event.target.myName=="tameUnicornButton" then
+            hideRestingMenu()
+            tameAUnicorn()
+        end
+        if event.target.myName=="unCurseButton" then
+            hideRestingMenu()
+            unCurseTeam()
+        end
     end
     return true  -- Prevents tap/touch propagation to underlying objects
 end
@@ -570,6 +634,7 @@ function hideRestingMenu()
     end
     campingButton.isVisible=false
     tameUnicornButton.isVisible=false
+    unCurseButton.isVisible=false
 end
 
 function showRestingMenu()
@@ -594,9 +659,19 @@ function showRestingMenu()
         tameUnicornButton.fill = paint
         tameUnicornButton.myName="tameUnicornButton"
         tameUnicornButton:addEventListener( "touch", menuButtonTouchListener ) 
+        local paint = {
+            type = "image",
+            filename = "img/unCurse.png"
+        }
+        offsetx=offsetx+250--50 is space between buttons
+        unCurseButton = display.newRect( offsetx, offsety, 200, 200 )
+        unCurseButton.fill = paint
+        unCurseButton.myName="unCurseButton"
+        unCurseButton:addEventListener( "touch", menuButtonTouchListener ) 
     else
         campingButton.isVisible=true
         tameUnicornButton.isVisible=true
+        unCurseButton.isVisible=true
     end 
 end
 
@@ -896,4 +971,31 @@ scene:addEventListener("destroy", scene)
 -- -----------------------------------------------------------------------------------
 
 return scene
---first fix this to be all langauges, then fix the same stuff for the parts of the game that are finished
+--(partly done)event someoen gets cursed, curses should be healed by either
+    --(pending)camping 30 percent chance or 
+    --(pending)or the healer girl can use soem of her MP to uncurse someone 100 percent uses 30 MP
+    --(done)otherwise HP of hte cursed girl will keep on draning until she dies
+--(done)event you get robbed, potions and gold can dissapear
+--(pending)event attacked by angry goblin)change background image maybe? instead of switching to another scene, each adventurer should have a different attack power. like hte girl form ironreach shoudl have most power to easily defeat goblins, or maybe the tamer can tame them or the girl; that can call divine power can scare them away)
+    --for this it woudl be easiest to make attack be by ironrech girl, tame by tamer, scare by divine power girl
+    --tame and divine power shoudl cost MP of those girls oh yeah and mayeb hte random girl too         
+    --when you get attacked by goblins, you will get to choose who y ou wnat to solev the problem, the warrior by attackign hte golin, the tamer by appaeaseing the goblin, or the saiotn by scaring away the goblins with divine light or hte random girl which gives 50 percent success 50 percent failue.... but if one of them dies, you wont be able to use her powers anymroe
+--(fix, making unicorns get more tired if they are going faster, it seems to be the same regardless of speed.done)handle unicorns getting tired, it should be that the more unicorns you have the more they share the workload of  pulling the caravan
+    --if the unicorns get too tired they can die, maybe each unicon can have it's own HP
+    --healer girl can heal a unicon using MP
+    --you can heal all unicon using HPpotions
+    --each unicorn depending on composer.getVariable("NumberOfUnicorns")  will have its own HP the more unicorns you have the less they will get tired because they share to pulling the caravan, and the faster you go the faster they get tired. when one gets too tired he will die.
+--(done)make a status window(showTextarea()) for you to see how your unicorns are doing, how long before hte turnda freezes too
+--(penging)add obstacles on caravan's route so you cant go off the route, maybe even have an accident if you go off it
+    --I am lazy but the best way to do this would be to have a n event of fallling in a ditch, and time going by to restore getting back on the path
+    --make a level editor to design the map collision sprites
+--(nah)add trading on route?
+--(done)add camping, add tame  wild unicorn
+    --add paczel for hunting, maybe make slimes food and ghosts jot eddible
+
+--**add cant camp when offtrail.
+--fall off cliffs if you go thru mountains
+--easy to get stuck in a pit and lose time
+--I guess land slides can force you to go  off route
+
+--add quit game button, takes you back to menu screen

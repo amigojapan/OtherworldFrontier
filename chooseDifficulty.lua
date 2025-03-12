@@ -1,5 +1,4 @@
 require("i18n_dict")
-require("trial")
 local composer = require( "composer" )
 
 local scene = composer.newScene()
@@ -8,70 +7,42 @@ local scene = composer.newScene()
 -- Code outside of the scene event functions below will only be executed ONCE unless
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
 -- -----------------------------------------------------------------------------------
-local characterTimer=nil
-function gotoMenu()
-	timer.cancel(characterTimer)
-	local options =
-	{
-		effect = "fade",
-		time = 400,
-		params = {
-		}
-	}
-	composer.gotoScene( "menu", options )
-end
-
 
 print( "ORIENTATION: "..system.orientation )
-function sendToDIfferentTrialStates()
-	local trialState=trialAlgorythm()
-	if trialState == "Free version" or trialState == "Trial period valid" then
-		composer.gotoScene( "chooseDifficulty" )--composer.gotoScene( "tavern" )
-	elseif trialState == "Trial period over" then
-		composer.gotoScene( "trialPeriodOver" )
-	elseif trialState == "Trial period start" then
-		composer.gotoScene( "trialPeriodStart" )
-	end
+local function gotoSotryOrSkipStory()
+	composer.gotoScene( "sotryOrSkipStory" )
 end
 
-local function gotoSettingsMenu()
-	composer.gotoScene( "SettingsMenu" )
-end
-
-local function setDefaultSpeed()
-	speed = composer.getVariable( "speed" )
-	if not speed then
-		speed="1"
-	end
-	print("speed:"..speed)
-	composer.setVariable( "speed", speed )
+local function easyMode()
+	composer.setVariable( "difficulty", "easy" )
+	composer.setVariable( "gold", 16000 )
+	composer.setVariable("HPpotions", 50)
+	composer.setVariable("MPpotions", 50)
+	composer.setVariable("NumberOfUnicorns", 40)
+	composer.setVariable("KGofFood", 100)
+	gotoSotryOrSkipStory()
 end
 
 
-function gotoStudyLanguageRomajiInRomaji()
-	composer.setVariable( "language", "Romaji" )
-	sendToDIfferentTrialStates()
+local function normalMode()
+	composer.setVariable( "difficulty", "normal" )
+	composer.setVariable( "gold", 4000 )
+	composer.setVariable("HPpotions", 5)
+	composer.setVariable("MPpotions", 5)
+	composer.setVariable("NumberOfUnicorns", 20)
+	composer.setVariable("KGofFood", 50)
+	gotoSotryOrSkipStory()
 end
 
-local function gotoGameEnglish()
-	composer.setVariable( "language", "English" )
-	sendToDIfferentTrialStates()
+local function difficultMode()
+	composer.setVariable( "difficulty", "hard" )
+	composer.setVariable( "gold", 400 )
+	composer.setVariable("HPpotions", 0)
+	composer.setVariable("MPpotions", 0)
+	composer.setVariable("NumberOfUnicorns", 2)
+	composer.setVariable("KGofFood", 0)
+	gotoSotryOrSkipStory()
 end
-
-local function gotoGameJapanese()
-	composer.setVariable( "language", "Japanese" )
-	sendToDIfferentTrialStates()
-end
-
-local function gotoGameSpanish()
-	composer.setVariable( "language", "Spanish" )
-	sendToDIfferentTrialStates()
-end
-
-local function gotoHighScores()
-	composer.gotoScene( "scoresScreen" )
-end
-
 
 -- -----------------------------------------------------------------------------------
 -- Scene event functions
@@ -112,14 +83,32 @@ audio.reserveChannels( 1 )
 		
 	elseif ( phase == "did" ) then
 		-- Code here runs when the scene is entirely on screen
-		print("Removed scene title")
+		print("Removed scene menu")
 		--composer.removeScene( "game" )
 		local background = display.newImageRect( sceneGroup, "backgrounds/Otherword-Frontier-Intro-screen.png", 1400,800 )
 		background.x = display.contentCenterX
 		background.y = display.contentCenterY
-		local lblTitle = display.newText( sceneGroup, "Otherworld Frontier", display.contentCenterX, display.contentCenterY, "fonts/ume-tgc5.ttf", 130 )
-		lblTitle:setFillColor( 0, 0,0 )
-		characterTimer=timer.performWithDelay( 5000, gotoMenu, 1  )
+		ordersRectangle = display.newRect(sceneGroup,display.contentCenterX, display.contentCenterY, 1000-100, 800-50 )
+		ordersRectangle.strokeWidth = 5
+		ordersRectangle:setFillColor( 0, 0 , 0, 0.5 )
+		ordersRectangle:setStrokeColor( 1, 0, 0 )
+		
+		offsetY=300
+		local lblTitle = display.newText( sceneGroup, "Difficulty、難易度, Difficultad", display.contentCenterX, offsetY, "fonts/ume-tgc5.ttf", 50 )
+		lblTitle:setFillColor( 0.82, 0.86, 1 )
+		
+		offsetY=offsetY+300
+		local btnEasy = display.newText( sceneGroup, "Easy、簡単, Facil", display.contentCenterX, offsetY, "fonts/ume-tgc5.ttf", 40 )
+		btnEasy:setFillColor( 0.82, 0.86, 1 )
+		btnEasy:addEventListener( "tap", easyMode )
+		offsetY=offsetY+50
+		local btnNormal = display.newText( sceneGroup, "Normal、普通, Normal", display.contentCenterX, offsetY, "fonts/ume-tgc5.ttf", 40 )
+		btnNormal:setFillColor( 0.82, 0.86, 1 )
+		btnNormal:addEventListener( "tap", normalMode )
+		offsetY=offsetY+50
+		local btnHard = display.newText( sceneGroup, "Hard、難しい, Difficil", display.contentCenterX, offsetY, "fonts/ume-tgc5.ttf", 40 )
+		btnHard:setFillColor( 0.82, 0.86, 1 )
+		btnHard:addEventListener( "tap", difficultMode )
 	end
 end
 

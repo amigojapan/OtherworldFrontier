@@ -15,7 +15,7 @@ display.setStatusBar( display.HiddenStatusBar )
 math.randomseed( os.time() )
 
 -- Go to the menu screen
---composer.gotoScene( "title" )
+composer.gotoScene( "title" )
 composer.setVariable( "language", "Japanese" )
 composer.setVariable( "MCname", "amigojapan" )
 composer.setVariable( "gold", 4000 )
@@ -41,4 +41,4 @@ if composer.getVariable("MPpotions") == nil then
 end
 composer.setVariable("NumberOfUnicorns", 20)
 composer.setVariable("KGofFood", 0)
-composer.gotoScene("mainGameScreen")
+--composer.gotoScene("mainGameScreen")
