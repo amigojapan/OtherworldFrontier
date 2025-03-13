@@ -690,6 +690,9 @@ function useMPpotionOnAll()
     end
     pauseAndShowQuickMessage(message)
 end
+function goHuntingPaczel()
+    
+end
 local function menuButtonTouchListener( event )
     if ( event.phase == "began" ) then
         print( "object touched = " .. tostring(event.target) )  -- "event.target" is the touched object
@@ -719,6 +722,11 @@ local function menuButtonTouchListener( event )
             unCurseTeam()
             useMPpotionOnAll()
         end
+        if event.target.myName=="goHuntingButton" then
+            hideRestingMenu()
+            unCurseTeam()
+            goHuntingPaczel()
+        end
     end
     return true  -- Prevents tap/touch propagation to underlying objects
 end
@@ -736,7 +744,7 @@ end
 
 function showRestingMenu()
     if not campingButton then
-        offsetx=300
+        offsetx=235
         offsety=700
         local paint = {
             type = "image",
@@ -746,7 +754,6 @@ function showRestingMenu()
         campingButton.fill = paint
         campingButton.myName="campingButton"
         campingButton:addEventListener( "touch", menuButtonTouchListener ) 
-
         local paint = {
             type = "image",
             filename = "img/taming-wild-unicorn.png"
@@ -783,12 +790,22 @@ function showRestingMenu()
         useMPpotionButton.fill = paint
         useMPpotionButton.myName="useMPpotionButton"
         useMPpotionButton:addEventListener( "touch", menuButtonTouchListener ) 
+        local paint = {
+            type = "image",
+            filename = "img/goHunting.png"
+        }
+        offsetx=offsetx+250--50 is space between buttons
+        goHuntingButton = display.newRect( offsetx, offsety, 200, 200 )
+        goHuntingButton.fill = paint
+        goHuntingButton.myName="goHuntingButton"
+        goHuntingButton:addEventListener( "touch", menuButtonTouchListener ) 
     else
         campingButton.isVisible=true
         tameUnicornButton.isVisible=true
         unCurseButton.isVisible=true
         useHPpotionButton.isVisible=true
         useMPpotionButton.isVisible=true
+        goHuntingButton.isVisible=true
     end 
 end
 
@@ -1106,8 +1123,8 @@ return scene
     --make a level editor to design the map collision sprites
 --(nah)add trading on route?
 --(partly done)add camping, add tame  wild unicorn
-    --add paczel for hunting, maybe make slimes food and ghosts jot eddible
---add use of potions to menu
+    --(pending)add paczel for hunting, maybe make slimes food and ghosts jot eddible
+--(done)add use of potions to menu
 
 --**add cant camp when offtrail.
 --fall off cliffs if you go thru mountains
@@ -1115,7 +1132,8 @@ return scene
 --I guess land slides can force you to go  off route
 
 --add quit game button, takes you back to menu screen
+    --implement warning too
 
---voy a hacer mas facil domesticar muchos unicornios de una vez... porque esta dificil asi como esta
+--(done)voy a hacer mas facil domesticar muchos unicornios de una vez... porque esta dificil asi como esta
 
 --implement getting hungry, food and hunting
