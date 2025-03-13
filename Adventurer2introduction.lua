@@ -145,7 +145,7 @@ function welcomeHeroineES()
     --LOCATE(1,1)
     RESETQUE()
     QUESLOWPRINT("La historia de ".. composer.getVariable( "adventurer2")..":")
-    QUESLOWPRINT("^^"..composer.getVariable( "adventurer2").." crecio en la cuidad militaristica llamada Ironreach, trataron de forzarla a ser una soldada caballera. pero, cuando se dio cuenta de los planes malevolos de su orden de unirse con las fuerzas de las tinieblas , se escapo, y se llevo la espada encandada llamada \"Astral Blade\"")
+    QUESLOWPRINT("^^"..composer.getVariable( "adventurer2").." crecio en la cuidad militaristica llamada Ironreach, trataron de forzarla a ser una soldado caballera. pero, cuando se dio cuenta de los planes malevolos de su orden de unirse con las fuerzas de las tinieblas , se escapo, y se llevo la espada encandada llamada \"Astral Blade\"")
     SLOWPRINT(100,"",promptForNameEN)
 end
 

@@ -267,9 +267,9 @@ function gameloop()
 
     -- Random event triggers
     local randomNumber = math.random(1, 10000)
-    if randomNumber < 1000 then
+    if randomNumber < 100 then
         curseEvent()
-    elseif randomNumber < 1010 then
+    elseif randomNumber < 200 then
         robberyEvent()
     end
     -- Handle HP draining for cursed characters
@@ -334,11 +334,11 @@ local sceneGroup = self.view
     end
     -- Initialize the characters table using names from Composer variables
     local characters = {
-        {name = composer.getVariable("MCname") or "Default MC", isAlive=true, HP = 100, maxHP = 100, MP = 50, maxMP = 50, isCursed = false},
-        {name = composer.getVariable("adventurer1") or "Default Adv1", isAlive=true, HP = 80, maxHP = 80, MP = 70, maxMP = 70, isCursed = false},
-        {name = composer.getVariable("adventurer2") or "Default Adv2", isAlive=true, HP = 90, maxHP = 90, MP = 60, maxMP = 60, isCursed = false},
-        {name = composer.getVariable("adventurer3") or "Default Adv3", isAlive=true, HP = 70, maxHP = 70, MP = 40, maxMP = 40, isCursed = false},
-        {name = composer.getVariable("adventurer4") or "Default Adv4", isAlive=true, HP = 60, maxHP = 60, MP = 30, maxMP = 30, isCursed = false}
+        {name = composer.getVariable("MCname") or "Default MC", isAlive=true, HP = 100, maxHP = 100, MP = 100, maxMP = 100, isCursed = false},
+        {name = composer.getVariable("adventurer1") or "Default Adv1", isAlive=true, HP = 100, maxHP = 100, MP = 100, maxMP = 100, isCursed = false},
+        {name = composer.getVariable("adventurer2") or "Default Adv2", isAlive=true, HP = 100, maxHP = 100, MP = 100, maxMP = 100, isCursed = false},
+        {name = composer.getVariable("adventurer3") or "Default Adv3", isAlive=true, HP = 100, maxHP = 100, MP = 100, maxMP = 100, isCursed = false},
+        {name = composer.getVariable("adventurer4") or "Default Adv4", isAlive=true, HP = 100, maxHP = 100, MP = 100, maxMP = 100, isCursed = false}
     }
     composer.setVariable("characters", characters)
 end
@@ -462,16 +462,23 @@ function healCusedCharacterByIndex(index,message)
     end
     return message
 end
+
 function healCharacterHPByIndex(index)
     local characters = composer.getVariable("characters")
     char=characters[index] 
     if char.isAlive then
-        if char.isCursed then
-            char.HP=100
-            --this does not belogn here char.isCursed=false
-        end
+        char.HP=100
     end
 end
+
+function restoreCharacterMPByIndex(index)
+    local characters = composer.getVariable("characters")
+    char=characters[index] 
+    if char.isAlive then
+        char.MP=100
+    end
+end
+
 
 local function healAllUnicornsHP()
     for i, unicorn in ipairs(unicorns) do
@@ -507,45 +514,71 @@ end
 function tameAUnicorn()
     local message
     local characters = composer.getVariable("characters")
-    char=characters[2]--tamer 
-    if char.MP<30 then
+    tamerChar=characters[2]--tamer 
+    if tamerChar.MP<30 then
         if composer.getVariable( "language" ) == "English" then
-            message=char.name .. " needs 30 MP to cast this spell."
+            message=tamerChar.name .. " needs 30 MP to cast this spell."
         elseif composer.getVariable( "language" ) == "Japanese" then
-            message=char.name .. "がその呪文を唱えるには３０MPが必要。"
+            message=tamerChar.name .. "がその呪文を唱えるには３０MPが必要。"
         elseif composer.getVariable( "language" ) == "Spanish" then
-            message=char.name .. "　necesita 30 MP para usar esa magia."
+            message=tamerChar.name .. " necesita 30 MP para usar esa magia."
         end
         pauseAndShowQuickMessage(message)
         return
     end
-    if char.isAlive==false then
+    if tamerChar.isAlive==false then
         if composer.getVariable( "language" ) == "English" then
-            message=char.name.." is dead, only she has the magic to tame a wild unicorn.^"
+            message=tamerChar.name.." is dead, only she has the magic to tame a wild unicorn.^"
         elseif composer.getVariable( "language" ) == "Japanese" then
-            message=char.name.."が死んでる、彼女にしか野生のユニコーン飼いならす魔法がない。改"
+            message=tamerChar.name.."が死んでる、彼女にしか野生のユニコーン飼いならす魔法がない。改"
         elseif composer.getVariable( "language" ) == "Spanish" then
-            message=char.name.." ha muerto, solo ella tiene la magia para rominar a un unicornio salvaje.^"
+            message=tamerChar.name.." ha muerto, solo ella tiene la magia para rominar a un unicornio salvaje.^"
         end
         pauseAndShowQuickMessage(message)
         return 
     end
     dice=math.random(1,100)
+    local numberOfTamedUnicorns=0
     if dice < 80 then
-        message=char.name.." plays her harp and it tamed a unicorn"
-        composer.setVariable("NumberOfUnicorns",composer.getVariable("NumberOfUnicorns")+1)
+        numberOfTamedUnicorns=math.random(1,15)
+        if composer.getVariable( "language" ) == "English" then
+            message=tamerChar.name.." plays her harp and it tamed a unicorn and tamed " .. numberOfTamedUnicorns.." unicorns."
+        elseif composer.getVariable( "language" ) == "Japanese" then
+            message=tamerChar.name.."がハープを弾いて、ユニコーン" .. numberOfTamedUnicorns.."頭を飼いならしました。"
+        elseif composer.getVariable( "language" ) == "Spanish" then
+            message=tamerChar.name.." toca su harpa y domistoca a " .. numberOfTamedUnicorns.." unicornios."
+        end
+        composer.setVariable("NumberOfUnicorns",composer.getVariable("NumberOfUnicorns")+numberOfTamedUnicorns)
     else
-        message="The magic failed.^"
+        if composer.getVariable( "language" ) == "English" then
+            message="The magic failed.^"
+        elseif composer.getVariable( "language" ) == "Japanese" then
+            message="魔法が失敗した。^"
+        elseif composer.getVariable( "language" ) == "Spanish" then
+            message="La magia fallo.^"
+        end
         dice=math.random(1,100)
         if dice < 10 then
-            message=message.." and " .. char.name.." died.^"
-            char.isAlive=false
+            if composer.getVariable( "language" ) == "English" then
+                message=message.." and " .. tamerChar.name.." died!^"
+            elseif composer.getVariable( "language" ) == "Japanese" then
+                message=message.."そして" .. tamerChar.name.."が死んだ！^"
+            elseif composer.getVariable( "language" ) == "Spanish" then
+                message=message.." y " .. tamerChar.name.." murio.^"
+            end    
+            tamerChar.isAlive=false
         end
     end
-    if char.isAlive then
-        message=message.." the magic took 30 MP."
+    if tamerChar.isAlive then
+        tamerChar.MP=tamerChar.MP-30
+        if composer.getVariable( "language" ) == "English" then
+            message=message..tamerChar.name.." used 30 MP."
+        elseif composer.getVariable( "language" ) == "Japanese" then
+            message=message..tamerChar.name.."が３０MPを使った。"
+        elseif composer.getVariable( "language" ) == "Spanish" then
+            message=message..tamerChar.name.." uso 30 MP."
+        end    
     end
-    char.MP=char.MP-30
     pauseAndShowQuickMessage(message)
 end
 function unCurseTeam()
@@ -600,6 +633,63 @@ function unCurseTeam()
     end
     pauseAndShowQuickMessage(message)
 end
+
+function useHPpotionOnAll()
+    local message=""
+    if composer.getVariable("HPpotions")<=0 then
+        if composer.getVariable( "language" ) == "English" then
+            message = "You don't have any HP potions left...^"
+        elseif composer.getVariable( "language" ) == "Japanese" then
+            message = "HPポーションが残されていな…改"
+        elseif composer.getVariable( "language" ) == "Spanish" then
+            message = "Ya no tienes pociones HP^"
+        end
+        pauseAndShowQuickMessage(message)
+    end
+    composer.setVariable("HPpotions",composer.getVariable("HPpotions")-1)
+    healCharacterHPByIndex(1)
+    healCharacterHPByIndex(2)
+    healCharacterHPByIndex(3)
+    healCharacterHPByIndex(4)
+    healCharacterHPByIndex(5)
+    healAllUnicornsHP()
+    if composer.getVariable( "language" ) == "English" then
+        message = "You used an HP Potion,^complete health restoration achieved!^"
+    elseif composer.getVariable( "language" ) == "Japanese" then
+        message = "HPポーションを使った、HPが完全に回復した！改"
+    elseif composer.getVariable( "language" ) == "Spanish" then
+        message = "Usaste una pocion HP,^la salud de todos ha sido aliviada!^"
+    end
+    pauseAndShowQuickMessage(message)
+end
+
+function useMPpotionOnAll()
+    local message=""
+    if composer.getVariable("MPpotions")<=0 then
+        if composer.getVariable( "language" ) == "English" then
+            message = "You don't have any MP potions left...^"
+        elseif composer.getVariable( "language" ) == "Japanese" then
+            message = "MPポーションが残されていな…改"
+        elseif composer.getVariable( "language" ) == "Spanish" then
+            message = "Ya no tienes pociones MP^"
+        end
+        pauseAndShowQuickMessage(message)
+    end
+    composer.setVariable("MPpotions",composer.getVariable("MPpotions")-1)
+    restoreCharacterMPByIndex(1)
+    restoreCharacterMPByIndex(2)
+    restoreCharacterMPByIndex(3)
+    restoreCharacterMPByIndex(4)
+    restoreCharacterMPByIndex(5)
+    if composer.getVariable( "language" ) == "English" then
+        message = "You used an MP Potion,^complete health restoration achieved!^"
+    elseif composer.getVariable( "language" ) == "Japanese" then
+        message = "MPポーションを使った、MPが完全に回復した！改"
+    elseif composer.getVariable( "language" ) == "Spanish" then
+        message = "Usaste una pocion MP,^la salud de todos ha sido aliviada!^"
+    end
+    pauseAndShowQuickMessage(message)
+end
 local function menuButtonTouchListener( event )
     if ( event.phase == "began" ) then
         print( "object touched = " .. tostring(event.target) )  -- "event.target" is the touched object
@@ -616,13 +706,18 @@ local function menuButtonTouchListener( event )
             hideRestingMenu()
             tameAUnicorn()
         end
-        if event.target.myName=="tameUnicornButton" then
-            hideRestingMenu()
-            tameAUnicorn()
-        end
         if event.target.myName=="unCurseButton" then
             hideRestingMenu()
             unCurseTeam()
+        end
+        if event.target.myName=="useHPpotionButton" then
+            hideRestingMenu()
+            useHPpotionOnAll()
+        end
+        if event.target.myName=="useMPpotionButton" then
+            hideRestingMenu()
+            unCurseTeam()
+            useMPpotionOnAll()
         end
     end
     return true  -- Prevents tap/touch propagation to underlying objects
@@ -635,6 +730,8 @@ function hideRestingMenu()
     campingButton.isVisible=false
     tameUnicornButton.isVisible=false
     unCurseButton.isVisible=false
+    useHPpotionButton.isVisible=false
+    useMPpotionButton.isVisible=false
 end
 
 function showRestingMenu()
@@ -668,10 +765,30 @@ function showRestingMenu()
         unCurseButton.fill = paint
         unCurseButton.myName="unCurseButton"
         unCurseButton:addEventListener( "touch", menuButtonTouchListener ) 
+        local paint = {
+            type = "image",
+            filename = "img/useHPpotion.png"
+        }
+        offsetx=offsetx+250--50 is space between buttons
+        useHPpotionButton = display.newRect( offsetx, offsety, 200, 200 )
+        useHPpotionButton.fill = paint
+        useHPpotionButton.myName="useHPpotionButton"
+        useHPpotionButton:addEventListener( "touch", menuButtonTouchListener ) 
+        local paint = {
+            type = "image",
+            filename = "img/useMPpotion.png"
+        }
+        offsetx=offsetx+250--50 is space between buttons
+        useMPpotionButton = display.newRect( offsetx, offsety, 200, 200 )
+        useMPpotionButton.fill = paint
+        useMPpotionButton.myName="useMPpotionButton"
+        useMPpotionButton:addEventListener( "touch", menuButtonTouchListener ) 
     else
         campingButton.isVisible=true
         tameUnicornButton.isVisible=true
         unCurseButton.isVisible=true
+        useHPpotionButton.isVisible=true
+        useMPpotionButton.isVisible=true
     end 
 end
 
@@ -750,9 +867,7 @@ local function showStatus()
                 message=message .. " HP:".. char.HP .. " MP:" .. char.MP .. "^"
             elseif composer.getVariable( "language" ) == "Spanish" then
                 message=message .. " HP:".. char.HP .. " MP:" .. char.MP .. "^"
-            end            
-
-            
+            end    
         end
     end
     if composer.getVariable( "language" ) == "English" then
@@ -972,8 +1087,8 @@ scene:addEventListener("destroy", scene)
 
 return scene
 --(partly done)event someoen gets cursed, curses should be healed by either
-    --(pending)camping 30 percent chance or 
-    --(pending)or the healer girl can use soem of her MP to uncurse someone 100 percent uses 30 MP
+    --(done)camping 30 percent chance or 
+    --(done)or the healer girl can use soem of her MP to uncurse someone 100 percent uses 30 MP
     --(done)otherwise HP of hte cursed girl will keep on draning until she dies
 --(done)event you get robbed, potions and gold can dissapear
 --(pending)event attacked by angry goblin)change background image maybe? instead of switching to another scene, each adventurer should have a different attack power. like hte girl form ironreach shoudl have most power to easily defeat goblins, or maybe the tamer can tame them or the girl; that can call divine power can scare them away)
@@ -990,8 +1105,9 @@ return scene
     --I am lazy but the best way to do this would be to have a n event of fallling in a ditch, and time going by to restore getting back on the path
     --make a level editor to design the map collision sprites
 --(nah)add trading on route?
---(done)add camping, add tame  wild unicorn
+--(partly done)add camping, add tame  wild unicorn
     --add paczel for hunting, maybe make slimes food and ghosts jot eddible
+--add use of potions to menu
 
 --**add cant camp when offtrail.
 --fall off cliffs if you go thru mountains
@@ -999,3 +1115,7 @@ return scene
 --I guess land slides can force you to go  off route
 
 --add quit game button, takes you back to menu screen
+
+--voy a hacer mas facil domesticar muchos unicornios de una vez... porque esta dificil asi como esta
+
+--implement getting hungry, food and hunting
