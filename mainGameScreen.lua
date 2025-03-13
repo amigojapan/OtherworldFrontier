@@ -691,7 +691,7 @@ function useMPpotionOnAll()
     pauseAndShowQuickMessage(message)
 end
 function goHuntingPaczel()
-    
+
 end
 local function menuButtonTouchListener( event )
     if ( event.phase == "began" ) then
