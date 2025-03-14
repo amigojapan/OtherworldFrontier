@@ -211,6 +211,11 @@ end
 function hideTextArea()
     for key, lblLine in ipairs(tableLines) do
         lblLine.isVisible=false
+        if lblContinue then
+            lblContinue.isVisible=false
+            lblContinue:removeSelf()
+            lblContinue=nil
+        end
     end
     textZoneRectangle.isVisible=false
 end

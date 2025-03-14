@@ -229,7 +229,7 @@ function returnToMainGameScreen()
 	hideEverything()
 	print("end paczel reached")
 	clearAllSprites()
-	composer.removeScene("paczel")
+	composer.removeScene(composer.getSceneName( "current" ))
 	composer.gotoScene( composer.getPrevious() )
 end
 function handleRatCollision(sprite)
@@ -391,14 +391,14 @@ function scene:show( event )
 		lifeBarBlueRectangle.alpha=1
 		lifeBarRedRectangle.alpha=1
 		updateLifeBar()
-		
+
 		tom.x=gridSize*tom.x
 		tom.y=gridSize*tom.y
 		tom.myName="tom"
 
 		col = display.newText( "collision:false",  gridSize*2, gridSize*2, "fonts/ume-tgc5.ttf", 40 )
 
-		endDay = display.newText( sceneGroup, "<<", 100, 15, "fonts/ume-tgc5.ttf", 44 )
+		endDay = display.newText( sceneGroup, "[<<]", 100, 15, "fonts/ume-tgc5.ttf", 44 )
 		endDay:setFillColor( 0.82, 0.86, 1 )
 		endDay:addEventListener( "tap", endDayFunction )
 

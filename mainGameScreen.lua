@@ -690,14 +690,25 @@ function useMPpotionOnAll()
     end
     pauseAndShowQuickMessage(message)
 end
+function hideEverything()
+    caravan.isVisible=false
+    myUpButton.isVisible=false
+    myDownButton.isVisible=false
+    myFireButton.isVisible=false
+    arc.isVisible=false
+    hideRestingMenu()
+end
 function goHuntingPaczel()
     composer.setVariable( "gameMode", "Paczel" )
     gameMode = composer.getVariable( "gameMode" )
     print("gameMode:"..gameMode)
     composer.setVariable("numberOfPowerUps",5)
     composer.setVariable("numberOfMonsters",5)
+    hideEverything()
     composer.removeScene(composer.getSceneName( "current" ))
     composer.setVariable("wentHunting", true)
+    composer.setVariable("caravan",caravan)
+    hideTextArea()
     composer.gotoScene( "paczel" )
 end
 
@@ -924,7 +935,7 @@ else
 end
 
 arcYPosition=50
-arcXPosition=50
+arcXPosition=750
 arc = display.newImage( "img/arc.png", arcXPosition, arcYPosition )
 --physics.addBody( arc, "static", { density=1, friction=2, bounce=0 } )
 --arc.angularDamping = 3
@@ -973,6 +984,19 @@ else
 end
 
 
+function initTextScreenByCorrectLanguage(sceneGroup)
+    if composer.getVariable( "language" ) == "English" then
+        initTextScreen(sceneGroup,"EN")
+        return
+    elseif composer.getVariable( "language" ) == "Japanese" then
+        initTextScreen(sceneGroup,"JP")
+        return
+    elseif composer.getVariable( "language" ) == "Spanish" then
+        initTextScreen(sceneGroup,"ES")
+        return
+   end
+end
+
 -- show()
 function scene:show(event)
     local sceneGroup = self.view
@@ -993,7 +1017,7 @@ function scene:show(event)
             type = "image",
             filename = "img/arrowUp.png"
         }
-        myUpButton = display.newRect( 400+offsetx, 200+offsety, 100, 100 )
+        myUpButton = display.newRect( 1300, 50, 100, 100 )
         myUpButton.fill = paint
         myUpButton:addEventListener( "touch", myUpTouchListener )  -- Add a "touch" listener to the obj
         --change this to carravan animation later
@@ -1006,7 +1030,7 @@ function scene:show(event)
             type = "image",
             filename = "img/arrowDown.png"
         }
-        myDownButton = display.newRect( 400+offsetx, 400+offsety, 100, 100 )
+        myDownButton = display.newRect( 1300+150, 50, 100, 100 )
         myDownButton.fill = paint
         myDownButton:addEventListener( "touch", myDownTouchListener )  -- Add a "touch" listener to the obj
 
@@ -1014,13 +1038,13 @@ function scene:show(event)
             type = "image",
             filename = "img/fireButton.png"
         }
-        myFireButton = display.newRect( offsetx-270, 300+offsety, 100, 100 )
+        myFireButton = display.newRect( 1300+150+150, 50, 100, 100 )
         myFireButton.fill = paint
         myFireButton:addEventListener( "touch", myFireTouchListener )  -- Add a "touch" listener to the obj
 
-        myFireButton.alpha=0.3
-        myDownButton.alpha=0.3
-        myUpButton.alpha=0.3
+        --myFireButton.alpha=0.3
+        --myDownButton.alpha=0.3
+        --myUpButton.alpha=0.3
 
 
         --background
@@ -1030,7 +1054,17 @@ function scene:show(event)
         
          
         background:addEventListener( "tap", tapListener )
-
+        if composer.getVariable("wentHunting") then
+            composer.setVariable("wentHunting",false)
+            initTextScreenByCorrectLanguage(sceneGroup)
+            CLS()
+            hideTextArea()
+            local savedCaravan=composer.getVariable("caravan")
+            caravan.x=savedCaravan.x
+            caravan.y=savedCaravan.y
+            caravan.rotation=savedCaravan.rotation
+            return
+        end
 
         if composer.getVariable("inputBuffer") ~= "input unset" then           
             if composer.getVariable( "language" ) == "English" then
