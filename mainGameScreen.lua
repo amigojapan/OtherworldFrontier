@@ -696,6 +696,8 @@ function goHuntingPaczel()
     print("gameMode:"..gameMode)
     composer.setVariable("numberOfPowerUps",5)
     composer.setVariable("numberOfMonsters",5)
+    composer.removeScene(composer.getSceneName( "current" ))
+    composer.setVariable("wentHunting", true)
     composer.gotoScene( "paczel" )
 end
 
