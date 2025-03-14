@@ -340,7 +340,10 @@ local sceneGroup = self.view
         {name = composer.getVariable("adventurer3") or "Default Adv3", isAlive=true, HP = 100, maxHP = 100, MP = 100, maxMP = 100, isCursed = false},
         {name = composer.getVariable("adventurer4") or "Default Adv4", isAlive=true, HP = 100, maxHP = 100, MP = 100, maxMP = 100, isCursed = false}
     }
-    composer.setVariable("characters", characters)
+    --change the following to a game init variable later since this is nessesary for comming back from another scene
+    if not composer.getVariable("wentHunting") then
+        composer.setVariable("characters", characters)
+    end
 end
 
 -- Handler that gets notified when the alert closes
@@ -609,11 +612,11 @@ function unCurseTeam()
     end
     healerChar.MP=healerChar.MP-30
     if composer.getVariable( "language" ) == "English" then
-        message=healerChar.name.." casts an uncurseing spell on the group!^this spell drained 30 MP"
+        message=healerChar.name.." casts an uncurseing spell on the group!^this spell drained 30 MP."
     elseif composer.getVariable( "language" ) == "Japanese" then
-        message=healerChar.name.."が呪いを解ける呪文を皆に唱える！改"
+        message=healerChar.name.."が呪いを解ける呪文を皆に唱える！改この呪文が３０MPが掛かった。改"
     elseif composer.getVariable( "language" ) == "Spanish" then
-        message=healerChar.name.." invoca el hechizo de quitar maldiciones al grupo!^"
+        message=healerChar.name.." invoca el hechizo de quitar maldiciones al grupo!^ este hechizo le costo 30 MP."
     end            
     for girlNumber=1,5,1 do--init,maxval,step
         char=characters[girlNumber]
@@ -707,7 +710,8 @@ function goHuntingPaczel()
     hideEverything()
     composer.removeScene(composer.getSceneName( "current" ))
     composer.setVariable("wentHunting", true)
-    composer.setVariable("caravan",caravan)
+    composer.setVariable("caravan",caravan)    
+    composer.setVariable("unicorns",unicorns)
     hideTextArea()
     composer.gotoScene( "paczel" )
 end
@@ -862,6 +866,9 @@ local function myDownTouchListener( event )
 end
 local function showStatus()
     local unicornHP
+    if not unicorns then
+        unicorns=composer.getVariable("unicorns")
+    end
     for i, unicorn in ipairs(unicorns) do
         unicornHP=unicorn.hp
     end
@@ -1063,6 +1070,13 @@ function scene:show(event)
             caravan.x=savedCaravan.x
             caravan.y=savedCaravan.y
             caravan.rotation=savedCaravan.rotation
+            unicorns=composer.getVariable("unicorns")
+            --local MPAfterHunting=composer.getVariable("mainCharMPAfterHunting")
+            --local girlNumber = 1
+            --local characters = composer.getVariable("characters")
+            --local mainChar = characters[girlNumber]
+
+            --mainChar.MP = MPAfterHunting
             return
         end
 

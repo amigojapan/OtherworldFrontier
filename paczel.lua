@@ -339,11 +339,31 @@ function scene:show( event )
 		end
 		x=2
 		y=2
-		numberOfPowerUps = composer.getVariable( "numberOfPowerUps" )
+		local characters = composer.getVariable("characters")
+		local girlNumber=1
+		local mainChar = characters[girlNumber]	
+		local numberOfPowerUps
+		if mainChar.MP>=30 then
+			numberOfPowerUps = 3
+			mainChar.MP=mainChar.MP-30
+		elseif mainChar.MP>=20 then
+			numberOfPowerUps = 2
+			mainChar.MP=mainChar.MP-20
+		elseif mainChar.MP>=10 then
+			numberOfPowerUps = 1
+			mainChar.MP=mainChar.MP-10
+		end
+		if mainChar.MP < 0 then
+			mainChar.MP=0
+		end
+		--adjuet MP for the main game screen too
+		composer.setVariable("mainCharMPAfterHunting", mainChar.MP)
+		--numberOfPowerUps = composer.getVariable( "numberOfPowerUps" )
 		for counter=1,numberOfPowerUps do
 			generateRandomPowerUp()
 		end
-		numberOfMonsters = tonumber(composer.getVariable( "numberOfMonsters" ))
+		--numberOfMonsters = tonumber(composer.getVariable( "numberOfMonsters" ))
+		numberOfMonsters=math.random(1,7)
 		for counter=1,numberOfMonsters do
 			generateRandomSlime()
 		end
