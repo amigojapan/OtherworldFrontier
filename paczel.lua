@@ -122,7 +122,11 @@ function updateLifeBar()
 	if gameover or dailyScoresScreen then
 		return
 	end
-	lifeBarBlueRectangle.width = lifeW * (lifePerecentage / 100)
+	local characters = composer.getVariable("characters")
+	local girlNumber=1--you
+    local mainChar = characters[girlNumber]
+	--lifeBarBlueRectangle.width = lifeW * (lifePerecentage / 100)
+	lifeBarBlueRectangle.width = lifeW * (mainChar.HP / 100)
 end
 restartGameTimer=nil
 function restartGame()
@@ -386,7 +390,8 @@ function scene:show( event )
 		lifeBarRedRectangle.anchorX=0
 		lifeBarBlueRectangle.alpha=1
 		lifeBarRedRectangle.alpha=1
-
+		updateLifeBar()
+		
 		tom.x=gridSize*tom.x
 		tom.y=gridSize*tom.y
 		tom.myName="tom"

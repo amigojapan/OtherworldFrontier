@@ -334,7 +334,7 @@ local sceneGroup = self.view
     end
     -- Initialize the characters table using names from Composer variables
     local characters = {
-        {name = composer.getVariable("MCname") or "Default MC", isAlive=true, HP = 100, maxHP = 100, MP = 100, maxMP = 100, isCursed = false},
+        {name = composer.getVariable("MCname") or "Default MC", isAlive=true, HP = 50, maxHP = 100, MP = 100, maxMP = 100, isCursed = false},
         {name = composer.getVariable("adventurer1") or "Default Adv1", isAlive=true, HP = 100, maxHP = 100, MP = 100, maxMP = 100, isCursed = false},
         {name = composer.getVariable("adventurer2") or "Default Adv2", isAlive=true, HP = 100, maxHP = 100, MP = 100, maxMP = 100, isCursed = false},
         {name = composer.getVariable("adventurer3") or "Default Adv3", isAlive=true, HP = 100, maxHP = 100, MP = 100, maxMP = 100, isCursed = false},
@@ -1131,6 +1131,7 @@ return scene
 --(partly done)add camping, add tame  wild unicorn
     --(partly done)add paczel for hunting, maybe make slimes food and ghosts jot eddible
     --(pending)really integrate paczel into the game, includeieng HP for health in paczel and MP for magic in paczel
+    --implement getting hungry, food
 --(done)add use of potions to menu
 
 --**add cant camp when offtrail.
@@ -1143,7 +1144,6 @@ return scene
 
 --(done)voy a hacer mas facil domesticar muchos unicornios de una vez... porque esta dificil asi como esta
 
---implement getting hungry, food and hunting
 
 --[[
 月みたいなので、馬車をかいてんする
