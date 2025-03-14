@@ -42,6 +42,9 @@ i18n["English"]={
 	["professions"]="professions",
 	["family members"]="family members",
 	["school subjects"]="school subjects",
+	["Story mode"]="Story mode",
+	["Skip story"]="Skip story",
+	["We would like you to see the story at least once."]="We would like you to see the story at least once.",
 	["colors"]="colors"
 }
 i18n["Japanese"]={
@@ -74,9 +77,9 @@ i18n["Japanese"]={
 	["Cleanlyness"]=" 清潔感：",
 	["Total Points"]="トータルポイント：",
 	["Difficulty"]="難易度（なんいど）",
-	["Easy"]="かんたん",
-	["Medium"]="ふつう",
-	["Hard"]="むずかしい",
+	["Easy"]="簡単",
+	["Medium"]="普通",
+	["Hard"]="難しい",
 	["emotions"]="感情表現",
 	["weather"]="天候",
 	["body parts"]="体",
@@ -85,40 +88,10 @@ i18n["Japanese"]={
 	["professions"]="職業",
 	["family members"]="家族",
 	["school subjects"]="学校の科目",
+	["Story mode"]="ストーリーモード",
+	["Skip story"]="ストーリーを飛ばす",
+	["We would like you to see the story at least once."]="We would like you to see the story at least once.",
 	["colors"]="色"
-}
-i18n["Romaji"]={
-	["Choose Game Mode"]="geemu moodo sentaku",
-	["Play"]="asobu",
-	["Quiz"]="Kuizu (sentou gamen nashi)",
-	["Study"]="benkyou",
-	["Paczel"]="Paczel (sentou gamen nomi)",
-	["Dictionary"]="jisho",
-	["Native Language Dictionary"]="kokugo jiten",
-	["Foreign Language Dictionary"]="gaikokugo jiten",
-	["No dictionary selected..."]="jisho ga sentaku saretemasen…",
-	["Language"]="nihongo",
-	["Start"]="sutaato!",
-	["Nokori"]="nokori",
-	["Punkan"]="punkan",
-	["verb"]="doushi",
-	["animal"]="doubutsu",
-	["vehicle"]="norimono",
-	["philosopher"]="tetsugakusha",
-	["capital"]="shuto",
-	["country"]="kuni",
-	["world dishes"]="ryouri",
-	["adjective"]="kriyoushi",
-	["Choose Category"]="kategorii wo sentaku",
-	["emotions"]="kanjou hyougen",
-	["weather"]="tenkou",
-	["body parts"]="karada",
-	["fruits"]="furuutsu",
-	["furniture"]="kagu",
-	["professions"]="shokugyou",
-	["family members"]="kazoku",
-	["school subjects"]="gakkou no kamoku",
-	["colors"]="iro"
 }
 i18n["Spanish"]={
 	["Choose Game Mode"]="Escojer modo del Juego",
@@ -161,6 +134,9 @@ i18n["Spanish"]={
 	["professions"]="Profeciones",
 	["family members"]="Miembros de la familia",
 	["school subjects"]="Materias escolares",
+	["Story mode"]="Ver historia",
+	["Skip story"]="Brincar historia",
+	["We would like you to see the story at least once."]="We would like you to see the story at least once.",
 	["colors"]="Colores"
 }
 function i18n_setlang(lang)
@@ -177,3 +153,8 @@ end
 --translate=i18n_setlang("Japanese")
 --print(translate["Hello World"])
 --print(translate["Goodbye World"])　
+
+
+--"We would like you to see the story at least once."
+--"一回はストリーを見て欲しいです。"
+--"Nos gustaria que lean la historia por lo menos una vez."

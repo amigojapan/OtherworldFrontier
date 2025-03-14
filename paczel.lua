@@ -9,6 +9,10 @@ local scene = composer.newScene()
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
 -- -----------------------------------------------------------------------------------
 debugVersion="              alpha1"
+-- this determines the field size
+widthSquares=25
+heightSquares=14
+--other constants
 gridSize=64
 moveSpeed = gridSize
 timeForMoveInMilliseconds=500
@@ -26,10 +30,10 @@ else
 	speed=1
 end
 
-for i = 2, 14 do
+for i = 2, widthSquares do--width by grids
     slots[i] = {}
 
-    for j = 2, 10 do
+    for j = 2, heightSquares do--height by grids
         slots[i][j] = "empty slot" -- Fill the values here
     end
 end
@@ -38,8 +42,8 @@ tom = display.newGroup()
 tom.x=10
 tom.y=10
 repeat
-	x=math.random(2,14)
-	y=math.random(2,10)
+	x=math.random(2,widthSquares)
+	y=math.random(2,heightSquares)
 until( slots[x][y]=="empty slot" )
 slots[tom.x][tom.y]="tom"
 
@@ -51,8 +55,8 @@ kitchen={}
 function redo(val1,x,y)
 	if (val1.x==x and val1.y==y) or (val1.x==tom.x and val1.y==tom.y) then
 		--scrap old stuff cause they overlap
-		x=math.random(2,14)
-		y=math.random(2,10)	
+		x=math.random(2,widthSquares)
+		y=math.random(2,heightSquares)	
 		return redo(val1,x,y)
 	else
 		return	x,y
@@ -60,8 +64,8 @@ function redo(val1,x,y)
 end
 function generateRandomBush()
 	repeat
-		x=math.random(2,14)
-		y=math.random(2,10)
+		x=math.random(2,widthSquares)
+		y=math.random(2,heightSquares)
 	until( slots[x][y]=="empty slot" )
 	slots[x][y]="bush"
 	obj=display.newImage("img/bush.png", x*gridSize, y*gridSize, gridSize, gridSize)
@@ -70,11 +74,11 @@ function generateRandomBush()
 end
 powerups={}
 function generateRandomPowerUp()
-	x=math.random(2,14)
-	y=math.random(2,10)
+	x=math.random(2,widthSquares)
+	y=math.random(2,heightSquares)
 	repeat
-		x=math.random(2,14)
-		y=math.random(2,10)
+		x=math.random(2,widthSquares)
+		y=math.random(2,heightSquares)
 	until( slots[x][y]=="empty slot" )
 	slots[x][y]="star"
 	sprite=display.newImage("img/power-up.png", x*gridSize, y*gridSize, gridSize, gridSize)
@@ -83,11 +87,11 @@ function generateRandomPowerUp()
 end
 enemies={}
 function generateRandomSlime()
-	x=math.random(2,14)
-	y=math.random(2,10)
+	x=math.random(2,widthSquares)
+	y=math.random(2,heightSquares)
 	repeat
-		x=math.random(2,14)
-		y=math.random(2,10)
+		x=math.random(2,widthSquares)
+		y=math.random(2,heightSquares)
 	until( slots[x][y]=="empty slot" )
 	slots[x][y]="slime"
 	local slime = display.newGroup()
@@ -142,8 +146,9 @@ function checkForStangeClear()
 		end	
 		hideEverything()
 		gameover=true
-		composer.removeScene("game")
-		composer.gotoScene("StageClear")
+		returnToMainGameScreen()
+		--composer.removeScene("game")
+		--composer.gotoScene("StageClear")
 	end
 end
 function gameOver()
@@ -192,6 +197,37 @@ function gameOver()
 	--composer.removeScene( "menu" )
 	--composer.gotoScene( "dailyScoresScreen" )
 end
+
+function clearAllSprites()
+	for index, bush in ipairs(kitchen) do
+		bush.isVisible=false	
+	end
+end
+function returnToMainGameScreen()
+	clearAllWitchSprites()
+	if tom.direction=="left" then
+		print("collapsed1")
+		tomFacingLeftCollapsedImg.isVisible=true
+	elseif tom.direction=="right" then
+		print("collapsed2")
+		tomFacingRightCollapsedImg.isVisible=true
+	elseif tom.direction=="up" then
+		print("collapsed3")
+		tomFacingUpCollapsedImg.isVisible=true
+	elseif tom.direction=="down" then
+		print("collapsed4")
+		tomFacingDownCollapsedImg.isVisible=true
+	else
+		print("collapsed5")
+		tomFacingDownCollapsedImg.isVisible=true
+	end
+	clearAllWitchSprites()
+	hideEverything()
+	print("end paczel reached")
+	clearAllSprites()
+	composer.removeScene("paczel")
+	composer.gotoScene( composer.getPrevious() )
+end
 function handleRatCollision(sprite)
 	if sprite.isVisible==false then
 		return
@@ -220,19 +256,19 @@ function scene:create( event )
 
 end
 
-gamePaused=false
+gamePausedPaczel=false
 function  gamePauseAndResumeFunction()
-	if gamePaused==false then
+	if gamePausedPaczel==false then
 		pauseButton.text="[START]"
-		gamePaused=true			
+		gamePausedPaczel=true			
 	else
 		pauseButton.text="[PAUSE]"
-		gamePaused=false 
+		gamePausedPaczel=false 
 	end	
 end
 pauseButton=nil
 function  endDayFunction()
-	gameOver()
+	returnToMainGameScreen() 
 end
 
 -- show()
@@ -247,10 +283,16 @@ function scene:show( event )
 	elseif ( phase == "did" ) then
 		-- Code here runs when the scene is entirely on screen
 		--draw tiled backgouod
-		for x = 1, 	15
-		do
-			for y = 1, 11 
-			do
+
+		        --background
+				local background = display.newImageRect( sceneGroup,"img/goHunting.png", 1500,800 )
+				background.x = display.contentCenterX
+				background.y = display.contentCenterY
+		for x = 1, 	widthSquares+1 do
+			--stage
+			--widthSquares=15
+			--heightSquares=25
+			for y = 1, heightSquares+1 do
 				local myRectangle = display.newRect(x*gridSize, y*gridSize, gridSize, gridSize )
 				myRectangle.strokeWidth = 0
 				myRectangle:setFillColor( 0.588 , 0.294 , 0 )--brown
@@ -262,37 +304,33 @@ function scene:show( event )
 		background = display.newGroup()
 
 		x=1
-		for y = 1, 11 
-		do
+		for y = 1,  heightSquares+1 do
 			obj=display.newImage(background,"img/bush.png", x*gridSize, y*gridSize, gridSize, gridSize)
 			obj.myName="bush"
 			table.insert(kitchen, obj)
 		end
-		x=15
-		for y = 1, 11 
-		do
+		x=widthSquares+1
+		for y = 1, heightSquares+1 do
 			obj=display.newImage(background,"img/bush.png", x*gridSize, y*gridSize, gridSize, gridSize)
 			obj.myName="bush"
 			table.insert(kitchen, obj)
 		end
 
 		y=1
-		for x = 1, 	15
-		do
+		for x = 1, 	widthSquares+1 do
 			obj=display.newImage(background,"img/bush.png", x*gridSize, y*gridSize, gridSize, gridSize)
 			obj.myName="bush"
 			table.insert(kitchen, obj)
 		end
-		y=11
-		for x = 1, 	15
-		do
+		y=heightSquares+1
+		for x = 1, 	widthSquares+1 do
 			obj=display.newImage(background,"img/bush.png", x*gridSize, y*gridSize, gridSize, gridSize)
 			obj.myName="bush"
 			table.insert(kitchen, obj)
 		end
 
-
-		for counter=1,7 do
+		bushCount=14
+		for counter=1,bushCount do
 			generateRandomBush()
 		end
 		x=2
@@ -355,7 +393,7 @@ function scene:show( event )
 
 		col = display.newText( "collision:false",  gridSize*2, gridSize*2, "fonts/ume-tgc5.ttf", 40 )
 
-		endDay = display.newText( sceneGroup, "[QUIT]", 100, 15, "fonts/ume-tgc5.ttf", 44 )
+		endDay = display.newText( sceneGroup, "<<", 100, 15, "fonts/ume-tgc5.ttf", 44 )
 		endDay:setFillColor( 0.82, 0.86, 1 )
 		endDay:addEventListener( "tap", endDayFunction )
 
@@ -506,7 +544,7 @@ numberOfFireballs=0
 fireBall=nil
 changeDirection=false
 function moveInDirection(dx, dy, direction, movingObject)
-	if gamePaused or gameover or dailyScoresScreen then
+	if gamePausedPaczel or gameover or dailyScoresScreen then
 		return
 	end
 	if movingObject.myName == "slime" then
@@ -639,7 +677,7 @@ end
 
 
 function moveTomLeft()
-	if gamePaused or gameover then
+	if gamePausedPaczel or gameover then
 		return
 	end
 	if tom.direction~="left" then
@@ -651,7 +689,7 @@ function moveTomLeft()
 end
 
 function moveTomRight()
-	if gamePaused or gameover then
+	if gamePausedPaczel or gameover then
 		return
 	end
 	if tom.direction~="right" then
@@ -663,7 +701,7 @@ function moveTomRight()
 end
 
 function moveTomUp()
-	if gamePaused or gameover then
+	if gamePausedPaczel or gameover then
 		return
 	end
 	if tom.direction~="up" then
@@ -675,7 +713,7 @@ function moveTomUp()
 end
 
 function moveTomDown()
-	if gamePaused or gameover then
+	if gamePausedPaczel or gameover then
 		return
 	end
 	if tom.direction~="down" then
@@ -704,7 +742,7 @@ function fireball()
 			fireBall.width=gridSize*3
 			fireBall.height=gridSize*3
 			audio.play(fireSoundEffect)
-			transition.to(fireBall, {time = timeForMoveInMilliseconds+5000, y = -500, onComplete = onCompletecallbackFireball})
+			transition.to(fireBall, {time = timeForMoveInMilliseconds+25000, y = -500, onComplete = onCompletecallbackFireball})
 		end
 		if tom.direction=="left" then
 			print("up fireball")
@@ -713,7 +751,7 @@ function fireball()
 			fireBall.width=gridSize*3
 			fireBall.height=gridSize*3
 			audio.play(fireSoundEffect)
-			transition.to(fireBall, {time = timeForMoveInMilliseconds+5000, x = -500, onComplete = onCompletecallbackFireball})
+			transition.to(fireBall, {time = timeForMoveInMilliseconds+25000, x = -500, onComplete = onCompletecallbackFireball})
 		end
 		if tom.direction=="down" then
 			print("up fireball")
@@ -722,7 +760,7 @@ function fireball()
 			fireBall.width=gridSize*3
 			fireBall.height=gridSize*3
 			audio.play(fireSoundEffect)
-			transition.to(fireBall, {time = timeForMoveInMilliseconds+5000, y = 1500, onComplete = onCompletecallbackFireball})
+			transition.to(fireBall, {time = timeForMoveInMilliseconds+25000, y = 1500, onComplete = onCompletecallbackFireball})
 		end
 		if tom.direction=="right" then
 			print("up fireball")
@@ -731,7 +769,7 @@ function fireball()
 			fireBall.width=gridSize*3
 			fireBall.height=gridSize*3
 			audio.play(fireSoundEffect)
-			transition.to(fireBall, {time = timeForMoveInMilliseconds+5000, x = 1500, onComplete = onCompletecallbackFireball})
+			transition.to(fireBall, {time = timeForMoveInMilliseconds+25000, x = 1500, onComplete = onCompletecallbackFireball})
 		end
 		numberOfFireballs=numberOfFireballs-1
 	else --freezeball
@@ -1014,7 +1052,7 @@ myLeftButton.alpha=0.3
 myRightButton.alpha=0.3
 
 function gameloop()
-	if gamePaused then
+	if gamePausedPaczel then
 		return
 	end
 	--moveRatInRandomDirection

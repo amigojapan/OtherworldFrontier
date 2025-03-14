@@ -691,8 +691,14 @@ function useMPpotionOnAll()
     pauseAndShowQuickMessage(message)
 end
 function goHuntingPaczel()
-
+    composer.setVariable( "gameMode", "Paczel" )
+    gameMode = composer.getVariable( "gameMode" )
+    print("gameMode:"..gameMode)
+    composer.setVariable("numberOfPowerUps",5)
+    composer.setVariable("numberOfMonsters",5)
+    composer.gotoScene( "paczel" )
 end
+
 local function menuButtonTouchListener( event )
     if ( event.phase == "began" ) then
         print( "object touched = " .. tostring(event.target) )  -- "event.target" is the touched object
@@ -724,7 +730,6 @@ local function menuButtonTouchListener( event )
         end
         if event.target.myName=="goHuntingButton" then
             hideRestingMenu()
-            unCurseTeam()
             goHuntingPaczel()
         end
     end
@@ -740,6 +745,7 @@ function hideRestingMenu()
     unCurseButton.isVisible=false
     useHPpotionButton.isVisible=false
     useMPpotionButton.isVisible=false
+    goHuntingButton.isVisible=false
 end
 
 function showRestingMenu()
@@ -1123,7 +1129,8 @@ return scene
     --make a level editor to design the map collision sprites
 --(nah)add trading on route?
 --(partly done)add camping, add tame  wild unicorn
-    --(pending)add paczel for hunting, maybe make slimes food and ghosts jot eddible
+    --(partly done)add paczel for hunting, maybe make slimes food and ghosts jot eddible
+    --(pending)really integrate paczel into the game, includeieng HP for health in paczel and MP for magic in paczel
 --(done)add use of potions to menu
 
 --**add cant camp when offtrail.
@@ -1137,3 +1144,15 @@ return scene
 --(done)voy a hacer mas facil domesticar muchos unicornios de una vez... porque esta dificil asi como esta
 
 --implement getting hungry, food and hunting
+
+--[[
+月みたいなので、馬車をかいてんする
+5:24 PM <amigojapan> hiro_at_work: 上矢印でスピードをます
+5:25 PM <hiro_at_work> なるほど
+5:25 PM <amigojapan> hiro_at_work: 下矢印でスピードを止める、完全に止まると魔法のメニューが現れます
+5:25 PM <amigojapan> hiro_at_work: 赤いボタンでステータス見れます
+5:26 PM <amigojapan> hiro_at_work: キャンプをよくしないとユニコーンが死にます
+5:27 PM <amigojapan> hiro_at_work: 赤い線に沿ってゴールに進む
+5:30 PM → PJBoy joined (~PJBoy@user/pjboy)
+5:31 PM <amigojapan> hiro_at_work: 魔法は野生のユニコーンを飼いならす魔法と呪いを解かす魔法。緑のはHPを回復するポーション紫のはMPを回復するポーション、あとは狩猟で食べ物をかるのが完成は明日でしょう…
+]]

@@ -80,7 +80,7 @@ function storyContinuesEN()
     --           "1234567890123456789012345678901234567890"
     QUESLOWPRINT("^^"..composer.getVariable( "MCname").." enters the Tavern of^")
     QUESLOWPRINT("a Thousand Tales at Mistral’s End, a^")
-    QUESLOWPRINT(" suspicious character aproches you....")
+    QUESLOWPRINT(" suspicious character approaches you....")
     print("goto nightshadescreen")
     SLOWPRINT(100,"", gotoNightshadeScreen )
 end
