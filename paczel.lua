@@ -101,16 +101,19 @@ function generateRandomSlime()
 		slime.facingUpImg=display.newImage(slime, "img/purpleSlimeFacingBackword.png")
 		slime.facingLeftImg=display.newImage(slime, "img/purpleSlimeFacingLeft.png")
 		slime.facingRightImg=display.newImage(slime, "img/purpleSlimeFacingRight.png")
+		slime.myType="Slime"
 	elseif color==2 then
 		slime.facingDownImg=display.newImage(slime, "img/greenSlimeFacingFoward.png")
 		slime.facingUpImg=display.newImage(slime, "img/greenSlimeFacingBackword.png")
 		slime.facingLeftImg=display.newImage(slime, "img/greenSlimeFacingLeft.png")
 		slime.facingRightImg=display.newImage(slime, "img/greenSlimeFacingRight.png")
+		slime.myType="Slime"
 	elseif color==3 then --hacking the ghost as the third color of slime
 		slime.facingDownImg=display.newImage(slime, "img/ghostFacingFoward.png")
 		slime.facingUpImg=display.newImage(slime, "img/ghostFacingBackword.png")
 		slime.facingLeftImg=display.newImage(slime, "img/ghostFacingLeft.png")
 		slime.facingRightImg=display.newImage(slime, "img/ghostFacingRight.png")
+		slime.myType="Ghost"
 	end
 	slime.myName="slime"
 	slime.x=x*gridSize
@@ -147,6 +150,11 @@ function checkForStangeClear()
 		print("paczel Stage Clear")
 		if fireRatTimer ~= nil then
 			timer.cancel(fireRatTimer)--(not fixed)trying to stop the monsters from flipping twice after second round
+		end	
+		for key, enemy in ipairs(enemies) do
+			if enemy.myType=="Slime" then
+				composer.setVariable("KGofFood", composer.getVariable("KGofFood")+6)
+			end
 		end	
 		hideEverything()
 		gameover=true
@@ -705,6 +713,7 @@ function moveTomLeft()
 	if gamePausedPaczel or gameover then
 		return
 	end
+	print("moveTomLeft() called")
 	if tom.direction~="left" then
 		--print("direction switched to left")
 		clearAllWitchSprites()
@@ -1145,6 +1154,7 @@ local action = {}
 function frameUpdate()
 	local keyDown = false
 	if action["a"] or action["left"] then
+		print("key left pressed")
 		moveTomLeft()
 		keyDown = true
 	end
@@ -1163,7 +1173,6 @@ function frameUpdate()
 	if action["x"] then
 		print("action[\"x\"]:"..action["x"])	
 	end
-	
 end
 
 function onKeyEvent( event )
@@ -1176,6 +1185,27 @@ function onKeyEvent( event )
 			print("fire pressed")
 			fireball()
 		end
+		if action["a"] or action["left"] then
+			print("key left pressed")
+			moveTomLeft()
+			keyDown = true
+		end
+		if action["d"] or action["right"] then
+			moveTomRight()
+			keyDown = true
+		end
+		if action["w"] or action["up"] then
+			moveTomUp()
+			keyDown = true
+		end
+		if action["s"] or action["down"] then
+			moveTomDown()
+			keyDown = true
+		end
+		if action["x"] then
+			print("action[\"x\"]:"..action["x"])	
+		end
+	
 	else
 		action[event.keyName] = false
 	end

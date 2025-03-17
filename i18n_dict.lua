@@ -45,6 +45,7 @@ i18n["English"]={
 	["Story Mode"]="Story mode",
 	["Skip Story"]="Skip story",
 	["We would like you to see the story at least once."]="We would like you to see the story at least once.",
+	["Days Passed"]=" Days Passed",
 	["colors"]="colors"
 }
 i18n["Japanese"]={
@@ -91,6 +92,7 @@ i18n["Japanese"]={
 	["Story Mode"]="ストーリーモード",
 	["Skip Story"]="ストーリーを飛ばす",
 	["We would like you to see the story at least once."]="一度はストーリを見て欲しいです。",
+	["Days Passed"]="日目",
 	["colors"]="色"
 }
 i18n["Spanish"]={
@@ -137,6 +139,7 @@ i18n["Spanish"]={
 	["Story Mode"]="Ver historia",
 	["Skip Story"]="Brincar historia",
 	["We would like you to see the story at least once."]="Nos gustaria que vieran la historia.",
+	["Days Passed"]=" Dias pasaron",
 	["colors"]="Colores"
 }
 function i18n_setlang(lang)

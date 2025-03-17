@@ -22,7 +22,7 @@ local BASE_FATIGUE_RATE = 10  -- base rate at which unicorns get tired (HP lost 
 
 -- Global unicorn table
 local unicorns = {}
-
+local gameover=false
 ------------------------------------------------------------
 -- Function: createUnicorns
 -- Description:
@@ -183,6 +183,15 @@ function pauseAndShowQuickMessage(message)
     SLOWPRINT(50,message,unPauseGame)
     enableContinueButton()
 end
+function pauseAndShowQuickMessageThenCallFunction(message,functionL)
+    RESETQUE()
+    gamePaused=true
+    showTextArea()
+    CLS()
+    message=message.."."--just a quick hack to handle the need to have an extra character or some reaosn in the SLOWPRINT
+    SLOWPRINT(50,message,functionL)
+    enableContinueButton()
+end
 function pauseAndShowQuickMessageFast(message)
     RESETQUE()
     gamePaused=true
@@ -267,9 +276,9 @@ function gameloop()
 
     -- Random event triggers
     local randomNumber = math.random(1, 10000)
-    if randomNumber < 100 then
+    if randomNumber < 50 then
         curseEvent()
-    elseif randomNumber < 200 then
+    elseif randomNumber < 100 then
         robberyEvent()
     end
     -- Handle HP draining for cursed characters
@@ -300,6 +309,44 @@ end
 
 local gameLoopTimer= timer.performWithDelay( caravanMoveInMilliseconds, gameloop, 0 )
 
+local daysPassed=0
+language=composer.getVariable( "language" )
+translate=i18n_setlang(language)
+--translate["Choose Category"]
+local lblDaysPassed = display.newText( tostring(daysPassed)..translate["Days Passed"], 200, 50, "fonts/ume-tgc5.ttf", 50 )
+
+function gameOver()
+    hideEverything()
+    hideRestingMenu()
+    hideTextArea()
+    composer.removeScene( composer.getSceneName("current") )
+    composer.gotoScene("GameOver")
+end
+
+function dayPassed()
+    if gamePaused then
+        return
+    end
+    daysPassed=daysPassed+1
+    composer.setVariable("KGofFood", composer.getVariable("KGofFood")-3)
+    if composer.getVariable("KGofFood")<=2 then
+        local message
+        if composer.getVariable( "language" ) == "English" then
+            message="You have starved to death.^^^        GAME OVER"
+        elseif composer.getVariable( "language" ) == "Japanese" then
+            message="餓死した。^^^        GAME OVER"
+        elseif composer.getVariable( "language" ) == "Spanish" then
+            message="Has muerto de hambre.^^^        GAME OVER"
+        end
+        hideTextArea()
+        hideEverything()
+        pauseAndShowQuickMessageThenCallFunction(message,gameOver)
+        return true
+    end
+    lblDaysPassed.text=tostring(daysPassed)..translate["Days Passed"]
+end
+local dayTimer= timer.performWithDelay( 60000, dayPassed, 0 ) -- day takes one minute
+
 local lastTime = system.getTimer() -- Get the current time in milliseconds
 
 -- In your game loop or an "enterFrame" listener:
@@ -320,6 +367,7 @@ end
 
 -- Start the game loop listener.
 Runtime:addEventListener("enterFrame", updateFrame)
+--Runtime:removeEventListener( "enterFrame" )	
 
 -- -----------------------------------------------------------------------------------
 -- Scene event functions
@@ -455,7 +503,7 @@ function healCusedCharacterByIndex(index,message)
                 if composer.getVariable( "language" ) == "English" then
                     message=message.." has been healed from the curse!^"
                 elseif composer.getVariable( "language" ) == "Japanese" then
-                    message=message.."の呪いが解けた！改"
+                    message=message.."の呪いが解けた！^"
                 elseif composer.getVariable( "language" ) == "Spanish" then
                     message=message.." se ha aliviado de la maldicion!^"
                 end
@@ -492,11 +540,17 @@ local function healAllUnicornsHP()
 end
 
 function campOverNighht()
+    gamePaused=false--this is cause the following function chechs for if game is paused, quickhack
+    GO=dayPassed()
+    if GO then
+        return
+    end
+    lblDaysPassed.text=tostring(daysPassed)..translate["Days Passed"]
     local message
     if composer.getVariable( "language" ) == "English" then
         message="A day went by. HP restored^"
     elseif composer.getVariable( "language" ) == "Japanese" then
-        message="一日過ぎた。HPが回復した。改"
+        message="一日過ぎた。HPが回復した。^"
     elseif composer.getVariable( "language" ) == "Spanish" then
         message="Paso un dia. HP restaurado.^"
     end            
@@ -533,7 +587,7 @@ function tameAUnicorn()
         if composer.getVariable( "language" ) == "English" then
             message=tamerChar.name.." is dead, only she has the magic to tame a wild unicorn.^"
         elseif composer.getVariable( "language" ) == "Japanese" then
-            message=tamerChar.name.."が死んでる、彼女にしか野生のユニコーン飼いならす魔法がない。改"
+            message=tamerChar.name.."が死んでる、彼女にしか野生のユニコーン飼いならす魔法がない。^"
         elseif composer.getVariable( "language" ) == "Spanish" then
             message=tamerChar.name.." ha muerto, solo ella tiene la magia para rominar a un unicornio salvaje.^"
         end
@@ -592,7 +646,7 @@ function unCurseTeam()
         if composer.getVariable( "language" ) == "English" then
             message=healerChar.name.." is dead, only she can cast the uncurse spell.^"
         elseif composer.getVariable( "language" ) == "Japanese" then
-            message=healerChar.name.."が死んだ。彼女しか呪いを解ける魔法が使えない。改"
+            message=healerChar.name.."が死んだ。彼女しか呪いを解ける魔法が使えない。^"
         elseif composer.getVariable( "language" ) == "Spanish" then
             message=healerChar.name.." ha muerto, sole ella puede usar la magia para quitar las maldiciones.^"
         end
@@ -603,7 +657,7 @@ function unCurseTeam()
         if composer.getVariable( "language" ) == "English" then
             message=healerChar.name.." must have 30MP to cast the uncurse spell.^"
         elseif composer.getVariable( "language" ) == "Japanese" then
-            message=healerChar.name.."が３０MPがないと呪いを解ける呪文が唱えない。改"
+            message=healerChar.name.."が３０MPがないと呪いを解ける呪文が唱えない。^"
         elseif composer.getVariable( "language" ) == "Spanish" then
             message=healerChar.name.." tiene que tener 30 MP pare poder hacer el invocar de quitar las maldiciones.^"
         end
@@ -614,7 +668,7 @@ function unCurseTeam()
     if composer.getVariable( "language" ) == "English" then
         message=healerChar.name.." casts an uncurseing spell on the group!^this spell drained 30 MP."
     elseif composer.getVariable( "language" ) == "Japanese" then
-        message=healerChar.name.."が呪いを解ける呪文を皆に唱える！改この呪文が３０MPが掛かった。改"
+        message=healerChar.name.."が呪いを解ける呪文を皆に唱える！^この呪文が３０MPが掛かった。^"
     elseif composer.getVariable( "language" ) == "Spanish" then
         message=healerChar.name.." invoca el hechizo de quitar maldiciones al grupo!^ este hechizo le costo 30 MP."
     end            
@@ -626,7 +680,7 @@ function unCurseTeam()
                 if composer.getVariable( "language" ) == "English" then
                     message=message.." has been healed from the curse!^"
                 elseif composer.getVariable( "language" ) == "Japanese" then
-                    message=message.."の呪いが解けた！改"
+                    message=message.."の呪いが解けた！^"
                 elseif composer.getVariable( "language" ) == "Spanish" then
                     message=message.." se ha aliviado de la maldicion!^"
                 end
@@ -639,11 +693,11 @@ end
 
 function useHPpotionOnAll()
     local message=""
-    if composer.getVariable("HPpotions")<=0 then
+    if composer.getVariable("HPpotions")<=1 then
         if composer.getVariable( "language" ) == "English" then
             message = "You don't have any HP potions left...^"
         elseif composer.getVariable( "language" ) == "Japanese" then
-            message = "HPポーションが残されていな…改"
+            message = "HPポーションが残されていな…^"
         elseif composer.getVariable( "language" ) == "Spanish" then
             message = "Ya no tienes pociones HP^"
         end
@@ -659,7 +713,7 @@ function useHPpotionOnAll()
     if composer.getVariable( "language" ) == "English" then
         message = "You used an HP Potion,^complete health restoration achieved!^"
     elseif composer.getVariable( "language" ) == "Japanese" then
-        message = "HPポーションを使った、HPが完全に回復した！改"
+        message = "HPポーションを使った、HPが完全に回復した！^"
     elseif composer.getVariable( "language" ) == "Spanish" then
         message = "Usaste una pocion HP,^la salud de todos ha sido aliviada!^"
     end
@@ -668,11 +722,11 @@ end
 
 function useMPpotionOnAll()
     local message=""
-    if composer.getVariable("MPpotions")<=0 then
+    if composer.getVariable("MPpotions")<=1 then
         if composer.getVariable( "language" ) == "English" then
             message = "You don't have any MP potions left...^"
         elseif composer.getVariable( "language" ) == "Japanese" then
-            message = "MPポーションが残されていな…改"
+            message = "MPポーションが残されていな…^"
         elseif composer.getVariable( "language" ) == "Spanish" then
             message = "Ya no tienes pociones MP^"
         end
@@ -687,7 +741,7 @@ function useMPpotionOnAll()
     if composer.getVariable( "language" ) == "English" then
         message = "You used an MP Potion,^complete magic restoration achieved!^"
     elseif composer.getVariable( "language" ) == "Japanese" then
-        message = "MPポーションを使った、MPが完全に回復した！改"
+        message = "MPポーションを使った、MPが完全に回復した！^"
     elseif composer.getVariable( "language" ) == "Spanish" then
         message = "Usaste una pocion MP,^la magia de todos ha sido aliviada!^"
     end
@@ -699,6 +753,7 @@ function hideEverything()
     myDownButton.isVisible=false
     myFireButton.isVisible=false
     arc.isVisible=false
+    lblDaysPassed.isVisible=false
     hideRestingMenu()
 end
 function goHuntingPaczel()
@@ -914,15 +969,13 @@ local function showStatus()
         end
     end
     if composer.getVariable( "language" ) == "English" then
-        message=message.."You have:^Gold:" .. composer.getVariable("gold") .. " grams.^HP potions:" .. composer.getVariable("HPpotions") .. "^MP potions:" ..  composer.getVariable("MPpotions")
+        message=message.."Gold:" .. composer.getVariable("gold") .. " grams.^HP potions:" .. composer.getVariable("HPpotions") .. "MP potions:" ..  composer.getVariable("MPpotions").."^Food:"..composer.getVariable("KGofFood").."KG."
     elseif composer.getVariable( "language" ) == "Japanese" then
-        message=message.."所有物:^金：" .. composer.getVariable("gold") .. "グラム。^HPポーション：" .. composer.getVariable("HPpotions") .. "^MPポーション：" ..  composer.getVariable("MPpotions")
+        message=message.."金：" .. composer.getVariable("gold") .. "グラム。^HPポーション：" .. composer.getVariable("HPpotions") .. "MPポーション：" ..  composer.getVariable("MPpotions").."^食料："..composer.getVariable("KGofFood").."KG."
     elseif composer.getVariable( "language" ) == "Spanish" then
-        message=message.."Tienes:^oro:" .. composer.getVariable("gold") .. " gramos.^pociones de HP:" .. composer.getVariable("HPpotions") .. "^pociones de MP:" ..  composer.getVariable("MPpotions")
+        message=message.."oro:" .. composer.getVariable("gold") .. " gramos.^pociones de HP:" .. composer.getVariable("HPpotions") .. "pociones de MP:" ..  composer.getVariable("MPpotions").."^Comida:"..composer.getVariable("KGofFood").."KG."
     end
     pauseAndShowQuickMessageFast(message)        
-    --pauseAndShowQuickMessage(message)
-    --**fix problem of negative potions (probably affects both MP and HP potions) https://x0.at/7bRR.png
 end
 
 local function myFireTouchListener( event )
@@ -1072,6 +1125,7 @@ function scene:show(event)
             caravan.y=savedCaravan.y
             caravan.rotation=savedCaravan.rotation
             unicorns=composer.getVariable("unicorns")
+            lblDaysPassed.isVisible=true
             --local MPAfterHunting=composer.getVariable("mainCharMPAfterHunting")
             --local girlNumber = 1
             --local characters = composer.getVariable("characters")
@@ -1180,9 +1234,10 @@ return scene
     --make a level editor to design the map collision sprites
 --(nah)add trading on route?
 --(partly done)add camping, add tame  wild unicorn
-    --(partly done)add paczel for hunting, maybe make slimes food and ghosts jot eddible
-    --(pending)really integrate paczel into the game, includeieng HP for health in paczel and MP for magic in paczel
-    --implement getting hungry, food
+    --(done)add paczel for hunting, maybe make slimes food and ghosts jot eddible
+    --(done)really integrate paczel into the game, includeieng HP for health in paczel and MP for magic in paczel
+    --(done)implement getting hungry, food
+    --add moster or meat count at top of paczel screen
 --(done)add use of potions to menu
 
 --**add cant camp when offtrail.
@@ -1195,9 +1250,14 @@ return scene
 
 --(done)voy a hacer mas facil domesticar muchos unicornios de una vez... porque esta dificil asi como esta
 
---implement day counting, maybe a day per minute
---take make a day go by when you camp
---implement eating, maybe once or 3 times a day? once is easier
+--(done)implement day counting, maybe a day per minute
+--(pending)figuure out how many days should go by until tundra freezes, maybe this can vary by difficulty
+--(done)take make a day go by when you camp
+--(done made it 3KG a day)implement eating, maybe once or 3 times a day? once is easier
+
+--(pending)add speedofgame , and regualte gameloop so that it works every other frame if speed is 2
+--(I think I fixed it) fix problem of negative potions (probably affects both MP and HP potions) https://x0.at/7bRR.png
+--(I am not sure what caused this, it should nto have happened) also this hunting but https://x0.at/FiY7.png
 
 --[[
 月みたいなので、馬車をかいてんする
