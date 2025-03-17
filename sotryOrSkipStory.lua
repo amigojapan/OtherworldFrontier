@@ -67,26 +67,24 @@ audio.reserveChannels( 1 )
 		ordersRectangle:setFillColor( 0, 0 , 0, 0.5 )
 		ordersRectangle:setStrokeColor( 1, 0, 0 )
 		
+		language=composer.getVariable( "language" )
+		translate=i18n_setlang(language)
+		--translate["Choose Category"]
+		
 		offsetY=300
-		local lblTitle = display.newText( sceneGroup, "choose,選択して下さい、escoje", display.contentCenterX, offsetY, "fonts/ume-tgc5.ttf", 50 )
+		local lblTitle = display.newText( sceneGroup, translate["choose"], display.contentCenterX, offsetY, "fonts/ume-tgc5.ttf", 75 )
 		lblTitle:setFillColor( 0.82, 0.86, 1 )
 		
 		offsetY=offsetY+300
-		local btnStory = display.newText( sceneGroup, "Story Mode、ストリーモード, Modo de historia", display.contentCenterX, offsetY, "fonts/ume-tgc5.ttf", 40 )
+		local btnStory = display.newText( sceneGroup, translate["Story Mode"], display.contentCenterX, offsetY, "fonts/ume-tgc5.ttf", 40 )
 		btnStory:setFillColor( 0.82, 0.86, 1 )
 		btnStory:addEventListener( "tap", gotoStory )
 		offsetY=offsetY+50
-		local btnSkipSotry = display.newText( sceneGroup, "Skip Story、ストリーを飛ばす, No ver historia", display.contentCenterX, offsetY, "fonts/ume-tgc5.ttf", 40 )
+		local btnSkipSotry = display.newText( sceneGroup, translate["Skip Story"], display.contentCenterX, offsetY, "fonts/ume-tgc5.ttf", 40 )
 		btnSkipSotry:setFillColor( 0.82, 0.86, 1 )
 		btnSkipSotry:addEventListener( "tap", gotoSkipStory )
 		offsetY=offsetY+100
-		local lblHope = display.newText( sceneGroup, "We would like you to see the story at least once.", display.contentCenterX, offsetY, "fonts/ume-tgc5.ttf", 40 )
-		lblHope:setFillColor( 1, 1, 0 )
-		offsetY=offsetY+50
-		local lblHope = display.newText( sceneGroup, "一回はストリーを見て欲しいです。", display.contentCenterX, offsetY, "fonts/ume-tgc5.ttf", 40 )
-		lblHope:setFillColor( 1, 1, 0 )
-		offsetY=offsetY+50
-		local lblHope = display.newText( sceneGroup, "Nos gustaria que lean la historia por lo menos una vez.", display.contentCenterX, offsetY, "fonts/ume-tgc5.ttf", 40 )
+		local lblHope = display.newText( sceneGroup, translate["We would like you to see the story at least once."], display.contentCenterX, offsetY, "fonts/ume-tgc5.ttf", 55 )
 		lblHope:setFillColor( 1, 1, 0 )
 	end
 end

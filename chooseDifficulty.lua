@@ -94,19 +94,22 @@ audio.reserveChannels( 1 )
 		ordersRectangle:setStrokeColor( 1, 0, 0 )
 		
 		offsetY=300
-		local lblTitle = display.newText( sceneGroup, "Difficulty、難易度, Difficultad", display.contentCenterX, offsetY, "fonts/ume-tgc5.ttf", 50 )
+		language=composer.getVariable( "language" )
+		translate=i18n_setlang(language)
+		--translate["Choose Category"]
+		local lblTitle = display.newText( sceneGroup, translate["Difficulty"], display.contentCenterX, offsetY, "fonts/ume-tgc5.ttf", 75 )
 		lblTitle:setFillColor( 0.82, 0.86, 1 )
 		
 		offsetY=offsetY+300
-		local btnEasy = display.newText( sceneGroup, "Easy、簡単, Facil", display.contentCenterX, offsetY, "fonts/ume-tgc5.ttf", 40 )
+		local btnEasy = display.newText( sceneGroup, translate["Easy"], display.contentCenterX, offsetY, "fonts/ume-tgc5.ttf", 40 )
 		btnEasy:setFillColor( 0.82, 0.86, 1 )
 		btnEasy:addEventListener( "tap", easyMode )
 		offsetY=offsetY+50
-		local btnNormal = display.newText( sceneGroup, "Normal、普通, Normal", display.contentCenterX, offsetY, "fonts/ume-tgc5.ttf", 40 )
+		local btnNormal = display.newText( sceneGroup, translate["Normal"], display.contentCenterX, offsetY, "fonts/ume-tgc5.ttf", 40 )
 		btnNormal:setFillColor( 0.82, 0.86, 1 )
 		btnNormal:addEventListener( "tap", normalMode )
 		offsetY=offsetY+50
-		local btnHard = display.newText( sceneGroup, "Hard、難しい, Difficil", display.contentCenterX, offsetY, "fonts/ume-tgc5.ttf", 40 )
+		local btnHard = display.newText( sceneGroup, translate["Hard"], display.contentCenterX, offsetY, "fonts/ume-tgc5.ttf", 40 )
 		btnHard:setFillColor( 0.82, 0.86, 1 )
 		btnHard:addEventListener( "tap", difficultMode )
 	end

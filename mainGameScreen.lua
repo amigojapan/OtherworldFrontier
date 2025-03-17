@@ -685,11 +685,11 @@ function useMPpotionOnAll()
     restoreCharacterMPByIndex(4)
     restoreCharacterMPByIndex(5)
     if composer.getVariable( "language" ) == "English" then
-        message = "You used an MP Potion,^complete health restoration achieved!^"
+        message = "You used an MP Potion,^complete magic restoration achieved!^"
     elseif composer.getVariable( "language" ) == "Japanese" then
         message = "MPポーションを使った、MPが完全に回復した！改"
     elseif composer.getVariable( "language" ) == "Spanish" then
-        message = "Usaste una pocion MP,^la salud de todos ha sido aliviada!^"
+        message = "Usaste una pocion MP,^la magia de todos ha sido aliviada!^"
     end
     pauseAndShowQuickMessage(message)
 end
@@ -914,7 +914,7 @@ local function showStatus()
         end
     end
     if composer.getVariable( "language" ) == "English" then
-        message=message.."You have:^Gold:" .. composer.getVariable("gold") .. " grams.^HP pontions:" .. composer.getVariable("HPpotions") .. "^MP potions:" ..  composer.getVariable("MPpotions")
+        message=message.."You have:^Gold:" .. composer.getVariable("gold") .. " grams.^HP potions:" .. composer.getVariable("HPpotions") .. "^MP potions:" ..  composer.getVariable("MPpotions")
     elseif composer.getVariable( "language" ) == "Japanese" then
         message=message.."所有物:^金：" .. composer.getVariable("gold") .. "グラム。^HPポーション：" .. composer.getVariable("HPpotions") .. "^MPポーション：" ..  composer.getVariable("MPpotions")
     elseif composer.getVariable( "language" ) == "Spanish" then
@@ -922,6 +922,7 @@ local function showStatus()
     end
     pauseAndShowQuickMessageFast(message)        
     --pauseAndShowQuickMessage(message)
+    --**fix problem of negative potions (probably affects both MP and HP potions) https://x0.at/7bRR.png
 end
 
 local function myFireTouchListener( event )
@@ -1194,6 +1195,9 @@ return scene
 
 --(done)voy a hacer mas facil domesticar muchos unicornios de una vez... porque esta dificil asi como esta
 
+--implement day counting, maybe a day per minute
+--take make a day go by when you camp
+--implement eating, maybe once or 3 times a day? once is easier
 
 --[[
 月みたいなので、馬車をかいてんする
