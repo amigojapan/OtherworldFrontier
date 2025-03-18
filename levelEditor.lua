@@ -1072,10 +1072,11 @@ local function tapListener(event)
     elseif colorSelected=="colorBlue" then
         box = display.newImageRect("img/block-blue.png", 32, 32)    
     elseif colorSelected=="colorYellow" then
-        box = display.newImageRect("img/block-yellow.png", 32, 32)    
+        box = display.newImageRect("img/block.png", 32, 32)    
     else
         return
     end
+    box.color=colorSelected
     box.x = event.x
     box.y = event.y
     box.size = 32  -- Setting size for hit-test check
@@ -1133,7 +1134,7 @@ local json = require("json")
 local function getSerializableBoxes()
     local serializableBoxes = {}
     for _, box in ipairs(tblBoxes) do
-        table.insert(serializableBoxes, {x = box.x, y = box.y, size = box.size})
+        table.insert(serializableBoxes, {color=box.color, x = box.x, y = box.y, size = box.size})
     end
     return serializableBoxes
 end
@@ -1174,7 +1175,18 @@ local function loadLevel()
         
         -- Recreate boxes from loaded data
         for _, data in ipairs(serializableBoxes) do
-            local box = display.newImageRect("img/block-white.png", data.size, data.size)
+            --local box = display.newImageRect("img/block-white.png", data.size, data.size)
+            if data.color=="colorWhite" then
+                box = display.newImageRect("img/block-white.png", 32, 32)    
+            elseif data.color=="colorRed" then
+                box = display.newImageRect("img/block-red.png", 32, 32)    
+            elseif data.color=="colorGreen" then
+                box = display.newImageRect("img/block-green.png", 32, 32)    
+            elseif data.color=="colorBlue" then
+                box = display.newImageRect("img/block-blue.png", 32, 32)    
+            elseif data.color=="colorYellow" then
+                box = display.newImageRect("img/block.png", 32, 32)    
+            end
             box.x = data.x
             box.y = data.y
             box.size = data.size
@@ -1303,7 +1315,7 @@ function scene:show(event)
         btnYellow.x = toolbarOffsetX
         btnYellow.y = toolbarOffsetY
         btnYellow.myName="colorYellow"
-
+    
 
 
         if composer.getVariable("wentHunting") then
