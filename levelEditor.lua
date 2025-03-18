@@ -1025,10 +1025,31 @@ local function dragObject( event, params )
 end
 arc:addEventListener( "touch", dragObject )
 
+local function isPointInRect(px, py, centerX, centerY,size)
+    local halfSize = size / 2
+    return px >= centerX - halfSize and px <= centerX + halfSize and 
+           py >= centerY - halfSize and py <= centerY + halfSize
+end
+
+local function areBothSquaresClicked(event,square1,square2)
+    local x, y = event.x, event.y
+    
+    local isInSquare1 = isPointInRect(x, y, square1.x, square1.y, square1.size)
+    local isInSquare2 = isPointInRect(x, y, square2.x, square2.y, square2.size)
+    
+    return isInSquare1 and isInSquare2
+end
 local tblBoxes={}
 local function boxListener(event)
-    event.target.isVisible=false
-    event.target:removeSelf()
+    for index, box in ipairs(tblBoxes) do
+       if areBothSquaresClicked(event,box,event.target) then
+        event.target.isVisible=false
+        event.target:removeSelf()
+        box.isVisible=false
+        box:removeSelf()
+        table.remove(tblBoxes, index)
+       end
+    end
 end
 local function tapListener( event )
     -- Code executed when the button is tapped
@@ -1037,7 +1058,8 @@ local function tapListener( event )
     box.x=event.x
     box.y=event.y
     box:addEventListener( "tap", boxListener )
-    tblBoxes:insert(box)
+    box.size=32
+    table.insert(tblBoxes, box)
     --pauseAndShowQuickMessage(message)
     print(message)  -- "event.target" is the tapped object
     return true
