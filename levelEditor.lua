@@ -1070,9 +1070,6 @@ local function tapListener(event)
     return true
 end
 
--- Assuming this is how tapListener is attached
-Runtime:addEventListener("tap", tapListener)
-
 local mistralsEnd={}
 if system.getInfo("environment") == "device" then
     mistralsEnd.x=897.89
