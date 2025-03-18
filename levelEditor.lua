@@ -1025,45 +1025,54 @@ local function dragObject( event, params )
 end
 arc:addEventListener( "touch", dragObject )
 
-local function isPointInRect(px, py, centerX, centerY,size)
+local function isPointInRect(px, py, centerX, centerY, size)
     local halfSize = size / 2
     return px >= centerX - halfSize and px <= centerX + halfSize and 
            py >= centerY - halfSize and py <= centerY + halfSize
 end
 
-local function areBothSquaresClicked(event,square1,square2)
-    local x, y = event.x, event.y
-    
-    local isInSquare1 = isPointInRect(x, y, square1.x, square1.y, square1.size)
-    local isInSquare2 = isPointInRect(x, y, square2.x, square2.y, square2.size)
-    
-    return isInSquare1 and isInSquare2
-end
-local tblBoxes={}
+local tblBoxes = {}
+
+-- Simplified boxListener to delete the tapped box and consume the event
 local function boxListener(event)
-    for index, box in ipairs(tblBoxes) do
-       if areBothSquaresClicked(event,box,event.target) then
-        event.target.isVisible=false
-        event.target:removeSelf()
-        box.isVisible=false
-        box:removeSelf()
-        table.remove(tblBoxes, index)
-       end
+    -- Remove the box from tblBoxes
+    for i, box in ipairs(tblBoxes) do
+        if box == event.target then
+            table.remove(tblBoxes, i)
+            break
+        end
     end
+    -- Remove the box from the display
+    event.target.isVisible = false
+    event.target:removeSelf()
+    return true  -- Consume the event to prevent tapListener from creating a new box
 end
-local function tapListener( event )
-    -- Code executed when the button is tapped
-    local message="x: " .. tostring(event.x) .. "y: " .. tostring(event.y)
-    local box = display.newImageRect("img/block-white.png", 32,32 )
-    box.x=event.x
-    box.y=event.y
-    box:addEventListener( "tap", boxListener )
-    box.size=32
+
+local function tapListener(event)
+    -- Check if the tap is on an existing box
+    for i, box in ipairs(tblBoxes) do
+        if isPointInRect(event.x, event.y, box.x, box.y, box.size) then
+            -- If the tap is on an existing box, do not create a new box
+            return false
+        end
+    end
+
+    -- Otherwise, create a new box
+    local message = "x: " .. tostring(event.x) .. " y: " .. tostring(event.y)
+    local box = display.newImageRect("img/block-white.png", 32, 32)
+    box.x = event.x
+    box.y = event.y
+    box.size = 32  -- Setting size for hit-test check
+    box:addEventListener("tap", boxListener)
     table.insert(tblBoxes, box)
-    --pauseAndShowQuickMessage(message)
-    print(message)  -- "event.target" is the tapped object
+    
+    print(message)
     return true
 end
+
+-- Assuming this is how tapListener is attached
+Runtime:addEventListener("tap", tapListener)
+
 local mistralsEnd={}
 if system.getInfo("environment") == "device" then
     mistralsEnd.x=897.89
