@@ -17,6 +17,10 @@ local function gotoSkipStory()
 	composer.gotoScene( "mainGameScreen" )
 end
 
+local function gotoLevelEditor()
+	composer.gotoScene( "levelEditor" )
+end
+
 
 -- -----------------------------------------------------------------------------------
 -- Scene event functions
@@ -83,6 +87,12 @@ audio.reserveChannels( 1 )
 		local btnSkipSotry = display.newText( sceneGroup, translate["Skip Story"], display.contentCenterX, offsetY, "fonts/ume-tgc5.ttf", 40 )
 		btnSkipSotry:setFillColor( 0.82, 0.86, 1 )
 		btnSkipSotry:addEventListener( "tap", gotoSkipStory )
+		offsetY=offsetY+50
+
+		local btnLevelEditor = display.newText( sceneGroup, "Level editor", display.contentCenterX, offsetY, "fonts/ume-tgc5.ttf", 40 )
+		btnLevelEditor:setFillColor( 0.82, 0.86, 1 )
+		btnLevelEditor:addEventListener( "tap", gotoLevelEditor )
+
 		offsetY=offsetY+100
 		local lblHope = display.newText( sceneGroup, translate["We would like you to see the story at least once."], display.contentCenterX, offsetY, "fonts/ume-tgc5.ttf", 55 )
 		lblHope:setFillColor( 1, 1, 0 )

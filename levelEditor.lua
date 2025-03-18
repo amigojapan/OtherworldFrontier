@@ -1025,10 +1025,19 @@ local function dragObject( event, params )
 end
 arc:addEventListener( "touch", dragObject )
 
+local tblBoxes={}
+local function boxListener(event)
+    event.target.isVisible=false
+    event.target:removeSelf()
+end
 local function tapListener( event )
- 
     -- Code executed when the button is tapped
     local message="x: " .. tostring(event.x) .. "y: " .. tostring(event.y)
+    local box = display.newImageRect("img/block-white.png", 32,32 )
+    box.x=event.x
+    box.y=event.y
+    box:addEventListener( "tap", boxListener )
+    tblBoxes:insert(box)
     --pauseAndShowQuickMessage(message)
     print(message)  -- "event.target" is the tapped object
     return true
@@ -1058,7 +1067,24 @@ function initTextScreenByCorrectLanguage(sceneGroup)
    end
 end
 
--- show()
+local btnWhite
+local btnRed
+local btnGreen
+local btnBlue
+local btnYellow
+local colorSelected="noColorSelected"
+
+local function toolbarTapListener( event )
+ 
+    -- Code executed when the button is tapped
+    local message=event.target.myName.." clicked!".." x: " .. tostring(event.x) .. "y: " .. tostring(event.y)
+    colorSelected=event.target.myName--this contails a string with the color clicked
+    --pauseAndShowQuickMessage(message)
+    print(message)  -- "event.target" is the tapped object
+    --pauseAndShowQuickMessageFast(message)
+    return true
+end
+
 function scene:show(event)
     local sceneGroup = self.view
     local phase = event.phase
@@ -1115,6 +1141,43 @@ function scene:show(event)
         
          
         background:addEventListener( "tap", tapListener )
+
+        --level editor toolbar
+        toolbarOffsetX=100
+        toolbarOffsetY=100
+        btnWhite = display.newImageRect( sceneGroup, "img/block-white.png", 32,32 )
+        btnWhite:addEventListener( "tap", toolbarTapListener )
+        toolbarOffsetX=toolbarOffsetX+32
+        btnWhite.x = toolbarOffsetX
+        btnWhite.y = toolbarOffsetY
+        btnWhite.myName="colorWhite"
+        btnRed = display.newImageRect( sceneGroup, "img/block-red.png", 32,32 )
+        btnRed:addEventListener( "tap", toolbarTapListener )
+        toolbarOffsetX=toolbarOffsetX+32
+        btnRed.x = toolbarOffsetX
+        btnRed.y = toolbarOffsetY
+        btnRed.myName="colorRed"
+        btnGreen = display.newImageRect( sceneGroup, "img/block-green.png", 32,32 )
+        btnGreen:addEventListener( "tap", toolbarTapListener )
+        toolbarOffsetX=toolbarOffsetX+32
+        btnGreen.x = toolbarOffsetX
+        btnGreen.y = toolbarOffsetY
+        btnGreen.myName="colorGreen"
+        btnBlue = display.newImageRect( sceneGroup, "img/block-blue.png", 32,32 )
+        btnBlue:addEventListener( "tap", toolbarTapListener )
+        toolbarOffsetX=toolbarOffsetX+32
+        btnBlue.x = toolbarOffsetX
+        btnBlue.y = toolbarOffsetY
+        btnBlue.myName="colorBlue"
+        btnYellow = display.newImageRect( sceneGroup, "img/block.png", 32,32 )
+        btnYellow:addEventListener( "tap", toolbarTapListener )
+        toolbarOffsetX=toolbarOffsetX+32
+        btnYellow.x = toolbarOffsetX
+        btnYellow.y = toolbarOffsetY
+        btnYellow.myName="colorYellow"
+
+
+
         if composer.getVariable("wentHunting") then
             composer.setVariable("wentHunting",false)
             initTextScreenByCorrectLanguage(sceneGroup)
