@@ -277,9 +277,9 @@ function gameloop()
     -- Random event triggers
     local randomNumber = math.random(1, 10000)
     if randomNumber < 50 then
-        curseEvent()
+        --curseEvent()
     elseif randomNumber < 100 then
-        robberyEvent()
+        --robberyEvent()
     end
     -- Handle HP draining for cursed characters
     local characters = composer.getVariable("characters")
@@ -1047,7 +1047,7 @@ local function boxListener(event)
     event.target:removeSelf()
     return true  -- Consume the event to prevent tapListener from creating a new box
 end
-
+local colorSelected="noColorSelected"
 local function tapListener(event)
     -- Check if the tap is on an existing box
     for i, box in ipairs(tblBoxes) do
@@ -1059,7 +1059,20 @@ local function tapListener(event)
 
     -- Otherwise, create a new box
     local message = "x: " .. tostring(event.x) .. " y: " .. tostring(event.y)
-    local box = display.newImageRect("img/block-white.png", 32, 32)
+    local box
+    if colorSelected=="colorWhite" then
+        box = display.newImageRect("img/block-white.png", 32, 32)    
+    elseif colorSelected=="colorRed" then
+        box = display.newImageRect("img/block-red.png", 32, 32)    
+    elseif colorSelected=="colorGreen" then
+        box = display.newImageRect("img/block-green.png", 32, 32)    
+    elseif colorSelected=="colorBlue" then
+        box = display.newImageRect("img/block-blue.png", 32, 32)    
+    elseif colorSelected=="colorYellow" then
+        box = display.newImageRect("img/block-yellow.png", 32, 32)    
+    else
+        return
+    end
     box.x = event.x
     box.y = event.y
     box.size = 32  -- Setting size for hit-test check
@@ -1100,7 +1113,6 @@ local btnRed
 local btnGreen
 local btnBlue
 local btnYellow
-local colorSelected="noColorSelected"
 
 local function toolbarTapListener( event )
  
@@ -1136,9 +1148,16 @@ function scene:show(event)
         myUpButton.fill = paint
         myUpButton:addEventListener( "touch", myUpTouchListener )  -- Add a "touch" listener to the obj
         --change this to carravan animation later
-        caravan = display.newRect( mistralsEnd.x, mistralsEnd.y, 100, 100 )
+        caravanGroup=display.newGroup()
+        caravan = display.newRect( caravanGroup, mistralsEnd.x, mistralsEnd.y, 100, 100 )
         caravan.fill = paint
         caravan:rotate( 45 )
+        local paint = {
+            type = "image",
+            filename = "img/block-green.png"
+        }
+        caravanCollider = display.newRect( caravanGroup, mistralsEnd.x, mistralsEnd.y, 10, 10 )
+        caravanCollider.fill = paint
 
         
         local paint = {
