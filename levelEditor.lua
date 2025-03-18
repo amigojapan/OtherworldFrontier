@@ -3,6 +3,7 @@ local composer = require("composer")
 require("LinuxAlertBox")
 require("slowprint")
 require("helperFunctions")
+local json = require("json")
 local scene = composer.newScene()
 
 -- -----------------------------------------------------------------------------------
@@ -16,6 +17,8 @@ local granualrMovement=0.5
 local caravanMoveInMilliseconds=1000
 local caravanMovePixels=1
 local caravan=nil
+local caravanCollider
+local caravanGroup
 -- Constants
 local INITIAL_HP = 100        -- starting HP for each unicorn
 local BASE_FATIGUE_RATE = 10  -- base rate at which unicorns get tired (HP lost per unit speed per second)
@@ -268,10 +271,10 @@ function gameloop()
         local angle=caravan.rotation
         local angle_radians=math.rad(angle + 90 + 180)--(bugfix:I added 180 degrees cause the caravan was going backwords)converts degrees to radians
         local distance=caravanMovePixels*speed
-        local newx=caravan.x+distance*math.cos(angle_radians)
-        local newy=caravan.y+distance*math.sin(angle_radians)
-        caravan.x=newx;
-        caravan.y=newy;
+        local newx=caravanGroup.x+distance*math.cos(angle_radians)
+        local newy=caravanGroup.y+distance*math.sin(angle_radians)
+        caravanGroup.x=newx;
+        caravanGroup.y=newy;
     end
 
     -- Random event triggers
@@ -748,7 +751,7 @@ function useMPpotionOnAll()
     pauseAndShowQuickMessage(message)
 end
 function hideEverything()
-    caravan.isVisible=false
+    caravanGroup.isVisible=false
     myUpButton.isVisible=false
     myDownButton.isVisible=false
     myFireButton.isVisible=false
@@ -1124,6 +1127,83 @@ local function toolbarTapListener( event )
     --pauseAndShowQuickMessageFast(message)
     return true
 end
+local json = require("json")
+
+-- Function to extract serializable data from tblBoxes
+local function getSerializableBoxes()
+    local serializableBoxes = {}
+    for _, box in ipairs(tblBoxes) do
+        table.insert(serializableBoxes, {x = box.x, y = box.y, size = box.size})
+    end
+    return serializableBoxes
+end
+
+-- Function to save tblBoxes to level.json
+local function saveLevel()
+    local serializableBoxes = getSerializableBoxes()
+    local jsonString = json.encode(serializableBoxes)
+    
+    local path = system.pathForFile("level.json", system.DocumentsDirectory)
+    local file, errorString = io.open(path, "w")
+    
+    if file then
+        file:write(jsonString)
+        io.close(file)
+        print("Level saved successfully.")
+    else
+        print("Error saving level: " .. errorString)
+    end
+end
+-- Function to load level.json and reconstruct tblBoxes
+local function loadLevel()
+    local path = system.pathForFile("level.json", system.DocumentsDirectory)
+    local file, errorString = io.open(path, "r")
+    
+    if file then
+        local jsonString = file:read("*a")
+        io.close(file)
+        
+        local serializableBoxes = json.decode(jsonString)
+        
+        -- Clear existing boxes
+        for i = #tblBoxes, 1, -1 do
+            local box = tblBoxes[i]
+            box:removeSelf() -- Remove from display
+            table.remove(tblBoxes, i) -- Remove from table
+        end
+        
+        -- Recreate boxes from loaded data
+        for _, data in ipairs(serializableBoxes) do
+            local box = display.newImageRect("img/block-white.png", data.size, data.size)
+            box.x = data.x
+            box.y = data.y
+            box.size = data.size
+            box:addEventListener("tap", boxListener) -- Add your tap listener if needed
+            table.insert(tblBoxes, box)
+        end
+        print("Level loaded successfully.")
+    else
+        print("Error loading level: " .. errorString)
+    end
+end
+-- Save button listener
+local function onSaveButtonTap(event)
+    saveLevel()
+    return true
+end
+
+-- Load button listener
+local function onLoadButtonTap(event)
+    loadLevel()
+    return true
+end
+
+-- Example: Create buttons (optional)
+local saveButton = display.newText("Save", 100, 50, native.systemFont, 20)
+saveButton:addEventListener("tap", onSaveButtonTap)
+
+local loadButton = display.newText("Load", 200, 50, native.systemFont, 20)
+loadButton:addEventListener("tap", onLoadButtonTap)
 
 function scene:show(event)
     local sceneGroup = self.view
@@ -1152,6 +1232,7 @@ function scene:show(event)
         caravan = display.newRect( caravanGroup, mistralsEnd.x, mistralsEnd.y, 100, 100 )
         caravan.fill = paint
         caravan:rotate( 45 )
+        caravan.alpha=0.2
         local paint = {
             type = "image",
             filename = "img/block-green.png"
@@ -1231,8 +1312,8 @@ function scene:show(event)
             CLS()
             hideTextArea()
             local savedCaravan=composer.getVariable("caravan")
-            caravan.x=savedCaravan.x
-            caravan.y=savedCaravan.y
+            caravanGroup.x=savedCaravan.x
+            caravanGroup.y=savedCaravan.y
             caravan.rotation=savedCaravan.rotation
             unicorns=composer.getVariable("unicorns")
             lblDaysPassed.isVisible=true
