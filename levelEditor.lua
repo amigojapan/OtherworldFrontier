@@ -315,7 +315,7 @@ function gameloop()
             if onRoadSatusChanged=="onRoad" then
                 print("offroad now")
                 if composer.getVariable( "language" ) == "English" then
-                    message = "Caravan is offroad now!"
+                    message = "Caravan is off-road now!"
                 elseif composer.getVariable( "language" ) == "Japanese" then
                     message = "馬車が道を外れた！"
                 elseif composer.getVariable( "language" ) == "Spanish" then
@@ -328,7 +328,7 @@ function gameloop()
             if onRoadSatusChanged=="offRoad" then
                 print("onroad now")
                 if composer.getVariable( "language" ) == "English" then
-                    message = "Caravan is onroad now."
+                    message = "Caravan is on-road now."
                 elseif composer.getVariable( "language" ) == "Japanese" then
                     message = "馬車が道に戻った."
                 elseif composer.getVariable( "language" ) == "Spanish" then
