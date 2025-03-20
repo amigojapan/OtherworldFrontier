@@ -263,6 +263,23 @@ function testEvent()
     --gamePaused=true
 end
 
+function detectCollision2(movingObject,sprite)
+	x1=movingObject.x - (movingObject.width / 2)
+	y1=movingObject.y - (movingObject.height / 2)
+	width1=movingObject.width
+	height1=movingObject.height
+	x2=sprite.x - (sprite.width / 2)
+	y2=sprite.y - (sprite.height / 2)
+	width2=sprite.width 
+	height2=sprite.height
+	if x1 + width1 > x2 and x1 < x2 + width2 and y1 + height1 > y2 and y1 < y2 + height2 then 
+        return true
+    else
+        return false
+    end
+end
+local offRoad=true
+local tblBoxes = {}
 function gameloop()
 	if gamePaused then
 		return
@@ -275,6 +292,13 @@ function gameloop()
         local newy=caravanGroup.y+distance*math.sin(angle_radians)
         caravanGroup.x=newx;
         caravanGroup.y=newy;
+        for index, box in ipairs(tblBoxes) do
+            if box.color=="colorRed" then
+                if not detectCollision2(caravanCollider,box) then 
+                    print("offroad now")
+                end
+            end
+        end
     end
 
     -- Random event triggers
@@ -1034,7 +1058,7 @@ local function isPointInRect(px, py, centerX, centerY, size)
            py >= centerY - halfSize and py <= centerY + halfSize
 end
 
-local tblBoxes = {}
+
 
 -- Simplified boxListener to delete the tapped box and consume the event
 local function boxListener(event)
@@ -1187,6 +1211,7 @@ local function loadLevel()
             elseif data.color=="colorYellow" then
                 box = display.newImageRect("img/block.png", 32, 32)    
             end
+            box.color=data.color
             box.x = data.x
             box.y = data.y
             box.size = data.size
