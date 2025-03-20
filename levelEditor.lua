@@ -263,22 +263,32 @@ function testEvent()
     --gamePaused=true
 end
 
-function detectCollision2(movingObject,sprite)
-	x1=movingObject.x - (movingObject.width / 2)
-	y1=movingObject.y - (movingObject.height / 2)
-	width1=movingObject.width
-	height1=movingObject.height
-	x2=sprite.x - (sprite.width / 2)
-	y2=sprite.y - (sprite.height / 2)
-	width2=sprite.width 
-	height2=sprite.height
-	if x1 + width1 > x2 and x1 < x2 + width2 and y1 + height1 > y2 and y1 < y2 + height2 then 
+function detectCollision3(movingObject, sprite)
+    -- Get absolute center positions in content coordinates
+    local x1, y1 = movingObject:localToContent(0, 0)
+    local x2, y2 = sprite:localToContent(0, 0)
+    
+    -- Calculate bounding box edges
+    local left1 = x1 - movingObject.width / 2
+    local right1 = x1 + movingObject.width / 2
+    local top1 = y1 - movingObject.height / 2
+    local bottom1 = y1 + movingObject.height / 2
+    
+    local left2 = x2 - sprite.width / 2
+    local right2 = x2 + sprite.width / 2
+    local top2 = y2 - sprite.height / 2
+    local bottom2 = y2 + sprite.height / 2
+    
+    -- Check for overlap
+    if right1 > left2 and left1 < right2 and bottom1 > top2 and top1 < bottom2 then
         return true
     else
         return false
     end
 end
-local offRoad=true
+
+local onRoad=false
+local onRoadSatusChanged="onRoad"
 local tblBoxes = {}
 function gameloop()
 	if gamePaused then
@@ -292,11 +302,40 @@ function gameloop()
         local newy=caravanGroup.y+distance*math.sin(angle_radians)
         caravanGroup.x=newx;
         caravanGroup.y=newy;
+        onRoad=false
         for index, box in ipairs(tblBoxes) do
             if box.color=="colorRed" then
-                if not detectCollision2(caravanCollider,box) then 
-                    print("offroad now")
+                if detectCollision3(caravanCollider, box) then
+                    onRoad = true
+                    break  -- No need to check further if we found a collision
                 end
+            end
+        end
+        if not onRoad  then
+            if onRoadSatusChanged=="onRoad" then
+                print("offroad now")
+                if composer.getVariable( "language" ) == "English" then
+                    message = "Caravan is offroad now!"
+                elseif composer.getVariable( "language" ) == "Japanese" then
+                    message = "馬車が道を外れた！"
+                elseif composer.getVariable( "language" ) == "Spanish" then
+                    message = "La caravana se ha salido del camino!"
+                end
+                pauseAndShowQuickMessage(message)        
+                onRoadSatusChanged="offRoad"
+            end
+        else
+            if onRoadSatusChanged=="offRoad" then
+                print("onroad now")
+                if composer.getVariable( "language" ) == "English" then
+                    message = "Caravan is onroad now."
+                elseif composer.getVariable( "language" ) == "Japanese" then
+                    message = "馬車が道に戻った."
+                elseif composer.getVariable( "language" ) == "Spanish" then
+                    message = "La caravana ha regrresado al camino."
+                end
+                pauseAndShowQuickMessage(message)        
+                onRoadSatusChanged="onRoad"
             end
         end
     end
@@ -1111,15 +1150,14 @@ local function tapListener(event)
     return true
 end
 
-local mistralsEnd={}
+local mistralsEndStartPoint={}
+--x: 923.40899658203 y: 714.58447265625
 if system.getInfo("environment") == "device" then
-    mistralsEnd.x=897.89
-    mistralsEnd.y=773.03
+    mistralsEndStartPoint.x=923.4089965820
+    mistralsEndStartPoint.y=714.58447265625
 else
-    mistralsEnd.x=897.89
-    mistralsEnd.y=773.03
-    --mistralsEnd.x=411.92584228516
-    --mistralsEnd.y=765.43487548828    
+    mistralsEndStartPoint.x=923.4089965820
+    mistralsEndStartPoint.y=714.58447265625
 end
 
 
@@ -1266,7 +1304,7 @@ function scene:show(event)
         myUpButton:addEventListener( "touch", myUpTouchListener )  -- Add a "touch" listener to the obj
         --change this to carravan animation later
         caravanGroup=display.newGroup()
-        caravan = display.newRect( caravanGroup, mistralsEnd.x, mistralsEnd.y, 100, 100 )
+        caravan = display.newRect( caravanGroup, mistralsEndStartPoint.x, mistralsEndStartPoint.y, 100, 100 )
         caravan.fill = paint
         caravan:rotate( 45 )
         caravan.alpha=0.2
@@ -1274,7 +1312,7 @@ function scene:show(event)
             type = "image",
             filename = "img/block-green.png"
         }
-        caravanCollider = display.newRect( caravanGroup, mistralsEnd.x, mistralsEnd.y, 10, 10 )
+        caravanCollider = display.newRect( caravanGroup, mistralsEndStartPoint.x, mistralsEndStartPoint.y, 10, 10 )
         caravanCollider.fill = paint
 
         

@@ -259,6 +259,22 @@ function testEvent()
     --print("test event called")
     --gamePaused=true
 end
+function detectCollision2(movingObject,sprite)
+	x1=movingObject.x - (movingObject.width / 2)
+	y1=movingObject.y - (movingObject.height / 2)
+	width1=movingObject.width
+	height1=movingObject.height
+	x2=sprite.x - (sprite.width / 2)
+	y2=sprite.y - (sprite.height / 2)
+	width2=sprite.width 
+	height2=sprite.height
+	if x1 + width1 > x2 and x1 < x2 + width2 and y1 + height1 > y2 and y1 < y2 + height2 then 
+        return true
+    else
+        return false
+    end
+end
+local offRoad=true
 
 function gameloop()
 	if gamePaused then
@@ -272,6 +288,10 @@ function gameloop()
         local newy=caravan.y+distance*math.sin(angle_radians)
         caravan.x=newx;
         caravan.y=newy;
+        --for index, value in ipairs(boxes) do
+            
+        --end
+        --detectCollision2(caravan,)
     end
 
     -- Random event triggers
