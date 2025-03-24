@@ -32,6 +32,8 @@ local gameover=false
 --   Initializes the unicorns table based on the value of
 --   composer.getVariable("NumberOfUnicorns").
 ------------------------------------------------------------
+local lblLable = display.newText("unset", 600, 50, native.systemFont, 20)
+
 local function createUnicorns()
     local numUnicorns = composer.getVariable("NumberOfUnicorns") or 1
     unicorns = {}  -- reset table
@@ -323,6 +325,7 @@ function gameloop()
                 end
                 pauseAndShowQuickMessage(message)        
                 onRoadSatusChanged="offRoad"
+                --**add event for unicorns dying faster from being offroad
             end
         else
             if onRoadSatusChanged=="offRoad" then
@@ -820,6 +823,7 @@ function hideEverything()
     myFireButton.isVisible=false
     arc.isVisible=false
     lblDaysPassed.isVisible=false
+    lblLable.isVisible=false
     hideRestingMenu()
 end
 function goHuntingPaczel()
@@ -1143,6 +1147,7 @@ local function tapListener(event)
     box.x = event.x
     box.y = event.y
     box.size = 32  -- Setting size for hit-test check
+    box.alpha = 0.3
     box:addEventListener("tap", boxListener)
     table.insert(tblBoxes, box)
     
@@ -1253,6 +1258,7 @@ local function loadLevel()
             box.x = data.x
             box.y = data.y
             box.size = data.size
+            box.alpha = 0.3
             box:addEventListener("tap", boxListener) -- Add your tap listener if needed
             table.insert(tblBoxes, box)
         end
@@ -1273,12 +1279,50 @@ local function onLoadButtonTap(event)
     return true
 end
 
--- Example: Create buttons (optional)
-local saveButton = display.newText("Save", 100, 50, native.systemFont, 20)
+local function onsetLableButtonTap(event)
+    composer.setVariable("setVariable","lable")
+    composer.setVariable("backgroundImage","backgrounds/adventurer3.png")
+    composer.setVariable("nextScreenName",composer.getSceneName( "current" )) -- come back here afer input
+    composer.setVariable("prompt1EN","Lable is:")
+    composer.setVariable("prompt2EN",",right?")
+    composer.setVariable("prompt1JP","ラベルは:")
+    composer.setVariable("prompt2JP","でよろしいですか？")
+    composer.setVariable("prompt1ES","El lable es:")
+    composer.setVariable("prompt2ES",",verdad?")
+
+    hideEverything()
+    composer.removeScene(composer.getSceneName( "current" ))
+    composer.setVariable("gettingInput", true)
+    composer.setVariable("caravan",caravan)    
+    composer.setVariable("unicorns",unicorns)
+    hideTextArea()
+    composer.gotoScene( "InputScene" )
+    return true
+end
+
+local saveButton = display.newText("Save", 300, 50, native.systemFont, 20)
 saveButton:addEventListener("tap", onSaveButtonTap)
 
-local loadButton = display.newText("Load", 200, 50, native.systemFont, 20)
+local loadButton = display.newText("Load", 400, 50, native.systemFont, 20)
 loadButton:addEventListener("tap", onLoadButtonTap)
+
+local setLableButton = display.newText("[Set Lable]", 500, 50, native.systemFont, 20)
+setLableButton:addEventListener("tap", onsetLableButtonTap)
+
+--local lblLable = native.newTextField( 550, 50, width, height )
+
+
+
+function restoreSceneAfterExist(sceneGroup)
+    initTextScreenByCorrectLanguage(sceneGroup)
+    CLS()
+    hideTextArea()
+    local savedCaravan=composer.getVariable("caravan")
+    caravanGroup.x=savedCaravan.x
+    caravanGroup.y=savedCaravan.y
+    caravan.rotation=savedCaravan.rotation
+    unicorns=composer.getVariable("unicorns")
+end
 
 function scene:show(event)
     local sceneGroup = self.view
@@ -1401,12 +1445,22 @@ function scene:show(event)
             return
         end
 
+        if composer.getVariable( "gettingInput" ) then--change name of this variabel if gettig more inputs in both here and where called
+            initTextScreen(sceneGroup,"JP")
+            showTextArea()
+            CLS()
+            lblLable.text=composer.getVariable("inputBuffer")
+            composer.setVariable( "gettingInput", false )
+            restoreSceneAfterExist(sceneGroup)
+            return
+        end
+
         if composer.getVariable("inputBuffer") ~= "input unset" then           
             if composer.getVariable( "language" ) == "English" then
                 initTextScreen(sceneGroup,"EN")
                 showTextArea()
                 CLS()
-                disableContinueButton()
+                SLOWPRINT(composer.getVariable("inputBuffer"))
                 verifyPurchaseEN(composer.getVariable("inputBuffer"))
                 return
             elseif composer.getVariable( "language" ) == "Japanese" then
