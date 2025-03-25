@@ -306,10 +306,19 @@ function gameloop()
         caravanGroup.y=newy;
         onRoad=false
         for index, box in ipairs(tblBoxes) do
-            if box.color=="colorRed" then
+            --detect collision with map objects
+            if box.color=="colorRed" or box.color=="colorYellow" then
                 if detectCollision3(caravanCollider, box) then
                     onRoad = true
                     break  -- No need to check further if we found a collision
+                end
+            elseif box.color=="colorWhite" then
+                if box.lable=="mist_end" then
+                    if detectCollision3(caravanCollider, box) then
+                        pauseAndShowQuickMessageFast("mistrals end")
+                        composer.gotoScene("FoodSuppliesShopGeneral")
+                        break  -- No need to check further if we found a collision
+                    end
                 end
             end
         end
@@ -1381,6 +1390,13 @@ function scene:show(event)
         myUpButton:addEventListener( "touch", myUpTouchListener )  -- Add a "touch" listener to the obj
         --change this to carravan animation later
         caravanGroup=display.newGroup()
+        for index, box in ipairs(tblBoxes) do
+            if box.name=="mist_end_exit" then
+                mistralsEndStartPoint.x=box.x
+                mistralsEndStartPoint.y=box.y
+                break
+            end 
+        end
         caravan = display.newRect( caravanGroup, mistralsEndStartPoint.x, mistralsEndStartPoint.y, 100, 100 )
         caravan.fill = paint
         caravan:rotate( 45 )
