@@ -323,7 +323,7 @@ function gameloop()
                 elseif composer.getVariable( "language" ) == "Spanish" then
                     message = "La caravana se ha salido del camino!"
                 end
-                pauseAndShowQuickMessage(message)        
+                pauseAndShowQuickMessage(message)   
                 onRoadSatusChanged="offRoad"
                 --**add event for unicorns dying faster from being offroad
             end
@@ -824,6 +824,9 @@ function hideEverything()
     arc.isVisible=false
     lblDaysPassed.isVisible=false
     lblLable.isVisible=false
+    for index, box in ipairs(tblBoxes) do
+        box.isVisible=false
+    end
     hideRestingMenu()
 end
 function goHuntingPaczel()
@@ -1121,7 +1124,7 @@ local colorSelected="noColorSelected"
 local function tapListener(event)
     -- Check if the tap is on an existing box
     for i, box in ipairs(tblBoxes) do
-        if isPointInRect(event.x, event.y, box.x, box.y, box.size) then
+        if isPointInRect(event.x, event.y, box.x, box.y, box.size, box.lable) then
             -- If the tap is on an existing box, do not create a new box
             return false
         end
@@ -1143,6 +1146,7 @@ local function tapListener(event)
     else
         return
     end
+    box.lable=lblLable.text
     box.color=colorSelected
     box.x = event.x
     box.y = event.y
@@ -1201,7 +1205,7 @@ local json = require("json")
 local function getSerializableBoxes()
     local serializableBoxes = {}
     for _, box in ipairs(tblBoxes) do
-        table.insert(serializableBoxes, {color=box.color, x = box.x, y = box.y, size = box.size})
+        table.insert(serializableBoxes, {color=box.color, x = box.x, y = box.y, size = box.size, lable = box.lable})
     end
     return serializableBoxes
 end
@@ -1254,6 +1258,7 @@ local function loadLevel()
             elseif data.color=="colorYellow" then
                 box = display.newImageRect("img/block.png", 32, 32)    
             end
+            box.lable=data.lable
             box.color=data.color
             box.x = data.x
             box.y = data.y
@@ -1295,6 +1300,7 @@ local function onsetLableButtonTap(event)
     composer.setVariable("gettingInput", true)
     composer.setVariable("caravan",caravan)    
     composer.setVariable("unicorns",unicorns)
+    composer.setVariable("tblBoxes",tblBoxes)
     hideTextArea()
     composer.gotoScene( "InputScene" )
     return true
@@ -1311,6 +1317,31 @@ setLableButton:addEventListener("tap", onsetLableButtonTap)
 
 --local lblLable = native.newTextField( 550, 50, width, height )
 
+function restoreBoxesFromTable()
+    for index, data in ipairs(tblBoxes) do
+        local box
+        if data.color=="colorWhite" then
+            box = display.newImageRect("img/block-white.png", 32, 32)    
+        elseif data.color=="colorRed" then
+            box = display.newImageRect("img/block-red.png", 32, 32)    
+        elseif data.color=="colorGreen" then
+            box = display.newImageRect("img/block-green.png", 32, 32)    
+        elseif data.color=="colorBlue" then
+            box = display.newImageRect("img/block-blue.png", 32, 32)    
+        elseif data.color=="colorYellow" then
+            box = display.newImageRect("img/block.png", 32, 32)    
+        else
+            return
+        end
+        box.lable=data.text
+        box.color=data.color
+        box.x = data.x
+        box.y = data.y
+        box.size = 32  -- Setting size for hit-test check
+        box.alpha = 0.3
+    end
+end
+
 
 
 function restoreSceneAfterExist(sceneGroup)
@@ -1322,6 +1353,8 @@ function restoreSceneAfterExist(sceneGroup)
     caravanGroup.y=savedCaravan.y
     caravan.rotation=savedCaravan.rotation
     unicorns=composer.getVariable("unicorns")
+    tblBoxes=composer.getVariable("tblBoxes")
+    restoreBoxesFromTable()
 end
 
 function scene:show(event)
@@ -1446,9 +1479,9 @@ function scene:show(event)
         end
 
         if composer.getVariable( "gettingInput" ) then--change name of this variabel if gettig more inputs in both here and where called
-            initTextScreen(sceneGroup,"JP")
-            showTextArea()
-            CLS()
+            --initTextScreen(sceneGroup,"JP")
+            --showTextArea()
+            --CLS()
             lblLable.text=composer.getVariable("inputBuffer")
             composer.setVariable( "gettingInput", false )
             restoreSceneAfterExist(sceneGroup)
