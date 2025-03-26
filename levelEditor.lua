@@ -292,6 +292,16 @@ end
 local onRoad=false
 local onRoadSatusChanged="onRoad"
 local tblBoxes = {}
+
+function gotoMistralsEnd()
+    hideEverything()
+    hideTextArea()
+    composer.setVariable( "enteredMistalsEnd",true )
+    composer.removeScene( composer.getSceneName("current") )
+    composer.setVariable("unicorns",unicorns)
+    composer.setVariable("tblBoxes",tblBoxes)
+    composer.gotoScene("unicornStableGeneral")
+end
 function gameloop()
 	if gamePaused then
 		return
@@ -315,8 +325,8 @@ function gameloop()
             elseif box.color=="colorWhite" then
                 if box.lable=="mist_end" then
                     if detectCollision3(caravanCollider, box) then
-                        pauseAndShowQuickMessageFast("mistrals end")
-                        composer.gotoScene("FoodSuppliesShopGeneral")
+                        --pauseAndShowQuickMessageThenCallFunction("mistrals end", gotoMistralsEnd)
+                        gotoMistralsEnd()
                         break  -- No need to check further if we found a collision
                     end
                 end
@@ -1353,11 +1363,11 @@ end
 
 
 
-function restoreSceneAfterExist(sceneGroup)
+function restoreSceneAfterExist(sceneGroup,savedCaravan)
     initTextScreenByCorrectLanguage(sceneGroup)
     CLS()
     hideTextArea()
-    local savedCaravan=composer.getVariable("caravan")
+    --local savedCaravan=composer.getVariable("caravan")
     caravanGroup.x=savedCaravan.x
     caravanGroup.y=savedCaravan.y
     caravan.rotation=savedCaravan.rotation
@@ -1365,7 +1375,17 @@ function restoreSceneAfterExist(sceneGroup)
     tblBoxes=composer.getVariable("tblBoxes")
     restoreBoxesFromTable()
 end
-
+function findBox(name)
+    local returnObj={}
+    for index, box in ipairs(tblBoxes) do
+        if box.name==name then
+            returnObj.x=box.x
+            returnObj.y=box.y
+            break
+        end 
+    end
+    return returnObj
+end
 function scene:show(event)
     local sceneGroup = self.view
     local phase = event.phase
@@ -1500,9 +1520,20 @@ function scene:show(event)
             --CLS()
             lblLable.text=composer.getVariable("inputBuffer")
             composer.setVariable( "gettingInput", false )
-            restoreSceneAfterExist(sceneGroup)
+            local savedCaravan=composer.getVariable("caravan")
+            restoreSceneAfterExist(sceneGroup,savedCaravan)
             return
         end
+        if composer.getVariable( "enteredMistalsEnd") then--change name of this variabel if gettig more inputs in both here and where called
+            composer.setVariable( "enteredMistalsEnd", false )
+            local newCaravanPosition=findBox("mist_end_exit")
+            --savedCaravan=composer.getVariable( "caravan")
+            restoreSceneAfterExist(sceneGroup,newCaravanPosition)
+            composer.setVariable( "caravan",newCaravanPosition)
+            return
+        end
+
+        
 
         if composer.getVariable("inputBuffer") ~= "input unset" then           
             if composer.getVariable( "language" ) == "English" then
