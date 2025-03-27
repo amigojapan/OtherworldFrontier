@@ -312,13 +312,6 @@ function gameloop()
     else
         if caravan.rotation==nil then
             return
-            --caravan.rotation=0
-        end
-        if caravanGroup.x==nil then
-            caravanGroup.x=0
-        end
-        if caravanGroup.y==nil then
-            caravanGroup.y=0
         end
         print("caravan.rotation:"..caravan.rotation)
         local angle=caravan.rotation
