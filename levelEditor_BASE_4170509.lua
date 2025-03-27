@@ -297,34 +297,19 @@ function gotoMistralsEnd()
     hideEverything()
     hideTextArea()
     composer.setVariable( "enteredMistalsEnd",true )
-    composer.setVariable("unicorns",unicorns)
-    composer.setVariable("caravan",caravan)
-    composer.setVariable("tblBoxes",tblBoxes)
     composer.removeScene( composer.getSceneName("current") )
+    composer.setVariable("unicorns",unicorns)
+    composer.setVariable("tblBoxes",tblBoxes)
     composer.gotoScene("unicornStableGeneral")
 end
 function gameloop()
 	if gamePaused then
 		return
 	end
-    if not caravan then -- start doing this once hte caravan appears on screen
-        print("caravan does not extist")
-    else
-        if caravan.rotation==nil then
-            return
-            --caravan.rotation=0
-        end
-        if caravanGroup.x==nil then
-            caravanGroup.x=0
-        end
-        if caravanGroup.y==nil then
-            caravanGroup.y=0
-        end
-        print("caravan.rotation:"..caravan.rotation)
+    if caravan then -- start doing this once hte caravan appears on screen
         local angle=caravan.rotation
         local angle_radians=math.rad(angle + 90 + 180)--(bugfix:I added 180 degrees cause the caravan was going backwords)converts degrees to radians
         local distance=caravanMovePixels*speed
-        print("caravan exists and caravanMovePixels:"..caravanMovePixels.." speed:"..speed)
         local newx=caravanGroup.x+distance*math.cos(angle_radians)
         local newy=caravanGroup.y+distance*math.sin(angle_radians)
         caravanGroup.x=newx;
@@ -340,8 +325,6 @@ function gameloop()
             elseif box.color=="colorWhite" then
                 if box.lable=="mist_end" then
                     if detectCollision3(caravanCollider, box) then
-                        pauseAndShowQuickMessageFast("mistrals end")
-                        composer.gotoScene("FoodSuppliesShopGeneral")
                         --pauseAndShowQuickMessageThenCallFunction("mistrals end", gotoMistralsEnd)
                         gotoMistralsEnd()
                         break  -- No need to check further if we found a collision
@@ -853,7 +836,7 @@ function useMPpotionOnAll()
     pauseAndShowQuickMessage(message)
 end
 function hideEverything()
-    caravanGroup:removeSelf()
+    caravanGroup.isVisible=false
     myUpButton.isVisible=false
     myDownButton.isVisible=false
     myFireButton.isVisible=false
@@ -1334,7 +1317,7 @@ local function onsetLableButtonTap(event)
     hideEverything()
     composer.removeScene(composer.getSceneName( "current" ))
     composer.setVariable("gettingInput", true)
-    composer.setVariable("caravan",caravanGroup)    
+    composer.setVariable("caravan",caravan)    
     composer.setVariable("unicorns",unicorns)
     composer.setVariable("tblBoxes",tblBoxes)
     hideTextArea()
@@ -1385,7 +1368,6 @@ function restoreSceneAfterExist(sceneGroup,savedCaravan)
     CLS()
     hideTextArea()
     --local savedCaravan=composer.getVariable("caravan")
-    --local savedCaravan=composer.getVariable("caravan")
     caravanGroup.x=savedCaravan.x
     caravanGroup.y=savedCaravan.y
     caravan.rotation=savedCaravan.rotation
@@ -1393,7 +1375,6 @@ function restoreSceneAfterExist(sceneGroup,savedCaravan)
     tblBoxes=composer.getVariable("tblBoxes")
     restoreBoxesFromTable()
 end
-
 function findBox(name)
     local returnObj={}
     for index, box in ipairs(tblBoxes) do
@@ -1543,23 +1524,12 @@ function scene:show(event)
             restoreSceneAfterExist(sceneGroup,savedCaravan)
             return
         end
-        --**maybe try moving this up, it should nto be showing the story when it gets back to the map
         if composer.getVariable( "enteredMistalsEnd") then--change name of this variabel if gettig more inputs in both here and where called
             composer.setVariable( "enteredMistalsEnd", false )
             local newCaravanPosition=findBox("mist_end_exit")
-            initTextScreenByCorrectLanguage(sceneGroup)
-            CLS()
-            hideTextArea()
-            --local savedCaravan=composer.getVariable("caravan")
-            --local savedCaravan=composer.getVariable("caravan")
-            caravanGroup.x=newCaravanPosition.x
-            caravanGroup.y=newCaravanPosition.y
-            local savedCaravan=composer.getVariable("caravan")
-            caravan.rotation=savedCaravan.rotation
-            unicorns=composer.getVariable("unicorns")
-            tblBoxes=composer.getVariable("tblBoxes")
-            restoreBoxesFromTable()
-            gamePaused=false
+            --savedCaravan=composer.getVariable( "caravan")
+            restoreSceneAfterExist(sceneGroup,newCaravanPosition)
+            composer.setVariable( "caravan",newCaravanPosition)
             return
         end
 

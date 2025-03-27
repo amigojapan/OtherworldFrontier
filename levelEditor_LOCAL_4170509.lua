@@ -296,35 +296,23 @@ local tblBoxes = {}
 function gotoMistralsEnd()
     hideEverything()
     hideTextArea()
-    composer.setVariable( "enteredMistalsEnd",true )
-    composer.setVariable("unicorns",unicorns)
-    composer.setVariable("caravan",caravan)
-    composer.setVariable("tblBoxes",tblBoxes)
-    composer.removeScene( composer.getSceneName("current") )
+    composer.setVariable("enteredMistalsEnd", true)
+    composer.removeScene(composer.getSceneName("current"))
+    composer.setVariable("unicorns", unicorns)
+    composer.setVariable("tblBoxes", tblBoxes)
+    local newCaravanPosition = findBox("mist_end_exit") -- {x, y}
+    composer.setVariable("caravanPosition", {x = newCaravanPosition.x, y = newCaravanPosition.y, rotation = caravan.rotation}) -- Store as raw data
     composer.gotoScene("unicornStableGeneral")
 end
+
 function gameloop()
 	if gamePaused then
 		return
 	end
-    if not caravan then -- start doing this once hte caravan appears on screen
-        print("caravan does not extist")
-    else
-        if caravan.rotation==nil then
-            return
-            --caravan.rotation=0
-        end
-        if caravanGroup.x==nil then
-            caravanGroup.x=0
-        end
-        if caravanGroup.y==nil then
-            caravanGroup.y=0
-        end
-        print("caravan.rotation:"..caravan.rotation)
+    if caravan then -- start doing this once hte caravan appears on screen
         local angle=caravan.rotation
         local angle_radians=math.rad(angle + 90 + 180)--(bugfix:I added 180 degrees cause the caravan was going backwords)converts degrees to radians
         local distance=caravanMovePixels*speed
-        print("caravan exists and caravanMovePixels:"..caravanMovePixels.." speed:"..speed)
         local newx=caravanGroup.x+distance*math.cos(angle_radians)
         local newy=caravanGroup.y+distance*math.sin(angle_radians)
         caravanGroup.x=newx;
@@ -340,8 +328,6 @@ function gameloop()
             elseif box.color=="colorWhite" then
                 if box.lable=="mist_end" then
                     if detectCollision3(caravanCollider, box) then
-                        pauseAndShowQuickMessageFast("mistrals end")
-                        composer.gotoScene("FoodSuppliesShopGeneral")
                         --pauseAndShowQuickMessageThenCallFunction("mistrals end", gotoMistralsEnd)
                         gotoMistralsEnd()
                         break  -- No need to check further if we found a collision
@@ -853,7 +839,7 @@ function useMPpotionOnAll()
     pauseAndShowQuickMessage(message)
 end
 function hideEverything()
-    caravanGroup:removeSelf()
+    caravanGroup.isVisible=false
     myUpButton.isVisible=false
     myDownButton.isVisible=false
     myFireButton.isVisible=false
@@ -1334,7 +1320,7 @@ local function onsetLableButtonTap(event)
     hideEverything()
     composer.removeScene(composer.getSceneName( "current" ))
     composer.setVariable("gettingInput", true)
-    composer.setVariable("caravan",caravanGroup)    
+    composer.setVariable("caravan",caravan)    
     composer.setVariable("unicorns",unicorns)
     composer.setVariable("tblBoxes",tblBoxes)
     hideTextArea()
@@ -1353,45 +1339,52 @@ setLableButton:addEventListener("tap", onsetLableButtonTap)
 
 --local lblLable = native.newTextField( 550, 50, width, height )
 
-function restoreBoxesFromTable()
+function restoreBoxesFromTable(sceneGroup)
+    -- Clear existing boxes to avoid duplication (optional, adjust based on your needs)
+    for i = #tblBoxes, 1, -1 do
+        if tblBoxes[i].removeSelf then
+            tblBoxes[i]:removeSelf()
+        end
+    end
+    tblBoxes = composer.getVariable("tblBoxes") or {}
+
     for index, data in ipairs(tblBoxes) do
         local box
-        if data.color=="colorWhite" then
-            box = display.newImageRect("img/block-white.png", 32, 32)    
-        elseif data.color=="colorRed" then
-            box = display.newImageRect("img/block-red.png", 32, 32)    
-        elseif data.color=="colorGreen" then
-            box = display.newImageRect("img/block-green.png", 32, 32)    
-        elseif data.color=="colorBlue" then
-            box = display.newImageRect("img/block-blue.png", 32, 32)    
-        elseif data.color=="colorYellow" then
-            box = display.newImageRect("img/block.png", 32, 32)    
-        else
-            return
+        if data.color == "colorWhite" then
+            box = display.newImageRect("img/block-white.png", 32, 32)
+        elseif data.color == "colorRed" then
+            box = display.newImageRect("img/block-red.png", 32, 32)
+        elseif data.color == "colorGreen" then
+            box = display.newImageRect("img/block-green.png", 32, 32)
+        elseif data.color == "colorBlue" then
+            box = display.newImageRect("img/block-blue.png", 32, 32)
+        elseif data.color == "colorYellow" then
+            box = display.newImageRect("img/block.png", 32, 32)
         end
-        box.lable=data.text
-        box.color=data.color
-        box.x = data.x
-        box.y = data.y
-        box.size = 32  -- Setting size for hit-test check
-        box.alpha = 0.3
+        if box then
+            box.lable = data.lable  -- Note: "lable" should be "label", fix typo if needed
+            box.color = data.color
+            box.x = data.x
+            box.y = data.y
+            box.size = 32
+            box.alpha = 0.3
+            box:addEventListener("tap", boxListener)
+            sceneGroup:insert(box)  -- Add to sceneGroup
+        end
     end
 end
 
-
-
-function restoreSceneAfterExist(sceneGroup,savedCaravan)
+function restoreSceneAfterExist(sceneGroup, savedCaravan)
     initTextScreenByCorrectLanguage(sceneGroup)
     CLS()
     hideTextArea()
-    --local savedCaravan=composer.getVariable("caravan")
-    --local savedCaravan=composer.getVariable("caravan")
-    caravanGroup.x=savedCaravan.x
-    caravanGroup.y=savedCaravan.y
-    caravan.rotation=savedCaravan.rotation
-    unicorns=composer.getVariable("unicorns")
-    tblBoxes=composer.getVariable("tblBoxes")
-    restoreBoxesFromTable()
+    caravanGroup.x = savedCaravan.x
+    caravanGroup.y = savedCaravan.y
+    caravan.rotation = savedCaravan.rotation
+    unicorns = composer.getVariable("unicorns")
+    tblBoxes = composer.getVariable("tblBoxes")
+    restoreBoxesFromTable(sceneGroup)
+    lblDaysPassed.isVisible = true
 end
 
 function findBox(name)
@@ -1405,213 +1398,204 @@ function findBox(name)
     end
     return returnObj
 end
+
 function scene:show(event)
     local sceneGroup = self.view
     local phase = event.phase
 
     if (phase == "will") then
         -- Code here runs when the scene is still off screen (but is about to come on screen)
-
     elseif (phase == "did") then
-        -- Code here runs when the scene is entirely on screen
-        -- Call this once when starting the scene or when unicorn count changes.
+        -- Always initialize unicorns
         createUnicorns()
 
-        --buttons
-        offsetx=450
-        offsety=300
-        local paint = {
-            type = "image",
-            filename = "img/arrowUp.png"
-        }
-        myUpButton = display.newRect( 1300, 50, 100, 100 )
-        myUpButton.fill = paint
-        myUpButton:addEventListener( "touch", myUpTouchListener )  -- Add a "touch" listener to the obj
-        --change this to carravan animation later
-        caravanGroup=display.newGroup()
-        for index, box in ipairs(tblBoxes) do
-            if box.name=="mist_end_exit" then
-                mistralsEndStartPoint.x=box.x
-                mistralsEndStartPoint.y=box.y
-                break
-            end 
-        end
-        caravan = display.newRect( caravanGroup, mistralsEndStartPoint.x, mistralsEndStartPoint.y, 100, 100 )
-        caravan.fill = paint
-        caravan:rotate( 45 )
-        caravan.alpha=0.2
-        local paint = {
-            type = "image",
-            filename = "img/block-green.png"
-        }
-        caravanCollider = display.newRect( caravanGroup, mistralsEndStartPoint.x, mistralsEndStartPoint.y, 10, 10 )
-        caravanCollider.fill = paint
-
-        
-        local paint = {
-            type = "image",
-            filename = "img/arrowDown.png"
-        }
-        myDownButton = display.newRect( 1300+150, 50, 100, 100 )
-        myDownButton.fill = paint
-        myDownButton:addEventListener( "touch", myDownTouchListener )  -- Add a "touch" listener to the obj
-
-        local paint = {
-            type = "image",
-            filename = "img/fireButton.png"
-        }
-        myFireButton = display.newRect( 1300+150+150, 50, 100, 100 )
-        myFireButton.fill = paint
-        myFireButton:addEventListener( "touch", myFireTouchListener )  -- Add a "touch" listener to the obj
-
-        --myFireButton.alpha=0.3
-        --myDownButton.alpha=0.3
-        --myUpButton.alpha=0.3
-
-
-        --background
-        local background = display.newImageRect( sceneGroup, backgroundImage, 1500,800 )
+        -- Create background (always needed)
+        local background = display.newImageRect(sceneGroup, backgroundImage, 1500, 800)
         background.x = display.contentCenterX
         background.y = display.contentCenterY
-        
-         
-        background:addEventListener( "tap", tapListener )
+        background:addEventListener("tap", tapListener)
 
-        --level editor toolbar
-        toolbarOffsetX=100
-        toolbarOffsetY=100
-        btnWhite = display.newImageRect( sceneGroup, "img/block-white.png", 32,32 )
-        btnWhite:addEventListener( "tap", toolbarTapListener )
-        toolbarOffsetX=toolbarOffsetX+32
-        btnWhite.x = toolbarOffsetX
+        -- Initialize buttons
+        local paint = { type = "image", filename = "img/arrowUp.png" }
+        myUpButton = display.newRect(1300, 50, 100, 100)
+        myUpButton.fill = paint
+        myUpButton:addEventListener("touch", myUpTouchListener)
+        sceneGroup:insert(myUpButton)
+
+        paint = { type = "image", filename = "img/arrowDown.png" }
+        myDownButton = display.newRect(1300 + 150, 50, 100, 100)
+        myDownButton.fill = paint
+        myDownButton:addEventListener("touch", myDownTouchListener)
+        sceneGroup:insert(myDownButton)
+
+        paint = { type = "image", filename = "img/fireButton.png" }
+        myFireButton = display.newRect(1300 + 150 + 150, 50, 100, 100)
+        myFireButton.fill = paint
+        myFireButton:addEventListener("touch", myFireTouchListener)
+        sceneGroup:insert(myFireButton)
+
+        -- Initialize caravan
+        caravanGroup = display.newGroup()
+        caravanGroup.x = mistralsEndStartPoint.x  -- Default position
+        caravanGroup.y = mistralsEndStartPoint.y
+        sceneGroup:insert(caravanGroup)
+
+        paint = { type = "image", filename = "img/arrowUp.png" }
+        caravan = display.newRect(caravanGroup, 0, 0, 100, 100)
+        caravan.fill = paint
+        caravan:rotate(45)
+        caravan.alpha = 0.2
+
+        local colliderPaint = { type = "image", filename = "img/block-green.png" }
+        caravanCollider = display.newRect(caravanGroup, 0, 0, 10, 10)
+        caravanCollider.fill = colliderPaint
+
+        -- Level editor toolbar
+        local toolbarOffsetX = 100
+        local toolbarOffsetY = 100
+        btnWhite = display.newImageRect(sceneGroup, "img/block-white.png", 32, 32)
+        btnWhite:addEventListener("tap", toolbarTapListener)
+        btnWhite.x = toolbarOffsetX + 32
         btnWhite.y = toolbarOffsetY
-        btnWhite.myName="colorWhite"
-        btnRed = display.newImageRect( sceneGroup, "img/block-red.png", 32,32 )
-        btnRed:addEventListener( "tap", toolbarTapListener )
-        toolbarOffsetX=toolbarOffsetX+32
-        btnRed.x = toolbarOffsetX
+        btnWhite.myName = "colorWhite"
+        sceneGroup:insert(btnWhite)
+
+        btnRed = display.newImageRect(sceneGroup, "img/block-red.png", 32, 32)
+        btnRed:addEventListener("tap", toolbarTapListener)
+        btnRed.x = toolbarOffsetX + 64
         btnRed.y = toolbarOffsetY
-        btnRed.myName="colorRed"
-        btnGreen = display.newImageRect( sceneGroup, "img/block-green.png", 32,32 )
-        btnGreen:addEventListener( "tap", toolbarTapListener )
-        toolbarOffsetX=toolbarOffsetX+32
-        btnGreen.x = toolbarOffsetX
+        btnRed.myName = "colorRed"
+        sceneGroup:insert(btnRed)
+
+        btnGreen = display.newImageRect(sceneGroup, "img/block-green.png", 32, 32)
+        btnGreen:addEventListener("tap", toolbarTapListener)
+        btnGreen.x = toolbarOffsetX + 96
         btnGreen.y = toolbarOffsetY
-        btnGreen.myName="colorGreen"
-        btnBlue = display.newImageRect( sceneGroup, "img/block-blue.png", 32,32 )
-        btnBlue:addEventListener( "tap", toolbarTapListener )
-        toolbarOffsetX=toolbarOffsetX+32
-        btnBlue.x = toolbarOffsetX
+        btnGreen.myName = "colorGreen"
+        sceneGroup:insert(btnGreen)
+
+        btnBlue = display.newImageRect(sceneGroup, "img/block-blue.png", 32, 32)
+        btnBlue:addEventListener("tap", toolbarTapListener)
+        btnBlue.x = toolbarOffsetX + 128
         btnBlue.y = toolbarOffsetY
-        btnBlue.myName="colorBlue"
-        btnYellow = display.newImageRect( sceneGroup, "img/block.png", 32,32 )
-        btnYellow:addEventListener( "tap", toolbarTapListener )
-        toolbarOffsetX=toolbarOffsetX+32
-        btnYellow.x = toolbarOffsetX
+        btnBlue.myName = "colorBlue"
+        sceneGroup:insert(btnBlue)
+
+        btnYellow = display.newImageRect(sceneGroup, "img/block.png", 32, 32)
+        btnYellow:addEventListener("tap", toolbarTapListener)
+        btnYellow.x = toolbarOffsetX + 160
         btnYellow.y = toolbarOffsetY
-        btnYellow.myName="colorYellow"
-    
+        btnYellow.myName = "colorYellow"
+        sceneGroup:insert(btnYellow)
 
+        -- Insert days passed label
+        lblDaysPassed.isVisible = true
+        sceneGroup:insert(lblDaysPassed)
 
+        -- Insert label text
+        sceneGroup:insert(lblLable)
+
+        -- Handle scene restoration from unicornStableGeneral
+        if composer.getVariable("enteredMistalsEnd") then
+            print("Restoring scene after mistralsend")
+            composer.setVariable("enteredMistalsEnd", false)
+            local savedPosition = composer.getVariable("caravan")
+            if savedPosition then
+                print("Restoring caravan to: x=" .. savedPosition.x .. ", y=" .. savedPosition.y .. ", rotation=" .. (savedPosition.rotation or 45))
+                caravanGroup.x = savedPosition.x
+                caravanGroup.y = savedPosition.y
+                caravan.rotation = savedPosition.rotation or 45
+            else
+                print("No saved position found, using default: x=" .. mistralsEndStartPoint.x .. ", y=" .. mistralsEndStartPoint.y)
+            end
+            initTextScreenByCorrectLanguage(sceneGroup)
+            CLS()
+            hideTextArea()
+            unicorns = composer.getVariable("unicorns")
+            tblBoxes = composer.getVariable("tblBoxes")
+            restoreBoxesFromTable(sceneGroup)  -- Pass sceneGroup to ensure boxes are added
+            speed = 0  -- Ensure caravan doesn't move immediately
+            -- Make sure everything is visible
+            caravanGroup.isVisible = true
+            myUpButton.isVisible = true
+            myDownButton.isVisible = true
+            myFireButton.isVisible = true
+            return
+        end
+
+        -- Handle scene restoration from hunting
         if composer.getVariable("wentHunting") then
-            composer.setVariable("wentHunting",false)
+            composer.setVariable("wentHunting", false)
             initTextScreenByCorrectLanguage(sceneGroup)
             CLS()
             hideTextArea()
-            local savedCaravan=composer.getVariable("caravan")
-            caravanGroup.x=savedCaravan.x
-            caravanGroup.y=savedCaravan.y
-            caravan.rotation=savedCaravan.rotation
-            unicorns=composer.getVariable("unicorns")
-            lblDaysPassed.isVisible=true
-            --local MPAfterHunting=composer.getVariable("mainCharMPAfterHunting")
-            --local girlNumber = 1
-            --local characters = composer.getVariable("characters")
-            --local mainChar = characters[girlNumber]
-
-            --mainChar.MP = MPAfterHunting
+            local savedCaravan = composer.getVariable("caravan")
+            caravanGroup.x = savedCaravan.x
+            caravanGroup.y = savedCaravan.y
+            caravan.rotation = savedCaravan.rotation
+            unicorns = composer.getVariable("unicorns")
+            caravanGroup.isVisible = true
+            myUpButton.isVisible = true
+            myDownButton.isVisible = true
+            myFireButton.isVisible = true
             return
         end
 
-        if composer.getVariable( "gettingInput" ) then--change name of this variabel if gettig more inputs in both here and where called
-            --initTextScreen(sceneGroup,"JP")
-            --showTextArea()
-            --CLS()
-            lblLable.text=composer.getVariable("inputBuffer")
-            composer.setVariable( "gettingInput", false )
-            local savedCaravan=composer.getVariable("caravan")
-            restoreSceneAfterExist(sceneGroup,savedCaravan)
-            return
-        end
-        --**maybe try moving this up, it should nto be showing the story when it gets back to the map
-        if composer.getVariable( "enteredMistalsEnd") then--change name of this variabel if gettig more inputs in both here and where called
-            composer.setVariable( "enteredMistalsEnd", false )
-            local newCaravanPosition=findBox("mist_end_exit")
-            initTextScreenByCorrectLanguage(sceneGroup)
-            CLS()
-            hideTextArea()
-            --local savedCaravan=composer.getVariable("caravan")
-            --local savedCaravan=composer.getVariable("caravan")
-            caravanGroup.x=newCaravanPosition.x
-            caravanGroup.y=newCaravanPosition.y
-            local savedCaravan=composer.getVariable("caravan")
-            caravan.rotation=savedCaravan.rotation
-            unicorns=composer.getVariable("unicorns")
-            tblBoxes=composer.getVariable("tblBoxes")
-            restoreBoxesFromTable()
-            gamePaused=false
+        -- Handle input restoration
+        if composer.getVariable("gettingInput") then
+            lblLable.text = composer.getVariable("inputBuffer")
+            composer.setVariable("gettingInput", false)
+            local savedCaravan = composer.getVariable("caravan")
+            restoreSceneAfterExist(sceneGroup, savedCaravan)
+            caravanGroup.isVisible = true
+            myUpButton.isVisible = true
+            myDownButton.isVisible = true
+            myFireButton.isVisible = true
             return
         end
 
-        
-
-        if composer.getVariable("inputBuffer") ~= "input unset" then           
-            if composer.getVariable( "language" ) == "English" then
-                initTextScreen(sceneGroup,"EN")
+        -- Initial scene setup
+        if composer.getVariable("inputBuffer") ~= "input unset" then
+            if composer.getVariable("language") == "English" then
+                initTextScreen(sceneGroup, "EN")
                 showTextArea()
                 CLS()
                 SLOWPRINT(composer.getVariable("inputBuffer"))
                 verifyPurchaseEN(composer.getVariable("inputBuffer"))
-                return
-            elseif composer.getVariable( "language" ) == "Japanese" then
-                initTextScreen(sceneGroup,"JP")
+            elseif composer.getVariable("language") == "Japanese" then
+                initTextScreen(sceneGroup, "JP")
                 showTextArea()
                 CLS()
                 disableContinueButton()
                 verifyPurchaseJP(composer.getVariable("inputBuffer"))
-                return
-            elseif composer.getVariable( "language" ) == "Spanish" then
-                initTextScreen(sceneGroup,"ES")
+            elseif composer.getVariable("language") == "Spanish" then
+                initTextScreen(sceneGroup, "ES")
                 showTextArea()
                 CLS()
                 disableContinueButton()
                 verifyPurchaseES(composer.getVariable("inputBuffer"))
-                return
-           end
+            end
+        else
+            print("language:" .. composer.getVariable("language"))
+            gamePaused = true
+            if composer.getVariable("language") == "English" then
+                initTextScreen(sceneGroup, "EN")
+                showTextArea()
+                CLS()
+                gameStartEN()
+            elseif composer.getVariable("language") == "Japanese" then
+                initTextScreen(sceneGroup, "JP")
+                showTextArea()
+                CLS()
+                gameStartJP()
+            elseif composer.getVariable("language") == "Spanish" then
+                initTextScreen(sceneGroup, "ES")
+                showTextArea()
+                CLS()
+                gameStartES()
+            end
         end
-        --cleanupInvisibleObjects(display.getCurrentStage(),sceneGroup)
-        print("language:"..composer.getVariable( "language" ))
-        if composer.getVariable( "language" ) == "English" then
-            --clearBuggyObjects()
-            gamePaused=true
-            initTextScreen(sceneGroup,"EN")
-            showTextArea()
-            CLS()
-            gameStartEN()
-        elseif composer.getVariable( "language" ) == "Japanese" then
-            gamePaused=true
-            initTextScreen(sceneGroup,"JP")
-            showTextArea()
-            CLS()
-            gameStartJP()
-        elseif composer.getVariable( "language" ) == "Spanish" then
-            gamePaused=true
-            initTextScreen(sceneGroup,"ES")
-            showTextArea()
-            CLS()
-            gameStartES()
-        end
-	end
+    end
 end
 
 -- hide()
