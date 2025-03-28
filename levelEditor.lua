@@ -11,7 +11,7 @@ local scene = composer.newScene()
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
 -- -----------------------------------------------------------------------------------
 --items to customize purchase
-local backgroundImage="backgrounds/map-of-eternia.png"
+local backgroundImage="backgrounds/newMapCropped.png"
 local speed=0
 local granualrMovement=0.5
 local caravanMoveInMilliseconds=1000
@@ -303,6 +303,45 @@ function gotoMistralsEnd()
     composer.removeScene( composer.getSceneName("current") )
     composer.gotoScene("unicornStableGeneral")
 end
+
+local daysPassed=0
+local lblDaysPassed = display.newText( tostring(daysPassed)..translate["Days Passed"], 200, 50, "fonts/ume-tgc5.ttf", 50 )
+
+function dayPassed()
+    if gamePaused then
+        return
+    end
+    daysPassed=daysPassed+1
+    composer.setVariable("KGofFood", composer.getVariable("KGofFood")-3)
+    if composer.getVariable("KGofFood")<=2 then
+        local message
+        if composer.getVariable( "language" ) == "English" then
+            message="You have starved to death.^^^        GAME OVER"
+        elseif composer.getVariable( "language" ) == "Japanese" then
+            message="餓死した。^^^        GAME OVER"
+        elseif composer.getVariable( "language" ) == "Spanish" then
+            message="Has muerto de hambre.^^^        GAME OVER"
+        end
+        hideTextArea()
+        hideEverything()
+        pauseAndShowQuickMessageThenCallFunction(message,gameOver)
+        return true
+    end
+    lblDaysPassed.text=tostring(daysPassed)..translate["Days Passed"]
+end
+
+function getStuckInRut()
+    dayPassed()
+    local message
+    if composer.getVariable( "language" ) == "English" then
+        message = "The caravan got stuck in a rut, it took a day to take it out!"
+    elseif composer.getVariable( "language" ) == "Japanese" then
+        message = "穴に馬車がハマった、出すの一日掛かった！"
+    elseif composer.getVariable( "language" ) == "Spanish" then
+        message = "La caravana se atoro en un hoyo, tardaste un dia en sacarla!"
+    end
+    pauseAndShowQuickMessage(message)
+end
 function gameloop()
 	if gamePaused then
 		return
@@ -310,6 +349,7 @@ function gameloop()
     if not caravan then -- start doing this once hte caravan appears on screen
         print("caravan does not extist")
     else
+        --the following is true when comming back from another scene it seems -the return solves it
         if caravan.rotation==nil then
             return
         end
@@ -378,6 +418,10 @@ function gameloop()
         --curseEvent()
     elseif randomNumber < 100 then
         --robberyEvent()
+    elseif randomNumber < 300 then
+        if not onRoad then
+            getStuckInRut() 
+        end
     end
     -- Handle HP draining for cursed characters
     local characters = composer.getVariable("characters")
@@ -407,11 +451,10 @@ end
 
 local gameLoopTimer= timer.performWithDelay( caravanMoveInMilliseconds, gameloop, 0 )
 
-local daysPassed=0
+
 language=composer.getVariable( "language" )
 translate=i18n_setlang(language)
 --translate["Choose Category"]
-local lblDaysPassed = display.newText( tostring(daysPassed)..translate["Days Passed"], 200, 50, "fonts/ume-tgc5.ttf", 50 )
 
 function gameOver()
     hideEverything()
@@ -421,28 +464,6 @@ function gameOver()
     composer.gotoScene("GameOver")
 end
 
-function dayPassed()
-    if gamePaused then
-        return
-    end
-    daysPassed=daysPassed+1
-    composer.setVariable("KGofFood", composer.getVariable("KGofFood")-3)
-    if composer.getVariable("KGofFood")<=2 then
-        local message
-        if composer.getVariable( "language" ) == "English" then
-            message="You have starved to death.^^^        GAME OVER"
-        elseif composer.getVariable( "language" ) == "Japanese" then
-            message="餓死した。^^^        GAME OVER"
-        elseif composer.getVariable( "language" ) == "Spanish" then
-            message="Has muerto de hambre.^^^        GAME OVER"
-        end
-        hideTextArea()
-        hideEverything()
-        pauseAndShowQuickMessageThenCallFunction(message,gameOver)
-        return true
-    end
-    lblDaysPassed.text=tostring(daysPassed)..translate["Days Passed"]
-end
 local dayTimer= timer.performWithDelay( 60000, dayPassed, 0 ) -- day takes one minute
 
 local lastTime = system.getTimer() -- Get the current time in milliseconds
@@ -639,12 +660,24 @@ end
 
 function campOverNighht()
     gamePaused=false--this is cause the following function chechs for if game is paused, quickhack
+    if not onRoad then
+        local message
+        if composer.getVariable( "language" ) == "English" then
+            message="you can't camp while off the trail.^"
+        elseif composer.getVariable( "language" ) == "Japanese" then
+            message="道に沿ってない時はキャンプ出来ない。^"
+        elseif composer.getVariable( "language" ) == "Spanish" then
+            message="No puedes hacer campamento cuando no estas en la liena roja.^"
+        end                
+        pauseAndShowQuickMessage(message)
+        return
+    end
     GO=dayPassed()
     if GO then
         return
     end
     lblDaysPassed.text=tostring(daysPassed)..translate["Days Passed"]
-    local message
+    local message=""
     if composer.getVariable( "language" ) == "English" then
         message="A day went by. HP restored^"
     elseif composer.getVariable( "language" ) == "Japanese" then
@@ -846,7 +879,11 @@ function useMPpotionOnAll()
     pauseAndShowQuickMessage(message)
 end
 function hideEverything()
-    caravanGroup:removeSelf()
+    if caravanGroup then
+        if caravanGroup.removeSelf then 
+            caravanGroup:removeSelf()
+        end
+    end
     myUpButton.isVisible=false
     myDownButton.isVisible=false
     myFireButton.isVisible=false
@@ -1255,6 +1292,12 @@ local function saveLevel()
         print("Error saving level: " .. errorString)
     end
 end
+-- Save button listener
+local function onSaveButtonTap(event)
+    saveLevel()
+    return true
+end
+
 -- Function to load level.json and reconstruct tblBoxes
 local function loadLevel()
     local path = system.pathForFile("level.json", system.DocumentsDirectory)
@@ -1301,11 +1344,7 @@ local function loadLevel()
         print("Error loading level: " .. errorString)
     end
 end
--- Save button listener
-local function onSaveButtonTap(event)
-    saveLevel()
-    return true
-end
+
 
 -- Load button listener
 local function onLoadButtonTap(event)
@@ -1398,6 +1437,7 @@ function findBox(name)
     end
     return returnObj
 end
+
 function scene:show(event)
     local sceneGroup = self.view
     local phase = event.phase
@@ -1408,6 +1448,7 @@ function scene:show(event)
     elseif (phase == "did") then
         -- Code here runs when the scene is entirely on screen
         -- Call this once when starting the scene or when unicorn count changes.
+        loadLevel()
         createUnicorns()
 
         --buttons
@@ -1422,12 +1463,19 @@ function scene:show(event)
         myUpButton:addEventListener( "touch", myUpTouchListener )  -- Add a "touch" listener to the obj
         --change this to carravan animation later
         caravanGroup=display.newGroup()
+        local found=false
         for index, box in ipairs(tblBoxes) do
-            if box.name=="mist_end_exit" then
+            if box.lable=="mist_end_exit" then
                 mistralsEndStartPoint.x=box.x
                 mistralsEndStartPoint.y=box.y
+                found=ture
                 break
             end 
+        end
+        if found then
+            print("mistrals end exit found in jason file")
+        else
+            print("mistrals end exit not found!")            
         end
         caravan = display.newRect( caravanGroup, mistralsEndStartPoint.x, mistralsEndStartPoint.y, 100, 100 )
         caravan.fill = paint
@@ -1663,10 +1711,10 @@ return scene
     --(pending)add moster or meat count at top of paczel screen
 --(done)add use of potions to menu
 
---**add cant camp when offtrail.
---fall off cliffs if you go thru mountains
---easy to get stuck in a pit and lose time
---I guess land slides can force you to go  off route
+--(done)add cant camp when offtrail.
+--(pending)fall off cliffs if you go thru mountains
+--(done)easy to get stuck in a rut and lose time
+--(pending)I guess land slides can force you to go  off route
 
 --add quit game button, takes you back to menu screen
     --implement warning too
@@ -1676,12 +1724,15 @@ return scene
 --(done)implement day counting, maybe a day per minute
 --(pending)figuure out how many days should go by until tundra freezes, maybe this can vary by difficulty
 --(done)take make a day go by when you camp
---(done made it 3KG a day)implement eating, maybe once or 3 times a day? once is easier
+--(done made it 3KG a day,1 kilogram per meal, but only check it once per day)implement eating, maybe once or 3 times a day? once is easier
 
---(pending)add speedofgame , and regualte gameloop so that it works every other frame if speed is 2
+--(done)add speedofgame , and regualte gameloop so that it works every other frame if speed is 2
 --(I think I fixed it) fix problem of negative potions (probably affects both MP and HP potions) https://x0.at/7bRR.png
 --(I am not sure what caused this, it should nto have happened) also this hunting but https://x0.at/FiY7.png
-
+--(pending) put some secret tresurechests on the map that can teleport you or give you lots of stuff,make it worth while to go off trail, 
+    --maybe add some easter egg on these
+--(pendingmaybe add options to select who you wnat to use MP or HP potions on, this will make the game harder but more like an RPG
+--bring new map in, crop it to fit the same size as current one, adjust map objects
 --[[
 月みたいなので、馬車をかいてんする
 5:24 PM <amigojapan> hiro_at_work: 上矢印でスピードをます

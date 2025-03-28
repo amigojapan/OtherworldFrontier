@@ -12,7 +12,7 @@ local scene = composer.newScene()
 
 composer.setVariable("setVariable","NumberOfUnicorns")
 composer.setVariable("backgroundImage","backgrounds/unicorn-stable.png")
-composer.setVariable("nextScreenName","levelEditor") --composer.setVariable("nextScreenName","FoodSuppliesShopGeneral")
+composer.setVariable("nextScreenName","FoodSuppliesShopGeneral")
 composer.setVariable("itemPrice",100)--100 grams of gold per unicorn
 composer.setVariable("itemSoldEN","unicorn")
 composer.setVariable("itemCounterVariableEN","unicorn")
