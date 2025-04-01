@@ -1,5 +1,9 @@
 {
     "Lua.diagnostics.globals": [
-        "lblLable"
+        "lblLable",
+        "gamePaused"
+    ],
+    "Lua.diagnostics.disable": [
+        "need-check-nil"
     ]
 }

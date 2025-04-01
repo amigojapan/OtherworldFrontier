@@ -12,7 +12,7 @@ local scene = composer.newScene()
 
 composer.setVariable("setVariable","NumberOfUnicorns")
 composer.setVariable("backgroundImage","backgrounds/unicorn-stable.png")
-composer.setVariable("nextScreenName","FoodSuppliesShopGeneral")
+composer.setVariable("nextScreenName","levelEditor")
 composer.setVariable("itemPrice",100)--100 grams of gold per unicorn
 composer.setVariable("itemSoldEN","unicorn")
 composer.setVariable("itemCounterVariableEN","unicorn")
@@ -46,9 +46,9 @@ function scene:show(event)
 
     elseif (phase == "did") then
         --background
-        local background = display.newImageRect( sceneGroup,composer.getVariable("backgroundImage") , 1000,800 )
-		background.x = display.contentCenterX
-		background.y = display.contentCenterY
+        --local background = display.newImageRect( sceneGroup,composer.getVariable("backgroundImage") , 1000,800 )
+		--background.x = display.contentCenterX
+		--background.y = display.contentCenterY
         -- Code here runs when the scene is entirely on screen
         print("language:"..composer.getVariable( "language" ))
         gotoShop()
