@@ -162,7 +162,7 @@ function initTextScreen(sceneGroup,language)
     -- The C64's resolution is 320×200 pixels, which is made up of a 40×25 grid of 
     -- 8×8 character blocks. Adjusted for HD displays to use 80 characters wide.
     Lang=language
-    
+    print("language:"..language)
     local aspectRatio = nil
     local fontWH = nil
     local magicalNumber=nil
@@ -180,6 +180,9 @@ function initTextScreen(sceneGroup,language)
         rows = 14
         magicalNumber=1200--dunno why but I need to substract this number to get the right size of the red rectangle(it seems the smaller the bigger the rectangle gets)
         localizedSpace=" "
+    end
+    if sceneGroup==nil then
+        return
     end
     textZoneRectangle = display.newRect(sceneGroup, display.contentCenterX, display.contentCenterY, (fontWH * columns)-magicalNumber  , fontWH * rows)
     textZoneRectangle.strokeWidth = 5
@@ -204,6 +207,7 @@ function initTextScreen(sceneGroup,language)
         lblContinue = display.newText(sceneGroup, "[>>]",(columns-12)*fontWH, 200 + ((rows-1.6) * fontWH), "fonts/ume-tgc5.ttf", fontWH)
         --lblContinue = display.newText(sceneGroup, "Continue...", 200, 200, "fonts/ume-tgc5.ttf", fontWH)
     else
+        print("here5!!")
         lblContinue = display.newText(sceneGroup, "[Continue...]", 750, 996, "fonts/ume-tgc5.ttf", fontWH)
     end
     lblContinue:addEventListener( "tap", continue )
@@ -223,7 +227,10 @@ function showTextArea()
     for key, lblLine in ipairs(tableLines) do
         lblLine.isVisible=true
     end
-    textZoneRectangle.isVisible=true
+    if textZoneRectangle then
+        textZoneRectangle.isVisible=true
+    end
+    --lblContinue.isVisible=false
 end
 function CLS()
     for _, line in ipairs(tableLines) do
@@ -322,19 +329,21 @@ function PRINT(STR)
             --cursor.Column=cursor.Column-0.5
         --end
         -- Concatenate text correctly
+        
         local textbefore = currentLine:sub(1, cursor.Column - 1)
         local textafter
         if characterWasAscii then
             if Lang=="JP" then
                 textafter = currentLine:sub((cursor.Column + #toPrint)+1)--I think this was the fix I was looking for, it is not perfect but seems to work well enough
             else
-                textafter = currentLine:sub(cursor.Column + #toPrint)
+               textafter = currentLine:sub(cursor.Column + #toPrint)
             end    
         else
-            textafter = currentLine:sub(cursor.Column + #toPrint)
+            if currentLine then
+                textafter = currentLine:sub(cursor.Column + #toPrint)
+            end
         end
         local updatedLine = textbefore .. toPrint .. textafter
-
         if cursor.Line==rows-1 then
             NEWENDLINE()
             LOCATE(cursor.Line-1,1)--changing LOCATE(cursor.Line-2,1) to LOCATE(cursor.Line-1,1) seems to have fixed the newline problem 
@@ -574,34 +583,39 @@ function disableContinueButton()
     end
 end
 function enableContinueButton()
-    print("enableContinueButton() called")
-    if lblContinue then
-        lblContinue.isVisible=true
-        lblContinue.isHitTestable=true
-    end
-    if Lang=="JP" then
-        aspectRatio = 8
-        fontWH = 8 * aspectRatio
-        columns = 21
-        rows = 14
-        magicalNumber=0
-        localizedSpace="　"
-    else
-        aspectRatio = 4
-        fontWH = 16 * aspectRatio
-        columns = 40
-        rows = 14
-        magicalNumber=1200--dunno why but I need to substract this number to get the right size of the red rectangle(it seems the smaller the bigger the rectangle gets)
-        localizedSpace=" "
-    end
-  
-    if Lang=="JP" then
-        print("here4!!")
-        lblContinue = display.newText( "[>>]",(columns-12)*fontWH, 200 + ((rows-1.6) * fontWH), "fonts/ume-tgc5.ttf", fontWH)
-        --lblContinue = display.newText(sceneGroup, "Continue...", 200, 200, "fonts/ume-tgc5.ttf", fontWH)
-    else
-        lblContinue = display.newText("[Continue...]", 750, 996, "fonts/ume-tgc5.ttf", fontWH)
-    end
-    lblContinue:addEventListener( "tap", continue )
-
+    --there is a bug in here, but it seems to not appear anymore so I commented this and the code at the end:if not Lang==nil then--quick and direty fix cause it seems something is calling this with null language
+        print("enableContinueButton() called")
+        if lblContinue then
+            lblContinue.isVisible=true
+            lblContinue.isHitTestable=true
+        end
+        
+        if Lang=="JP" then
+            aspectRatio = 8
+            fontWH = 8 * aspectRatio
+            columns = 21
+            rows = 14
+            magicalNumber=0
+            localizedSpace="　"
+        else
+            aspectRatio = 4
+            fontWH = 16 * aspectRatio
+            columns = 40
+            rows = 14
+            magicalNumber=1200--dunno why but I need to substract this number to get the right size of the red rectangle(it seems the smaller the bigger the rectangle gets)
+            localizedSpace=" "
+        end
+    
+        if Lang=="JP" then
+            print("here4!!")
+            lblContinue = display.newText( "[>>]",(columns-12)*fontWH, 200 + ((rows-1.6) * fontWH), "fonts/ume-tgc5.ttf", fontWH)
+            --lblContinue = display.newText(sceneGroup, "Continue...", 200, 200, "fonts/ume-tgc5.ttf", fontWH)
+        else
+            print("here5!!")
+            lblContinue = display.newText("[Continue...]", 750, 996, "fonts/ume-tgc5.ttf", fontWH)
+        end
+        lblContinue:addEventListener( "tap", continue )
+    --else
+    --    print("Warning:enableContinueButton() while language is still nil")
+    --end
 end

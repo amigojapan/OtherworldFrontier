@@ -52,10 +52,10 @@ end
 ------------------------------------------------------------
 -- Function: calculateFatigueRate
 -- Description:
---   Determines how fast each unicorn gets tired based on the
+--   Dentermines how fast each unicorn gets tired based on the
 --   current speed of the caravan and the number of unicorns.
 --
--- Parameters:
+-- Paramenters:
 --   speed - the current speed of the caravan (e.g., pixels per second)
 --
 -- Returns:
@@ -78,7 +78,7 @@ end
 --   as removing the unicorn from the display and updating the
 --   total unicorn count.
 --
--- Parameters:
+-- Paramenters:
 --   unicorn - the unicorn that has died.
 ------------------------------------------------------------
 local function killUnicorn(unicorn)
@@ -106,7 +106,7 @@ end
 --   Updates the HP for a single unicorn based on the elapsed
 --   time (dt) and the current speed.
 --
--- Parameters:
+-- Paramenters:
 --   unicorn - the unicorn table entry.
 --   dt      - delta time (in seconds) since the last update.
 --   speed   - the current speed of the caravan.
@@ -134,7 +134,7 @@ end
 --   Should be called every frame (or at fixed intervals) to
 --   update each unicorn's HP.
 --
--- Parameters:
+-- Paramenters:
 --   dt    - delta time (in seconds) since the last update.
 --   speed - the current speed of the caravan.
 ------------------------------------------------------------
@@ -317,17 +317,6 @@ local onRoad=false
 local onRoadSatusChanged="onRoad"
 local tblBoxes = {}
 
-function gotoMistralsEnd()
-    hideEverything()
-    hideTextArea()
-    composer.setVariable( "enteredMistalsEnd",true )
-    composer.setVariable("unicorns",unicorns)
-    composer.setVariable("caravan",caravan)
-    composer.setVariable("tblBoxes",tblBoxes)
-    composer.removeScene( composer.getSceneName("current") )
-    composer.gotoScene("unicornStableGeneral")
-end
-
 -- Function to extract serializable data from tblBoxes
 local function getSerializableBoxes()
     local serializableBoxes = {}
@@ -337,18 +326,67 @@ local function getSerializableBoxes()
     return serializableBoxes
 end
 
-function gotoElvenTown1()
+function enterTown(returnMessage)
     gamePaused=true
     composer.setVariable("gamePaused", true)
     hideEverything()
     hideTextArea()
-    composer.setVariable("enteredElvenTown1", true)
+    composer.setVariable(returnMessage, true)
     composer.setVariable("unicorns", unicorns)
     composer.setVariable("caravan", {x = caravanGroup.x, y = caravanGroup.y, rotation = caravan.rotation})
     composer.setVariable("tblBoxesData", getSerializableBoxes())  -- Store data, not objects
     composer.removeScene(composer.getSceneName("current"))
     composer.gotoScene("unicornStableGeneral")
 end
+
+function enterLandmark(returnMessage)
+    gamePaused=true
+    composer.setVariable("gamePaused", true)
+    hideEverything()
+    hideTextArea()
+    composer.setVariable(returnMessage, true)
+    composer.setVariable("unicorns", unicorns)
+    composer.setVariable("caravan", {x = caravanGroup.x, y = caravanGroup.y, rotation = caravan.rotation})
+    composer.setVariable("tblBoxesData", getSerializableBoxes())  -- Store data, not objects
+    composer.removeScene(composer.getSceneName("current"))
+    composer.gotoScene("showLandmark")
+end
+
+function gotoMoutein1()
+    if composer.getVariable( "language" ) == "English" then
+        RESETQUE()
+        QUESLOWPRINT("^You have arrived at Melstorms Peak!^")
+        --           "1234567890123456789012345678901234567890"
+        QUESLOWPRINT("^^test line2^")
+        QUESLOWPRINT("^^test line3^")
+    elseif composer.getVariable( "language" ) == "Japanese" then
+        RESETQUE()
+        QUESLOWPRINT("^Melstorms Peakにようこそ!^")
+        --           "1234567890123456789012345678901234567890"
+        QUESLOWPRINT("^^test line2^")
+        QUESLOWPRINT("^^test line3^")
+    elseif composer.getVariable( "language" ) == "Spanish" then
+        RESETQUE()
+        QUESLOWPRINT("^Bienvenida a Melstorms Peak!^")
+        --           "1234567890123456789012345678901234567890"
+        QUESLOWPRINT("^^test line2^")
+        QUESLOWPRINT("^^test line3^")
+    end
+
+    composer.setVariable("backgroundImage","backgrounds/Maelstrom-Peak.png")
+    enterLandmark("enteredMountain1")
+end
+
+
+function gotoMistralsEnd()
+    enterTown("enteredMistalsEnd")
+end
+
+
+function gotoElvenTown1()
+    enterTown("enteredElvenTown1")
+end
+
 
 local daysPassed=0
 local lblDaysPassed = display.newText( tostring(daysPassed)..translate["Days Passed"], 200, 50, "fonts/ume-tgc5.ttf", 50 )
@@ -529,11 +567,12 @@ function gameloop()
                     end
                 elseif box.label=="elf_t1" then
                     if detectCollision4(caravanGroup,caravanCollider, box) then
-                        --local absX, absY = caravanCollider:localToContent(0, 0)
-                        --print("absX:"..absX.."absY:"..absY)
-                        print("now game is paused?:"..tostring(gamePaused))
-                        print("Entering Elven Town^".."Collision with elf_t1 at caravan x:" .. caravanGroup.x .. ", y:" .. caravanGroup.y,gotoElvenTown1)
-                        pauseAndShowQuickMessageThenCallFunction("Entering Elven Town^".."Collision with elf_t1 at caravan x:" .. caravanGroup.x .. ", y:" .. caravanGroup.y,gotoElvenTown1)
+                        pauseAndShowQuickMessageThenCallFunction("Entering Elven Town.^",gotoElvenTown1)
+                        return  -- No need to check further if we found a collision
+                    end
+                elseif box.label=="mountain1" then
+                    if detectCollision4(caravanGroup,caravanCollider, box) then
+                        pauseAndShowQuickMessageThenCallFunction("Landmark Reached!^",gotoMoutein1)
                         return  -- No need to check further if we found a collision
                     end
                 end
@@ -730,7 +769,7 @@ function gameStartEN()
     QUESLOWPRINT("tame a wild unicorn.^")
     QUESLOWPRINT("Use potions wisely.^")
     QUESLOWPRINT("You must reach \"The valley of ^")
-    QUESLOWPRINT("eternity\" before the \"Northern ^")
+    QUESLOWPRINT("enternity\" before the \"Northern ^")
     QUESLOWPRINT("Tundra\" freezes over....")
     SLOWPRINT(50,"",showControls)
 end
@@ -748,7 +787,7 @@ function gameStartJP()
     QUESLOWPRINT("野生のユニコーンを飼いならして。^")
     QUESLOWPRINT("ポーションを上手く使って。^")
     QUESLOWPRINT("「北のツンドラ」が凍る前に、^")
-    QUESLOWPRINT("\"The valley of Eternity\"に^")
+    QUESLOWPRINT("\"The valley of enternity\"に^")
     QUESLOWPRINT("着かなきゃいけない。。。。")
     SLOWPRINT(50,"",showControls)
 end
@@ -765,7 +804,7 @@ function gameStartES()
     QUESLOWPRINT("puedes domar unicornios salvajes.^")
     QUESLOWPRINT("Usa tus pociones sabiamente.^")
     QUESLOWPRINT("Tienes que llegar a \"The valley of ^")
-    QUESLOWPRINT("eternity\" de que la \"Northern ^")
+    QUESLOWPRINT("enternity\" de que la \"Northern ^")
     QUESLOWPRINT("Tundra\" antes de que se conjele....")
     SLOWPRINT(50,"",showControls)
 end
@@ -1466,11 +1505,10 @@ end
 local function loadLevel()
     local path = system.pathForFile("level.json", system.DocumentsDirectory)
     local file, errorString = io.open(path, "r")
-    
     if file then
         local jsonString = file:read("*a")
         io.close(file)
-        
+        --print("json sting:"..jsonString)
         local serializableBoxes = json.decode(jsonString)
         
         -- Clear existing boxes
@@ -1479,34 +1517,61 @@ local function loadLevel()
             box:removeSelf() -- Remove from display
             table.remove(tblBoxes, i) -- Remove from table
         end
-        
+        --diagnostic
+        print("Number of items: " .. #serializableBoxes) -- Should match JSON array length
+        for i, data in ipairs(serializableBoxes) do
+            print("Item " .. i .. " type: " .. type(data)) -- Should be "table"
+            if type(data) == "table" then
+                print("Item " .. i .. " label: " .. tostring(data.label)) -- Should show label or "nil"
+            end
+            if data.label==nil then
+                print("nil label found in data, skipping")
+            else
+                -- Box creation code
+            end
+        end
+        local mistranlsEndInData=false
         -- Recreate boxes from loaded data
         for _, data in ipairs(serializableBoxes) do
-            --local box = display.newImageRect("img/block-white.png", data.size, data.size)
-            if data.color=="colorWhite" then
-                box = display.newImageRect("img/block-white.png", 32, 32)    
-            elseif data.color=="colorRed" then
-                box = display.newImageRect("img/block-red.png", 32, 32)    
-            elseif data.color=="colorGreen" then
-                box = display.newImageRect("img/block-green.png", 32, 32)    
-            elseif data.color=="colorBlue" then
-                box = display.newImageRect("img/block-blue.png", 32, 32)    
-            elseif data.color=="colorYellow" then
-                box = display.newImageRect("img/block.png", 32, 32)    
+                if data.label==nil then
+                    print("nil label found in data, skipping")
+                else
+                --local box = display.newImageRect("img/block-white.png", data.size, data.size)
+                if data.color=="colorWhite" then
+                    box = display.newImageRect("img/block-white.png", 32, 32)    
+                elseif data.color=="colorRed" then
+                    box = display.newImageRect("img/block-red.png", 32, 32)    
+                elseif data.color=="colorGreen" then
+                    box = display.newImageRect("img/block-green.png", 32, 32)    
+                elseif data.color=="colorBlue" then
+                    box = display.newImageRect("img/block-blue.png", 32, 32)    
+                elseif data.color=="colorYellow" then
+                    box = display.newImageRect("img/block.png", 32, 32)    
+                end
+                print("label:"..data.label)
+                if data.label=="mist_end_exit" then
+                    mistranlsEndInData=true
+                end
+                box.label = data.label
+                box.color = data.color
+                box.x = data.x
+                box.y = data.y
+                box.size = data.size
+                box.alpha = 0.3
+                box:addEventListener("tap", boxListener) -- Add your tap listener if needed
+                table.insert(tblBoxes, box)
             end
-            box.label=data.label
-            box.color=data.color
-            box.x = data.x
-            box.y = data.y
-            box.size = data.size
-            box.alpha = 0.3
-            box:addEventListener("tap", boxListener) -- Add your tap listener if needed
-            table.insert(tblBoxes, box)
         end
         print("Level loaded successfully.")
     else
         print("Error loading level: " .. errorString)
     end
+    if mistranlsEndInData then
+        print("mistrals end in data")
+    else
+        print("warning:mistrals end NOT in data")
+    end
+
 end
 
 
@@ -1532,8 +1597,9 @@ local function onsetLabelButtonTap(event)
     composer.setVariable("gettingInput", true)
     composer.setVariable("caravan",caravanGroup)    
     composer.setVariable("unicorns",unicorns)
-    composer.setVariable("tblBoxes",tblBoxes)
+    --composer.setVariable("tblBoxes",tblBoxes)
     hideTextArea()
+    composer.setVariable("tblBoxesData", getSerializableBoxes())
     composer.gotoScene( "InputScene" )
     return true
 end
@@ -1549,7 +1615,7 @@ setLabelButton:addEventListener("tap", onsetLabelButtonTap)
 
 --local lblLabel = native.newTextField( 550, 50, width, height )
 
-function restoreBoxesFromTable()
+function restoreBoxesFromTable(sceneGroup)
     -- Restore boxes from saved data
     local tblBoxesData = composer.getVariable("tblBoxesData")
     tblBoxes = {}
@@ -1575,6 +1641,7 @@ function restoreBoxesFromTable()
             box.alpha = 0.3
             box:addEventListener("tap", boxListener)
             table.insert(tblBoxes, box)
+            print("added box.label:"..box.label)
         end
     end
 end
@@ -1590,8 +1657,8 @@ function restoreSceneAfterExist(sceneGroup,savedCaravan)
     caravanGroup.y=savedCaravan.y
     caravan.rotation=savedCaravan.rotation
     unicorns=composer.getVariable("unicorns")
-    tblBoxes=composer.getVariable("tblBoxes")
-    restoreBoxesFromTable()
+    tblBoxes=composer.getVariable("tblBoxesData")
+    restoreBoxesFromTable(sceneGroup)
 end
 
 function findBox(name)
@@ -1695,6 +1762,13 @@ function scene:show(event)
         --moving caravan to center of screen
         --remmeber that groups move reative to teh placement of the objects in their original position, so always set the objects to 0,0 first
         local mistralsEndStartPoint=findBox("mist_end_exit")
+        if mistralsEndStartPoint==nil then
+            pauseAndShowQuickMessage("error;mistrals end not found in jason file, putting on center of screen")
+            mistralsEndStartPoint={}
+            mistralsEndStartPoint.x=display.contentCenterX
+            mistralsEndStartPoint.y=display.contentCenterY
+        end
+        --**fix new bug when it clears the map after making a new box
         transition.to( caravanGroup, { time=0, x=mistralsEndStartPoint.x, y=mistralsEndStartPoint.y, onComplete=transitionCompleted } )
         
         local paint = {
@@ -1790,6 +1864,12 @@ function scene:show(event)
             composer.setVariable( "gettingInput", false )
             local savedCaravan=composer.getVariable("caravan")
             restoreSceneAfterExist(sceneGroup,savedCaravan)
+            return
+        end
+
+        if composer.getVariable("enteredMountain1") then
+            composer.setVariable("enteredMountain1", false)
+            repeatedStuffDoneWhenLeavingTowns(sceneGroup,"mountain1_exit")
             return
         end
 
