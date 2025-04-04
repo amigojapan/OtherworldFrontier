@@ -353,26 +353,6 @@ function enterLandmark(returnMessage)
 end
 
 function gotoMoutein1()
-    if composer.getVariable( "language" ) == "English" then
-        RESETQUE()
-        QUESLOWPRINT("^You have arrived at Melstorms Peak!^")
-        --           "1234567890123456789012345678901234567890"
-        QUESLOWPRINT("^^test line2^")
-        QUESLOWPRINT("^^test line3^")
-    elseif composer.getVariable( "language" ) == "Japanese" then
-        RESETQUE()
-        QUESLOWPRINT("^Melstorms Peakにようこそ!^")
-        --           "1234567890123456789012345678901234567890"
-        QUESLOWPRINT("^^test line2^")
-        QUESLOWPRINT("^^test line3^")
-    elseif composer.getVariable( "language" ) == "Spanish" then
-        RESETQUE()
-        QUESLOWPRINT("^Bienvenida a Melstorms Peak!^")
-        --           "1234567890123456789012345678901234567890"
-        QUESLOWPRINT("^^test line2^")
-        QUESLOWPRINT("^^test line3^")
-    end
-
     composer.setVariable("backgroundImage","backgrounds/Maelstrom-Peak.png")
     enterLandmark("enteredMountain1")
 end
@@ -536,6 +516,7 @@ function getStuckInRut()
     pauseAndShowQuickMessage(message)
 end
 
+local landmarkShown = false
 function gameloop()
 	if gamePaused then
 		return
@@ -571,8 +552,9 @@ function gameloop()
                         return  -- No need to check further if we found a collision
                     end
                 elseif box.label=="mountain1" then
-                    if detectCollision4(caravanGroup,caravanCollider, box) then
+                    if detectCollision4(caravanGroup,caravanCollider, box) and not landmarkShown then
                         pauseAndShowQuickMessageThenCallFunction("Landmark Reached!^",gotoMoutein1)
+                        landmarkShown = true
                         return  -- No need to check further if we found a collision
                     end
                 end
@@ -1705,7 +1687,12 @@ local function repeatedStuffDoneWhenLeavingTowns(sceneGroup,exitPoint)
     gamePaused = false
     composer.getVariable("gamePaused", false)
 end
+local showCalledAlreadyHack=false
 function scene:show(event)
+    if showCalledAlreadyHack then
+        showCalledAlreadyHack=true
+        return
+    end
     local sceneGroup = self.view
     local phase = event.phase
 
@@ -1867,9 +1854,12 @@ function scene:show(event)
             return
         end
 
+        print("composer.getVariable(enteredMountain1)"..tostring(composer.getVariable("enteredMountain1")))
         if composer.getVariable("enteredMountain1") then
+            print("1returned from landmark")
             composer.setVariable("enteredMountain1", false)
             repeatedStuffDoneWhenLeavingTowns(sceneGroup,"mountain1_exit")
+            print("2returned from landmark")
             return
         end
 
