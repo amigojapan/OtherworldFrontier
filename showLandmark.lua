@@ -34,6 +34,7 @@ end
 -- Handler that gets notified when the alert closes
 function returnToGame()
     --**change once done with level editor to main game screen
+    composer.removeScene(composer.getSceneName("current"))
     composer.gotoScene("levelEditor")
 end
 function shopAriveEN()
