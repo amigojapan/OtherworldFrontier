@@ -4,7 +4,7 @@ require("LinuxAlertBox")
 require("slowprint")
 local scene = composer.newScene()
 
-local background
+background=nil
 
 function scene:create(event)
     local sceneGroup = self.view
