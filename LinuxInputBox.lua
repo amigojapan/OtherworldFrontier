@@ -73,6 +73,7 @@ function drawBorder(x,y,width,height)
 end
 editBuffer=nil
 function drawInputPrompt(x,y,width,height,prompt)
+		disableContinueButton()
 		lblTitle = display.newText(LinuxInputBoxElements, prompt, x, y, "fonts/ume-tgc5.ttf", 50 )
 		lblTitle:setFillColor( 0.82, 0.86, 1 )
 		editBuffer = display.newText(LinuxInputBoxElements, "", x, y+100, "fonts/ume-tgc5.ttf", 50 )

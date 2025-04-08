@@ -54,15 +54,15 @@ local function alertBoxYesClickedComplete()
     composer.gotoScene( nextScreenName, options )
 end
 local function alertBoxNoClickedCompleteEN()
-    enableContinueButton()
+    --enableContinueButton()
     shopAriveEN()
 end
 local function alertBoxNoClickedCompleteJP()
-    enableContinueButton()
+    --enableContinueButton()
     shopAriveJP()
 end
 local function alertBoxNoClickedCompleteES()
-    enableContinueButton()
+    --enableContinueButton()
     shopAriveES()
 end
 
@@ -157,23 +157,24 @@ function verifyPurchaseES(userinput)
 end
 
 function promptItemCountdJP()
+    disableContinueButton()
+    --this is nil for some reason here lblContinue.isVisible=false
     composer.setVariable("inputBuffer","input unset")
     composer.setVariable("inputBoxPrompt","How many "..itemCounterVariableEN.." do you want to buy?:")
     composer.gotoScene("LinuxScreenKeyboardScene")
-    disableContinueButton()
 end
 function promptItemCountdEN()
+    disableContinueButton()
     composer.setVariable("inputBuffer","input unset")
     composer.setVariable("inputBoxPrompt","How many "..itemCounterVariableEN.." do you want to buy?:")
     composer.gotoScene("LinuxScreenKeyboardScene")
-    disableContinueButton()
 end
 
 function promptItemCountdES()
+    disableContinueButton()
     composer.setVariable("inputBuffer","input unset")
     composer.setVariable("inputBoxPrompt","How many "..itemCounterVariableEN.." do you want to buy?:")
     composer.gotoScene("LinuxScreenKeyboardScene")
-    disableContinueButton()
 end
 
 function shopAriveEN()
@@ -185,6 +186,9 @@ function shopAriveEN()
     QUESLOWPRINT("per \""..itemCounterVariableEN.."\", how many ^")
     QUESLOWPRINT("\""..itemCounterVariableEN.."\" do you want to buy?^")
     SLOWPRINT(100,"",promptItemCountdEN)
+    --if not lblContinue then 
+        enableContinueButton()
+    --end
 end
 
 function shopAriveJP()
@@ -195,6 +199,9 @@ function shopAriveJP()
     QUESLOWPRINT(itemCounterVariableJP.."が金".. itemPrice .."グラムする。^")
     QUESLOWPRINT(itemCounterVariableJP.."何個買いたいのか？^")
     SLOWPRINT(100,"",promptItemCountdJP)
+    --if not lblContinue then 
+        enableContinueButton()
+    --end
 end
 
 function shopAriveES()
@@ -206,6 +213,9 @@ function shopAriveES()
     QUESLOWPRINT("por cada "..itemCounterVariableES..", cuantos ^")
     QUESLOWPRINT(itemCounterVariableES.." quieres comprar?^")
     SLOWPRINT(100,"",promptItemCountdES)
+    --if not lblContinue then 
+        enableContinueButton()
+    --end
 end
 
 -- show()
@@ -252,7 +262,7 @@ function scene:show(event)
         if composer.getVariable( "language" ) == "English" then
             --clearBuggyObjects()
             initTextScreen(sceneGroup,"EN")
-            enableContinueButton()
+            --enableContinueButton()
             showTextArea()
             CLS()
             shopAriveEN()

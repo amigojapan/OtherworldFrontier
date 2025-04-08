@@ -165,13 +165,16 @@ disableContinueButton()--this automatically gets enabled on the next screem so n
 end
 ]]
 function promptForNnumerOfUnicornsJP()
+    disableContinueButton()
     showInputBox("ユニコーン何頭買いたいですか？：", verifyPurchaseJP)
 end
 function promptForNnumerOfUnicornsEN()
+    disableContinueButton()
     showInputBox("how many unicorns do you want to buy?:", verifyPurchaseEN)
 end
 
 function promptForNnumerOfUnicornsES()
+    disableContinueButton
     showInputBox("cuantos unicornios quieres comprar?:", verifyPurchaseES)
 end
 
@@ -234,7 +237,7 @@ function scene:show(event)
         if composer.getVariable( "language" ) == "English" then
             --clearBuggyObjects()
             initTextScreen(sceneGroup,"EN")
-            enableContinueButton()
+            --enableContinueButton()
             showTextArea()
             CLS()
             stableAriveEN()
@@ -242,7 +245,7 @@ function scene:show(event)
             initTextScreen(sceneGroup,"JP")
             showTextArea()
             CLS()
-            stableAriveEN()
+            stableAriveJP()
         elseif composer.getVariable( "language" ) == "Spanish" then
             initTextScreen(sceneGroup,"ES")
             showTextArea()

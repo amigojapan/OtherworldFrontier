@@ -34,6 +34,7 @@ end
 
 -- Handler that gets notified when the alert closes
 function gotoShop()
+    disableContinueButton()
     composer.gotoScene("buyStoreItemGeneral")
 end
 -- show()

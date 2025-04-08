@@ -8,7 +8,7 @@ local stringForSlowPrint
 local STRING="なし"
 local printing=false
 local localizedSpace=nil
-local lblContinue=nil
+lblContinue=nil
 Lang=nil
 textZoneRectangle=nil
 characterTimer=nil
@@ -152,6 +152,7 @@ function continue()
         print(tostring(callbackFunction))
         callbackFunction()
         print("continue next")
+        disableContinueButton()
     else
         timer.cancel(characterTimer)
         characterTimer=timer.performWithDelay( 1, coPrintOneCharOfSlowPrint, 0, "charTimer" )
