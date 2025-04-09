@@ -34,10 +34,37 @@ end
 
 function shopAriveJP()
     RESETQUE()
-    QUESLOWPRINT("^Melstorms Peakにようこそ!^")
-    QUESLOWPRINT("^^test line2^")
-    QUESLOWPRINT("^^test line3^")
-    SLOWPRINT(100, "", returnToGame)
+    local textSpeed=100
+    if composer.getVariable("backgroundImage") == "backgrounds/crown-of-eternity.png" then
+        textSpeed=300
+        QUESLOWPRINT("おめでとうございます!^")
+        QUESLOWPRINT("心の願いが仲間を息が得る事だった、から、!^")
+        QUESLOWPRINT("皆で仲良くハッピーエンド^")
+        QUESLOWPRINT("^^ゲームプランナー・プログラマー・著作権：^")
+        QUESLOWPRINT("パドウ・ウスマー・エー(amigojapan)^")
+        QUESLOWPRINT("^グラフィックス・キャラクターデザイナー・プログラマー：若松 晶^")
+        QUESLOWPRINT("^音声・音楽：Albert Korman(Zcom)^")
+        QUESLOWPRINT("^^        END")
+    elseif composer.getVariable("backgroundImage") == "backgrounds/altEnding.png" then
+        textSpeed=300
+        QUESLOWPRINT("おめでとうございます!^")
+        QUESLOWPRINT("君は固定観念に取ら割らない人です!^")
+        QUESLOWPRINT("南西半島でゆっくりな海暮らしにしました。^")
+        QUESLOWPRINT("^^ゲームプランナー・プログラマー・著作権：^")
+        QUESLOWPRINT("パドウ・ウスマー・エー(amigojapan)^")
+        QUESLOWPRINT("^グラフィックス・キャラクターデザイナー・プログラマー：若松 晶^")
+        QUESLOWPRINT("^音声・音楽：Albert Korman(Zcom)^")
+        QUESLOWPRINT("^^        END")
+    elseif composer.getVariable("backgroundImage") == "backgrounds/Maelstrom-Peak.png" then
+        QUESLOWPRINT("Maelstrom　Peakにようこそ!^")
+    elseif composer.getVariable("backgroundImage") == "backgrounds/Evermist-Hills.png" then
+        QUESLOWPRINT("Evermist　Hillsにようこそ!^")
+    elseif composer.getVariable("backgroundImage") == "backgrounds/Enchanted-Spires.png" then
+        QUESLOWPRINT("Evermist　Hillsにようこそ!^")
+    else
+        QUESLOWPRINT("Erorr, landmark not found.^")
+    end
+    SLOWPRINT(textSpeed, "", returnToGame)
 end
 
 function shopAriveES()
@@ -61,11 +88,12 @@ function scene:show(event)
         landmarksShown = true
         print("background image: " .. composer.getVariable("backgroundImage"))
         background=nil
-        background = display.newImageRect(sceneGroup, composer.getVariable("backgroundImage"), 1000, 800)
+        background = display.newImageRect( composer.getVariable("backgroundImage"), 1000, 800)
         if background then
             background.x = display.contentCenterX
             background.y = display.contentCenterY
             print("background.parent == sceneGroup:", background.parent == sceneGroup)
+            sceneGroup:insert( background )
         end
         print("language: " .. composer.getVariable("language"))
         if composer.getVariable("language") == "English" then

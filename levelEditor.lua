@@ -358,6 +358,16 @@ function enterLandmark(returnMessage)
     composer.gotoScene("showLandmark")
 end
 
+function gotoMainGameEnding()
+    composer.setVariable("backgroundImage","backgrounds/crown-of-eternity.png")
+    enterLandmark("enteredMainGameEnding")
+end
+
+function gotoAlternateGameEnding()
+    composer.setVariable("backgroundImage","backgrounds/altEnding.png")
+    enterLandmark("enteredAlternateGameEnding")
+end
+
 function gotoMoutein1()
     composer.setVariable("backgroundImage","backgrounds/Maelstrom-Peak.png")
     enterLandmark("enteredMountain1")
@@ -428,8 +438,8 @@ function transitionCompleted()
     gamePaused = false
 end
 
-function teleportSuccess()
-    local box = findBox("elf_t1")
+function teleportSuccess(exitBoxName)
+    local box = findBox(exitBoxName)
     if box == nil then
         print("box is nill")
         -- Optionally set a default safe position or show an error
@@ -441,6 +451,10 @@ function teleportSuccess()
         print("Teleported to box.x:" .. box.x .. ", box.y:" .. box.y)
         --this was causing the persistent continue button, I would like to have this message, but I dont know how to do it safely
         --this did not work either pauseAndShowQuickMessageThenCallFunction("You teleported to the other side of the river and entered an Elven village",emptyFunctionForWaiting)
+        --bug no continuebutton after going across hte river
+        if exitBoxName=="river2_exit" then --(quick hack worked)trying quick fix to fix it for river2
+            hideTextArea()
+        end
     end
 end
 function teleportTo(teleportExit)
@@ -473,7 +487,7 @@ local function teleportFail(char)
     pauseAndShowQuickMessage(message)
 end
 
-local function bruteForceSuccess()
+local function bruteForceSuccess(exitBoxName)
     local message
     if composer.getVariable("language") == "English" then
         message = "You successfully went thru the river."
@@ -483,7 +497,7 @@ local function bruteForceSuccess()
         message = "cruzaron el rio."
     end
     pauseAndShowQuickMessage(message)
-    local box=findBox("elf_t1")
+    local box=findBox(exitBoxName)
     caravanGroup.x=box.x
     caravanGroup.y=box.y
 end
@@ -554,14 +568,14 @@ local function tryBruteForceLowMP(char)
     )
 end
 
-local function tryTeleport(char)
+local function tryTeleport(char,exitBoxName)
     local message
     if composer.getVariable( "language" ) == "English" then
-        message = "Trying to cross elven river, " .. char.name .. " casts her teleport spell! costing 50MP"
+        message = "Trying to cross the river, " .. char.name .. " casts her teleport spell! it costs her 50MP"
     elseif composer.getVariable( "language" ) == "Japanese" then
-        message = "エルブェン川を渡ろうとしてる、" .. char.name .. "が瞬間移動の呪文を唱える！５０MPが掛かる。"
+        message = "川を渡ろうとしてる、" .. char.name .. "が瞬間移動の呪文を唱える！彼女の５０MPが掛かる。"
     elseif composer.getVariable( "language" ) == "Spanish" then
-        message = "Tratando de cruzar el rio de los duendes, " .. char.name .. " lanza un hechizo de teletransporte! costando 50MP"
+        message = "Tratando de cruzar el rio, " .. char.name .. " lanza un hechizo de teletransporte! le cuesta 50MP"
     end
     pauseAndShowQuickMessageThenCallFunction(
         message,
@@ -569,7 +583,7 @@ local function tryTeleport(char)
             char.MP = char.MP - 50
             local magic = math.random(1, 100)
             if magic < 100 then--chnage back to 50 later
-                teleportSuccess()
+                teleportSuccess(exitBoxName)
             else
                 teleportFail(char)
             end
@@ -577,18 +591,18 @@ local function tryTeleport(char)
     )
 end
 
-function crossRiverAlgorythm()
+function crossRiverAlgorythm(exitBoxName)
     local characters = composer.getVariable("characters")
     local randomMagicChar = characters[3]
 
     if randomMagicChar.isAlive then
         if randomMagicChar.MP >= 50 then
-            tryTeleport(randomMagicChar)
+            tryTeleport(randomMagicChar,exitBoxName)
         else
-            tryBruteForceLowMP(randomMagicChar)
+            tryBruteForceLowMP(randomMagicChar,exitBoxName)
         end
     else
-        tryBruteForce(randomMagicChar)
+        tryBruteForce(randomMagicChar,exitBoxName)
     end
 end
 
@@ -661,13 +675,41 @@ function gameloop()
                         pauseAndShowQuickMessageThenCallFunction("Elven Town.^",gotoElvenTown3)
                         return  -- No need to check further if we found a collision
                     end
+                elseif box.label=="v_of_e" then
+                    if detectCollision4(caravanGroup,caravanCollider, box) and not landmarkShown then
+                        local message
+                        if composer.getVariable( "language" ) == "English" then
+                            message = "Reached main game ending!^"
+                        elseif composer.getVariable( "language" ) == "Japanese" then
+                            message = "メーンエンディングに着いた！^"
+                        elseif composer.getVariable( "language" ) == "Spanish" then
+                            message = "Alcanzaron el final principal del juego!^"
+                        end
+                        pauseAndShowQuickMessageThenCallFunction(message,gotoMainGameEnding)
+                        landmarkShown = true
+                        return  -- No need to check further if we found a collision
+                    end
+                elseif box.label=="alt_end" then
+                    if detectCollision4(caravanGroup,caravanCollider, box) and not landmarkShown then
+                        local message
+                        if composer.getVariable( "language" ) == "English" then
+                            message = "Reached alternate game ending!^"
+                        elseif composer.getVariable( "language" ) == "Japanese" then
+                            message = "第二目のエンディングに着いた！^"
+                        elseif composer.getVariable( "language" ) == "Spanish" then
+                            message = "Alcanzaron el final alternativo del juego!^"
+                        end
+                        pauseAndShowQuickMessageThenCallFunction(message,gotoAlternateGameEnding)
+                        landmarkShown = true
+                        return  -- No need to check further if we found a collision
+                    end
                 elseif box.label=="mountain1" then
                     if detectCollision4(caravanGroup,caravanCollider, box) and not landmarkShown then
                         local message
                         if composer.getVariable( "language" ) == "English" then
                             message = "Landmark Reached!^"
                         elseif composer.getVariable( "language" ) == "Japanese" then
-                            message = "ランドマークに着きました！^"
+                            message = "ランドマークに着いた！^"
                         elseif composer.getVariable( "language" ) == "Spanish" then
                             message = "Alcanzaron un lugar de importancia!^"
                         end
@@ -681,7 +723,7 @@ function gameloop()
                         if composer.getVariable( "language" ) == "English" then
                             message = "Landmark Reached!^"
                         elseif composer.getVariable( "language" ) == "Japanese" then
-                            message = "ランドマークに着きました！^"
+                            message = "ランドマークに着いた！^"
                         elseif composer.getVariable( "language" ) == "Spanish" then
                             message = "Alcanzaron un lugar de importancia!^"
                         end
@@ -695,7 +737,7 @@ function gameloop()
                         if composer.getVariable( "language" ) == "English" then
                             message = "Landmark Reached!^"
                         elseif composer.getVariable( "language" ) == "Japanese" then
-                            message = "ランドマークに着きました！^"
+                            message = "ランドマークに着いた！^"
                         elseif composer.getVariable( "language" ) == "Spanish" then
                             message = "Alcanzaron un lugar de importancia!^"
                         end
@@ -703,15 +745,13 @@ function gameloop()
                         landmarkShown = true
                         return  -- No need to check further if we found a collision
                     end
-                end
-                if box.label=="tele1" then
+                elseif box.label=="tele1" then
                     if detectCollision3(caravanCollider, box) then
                         speed=0
                         teleportTo("tele1_exit")
                         return
                     end
-                end
-                if box.label=="treasure1" then
+                elseif box.label=="treasure1" then
                     if detectCollision3(caravanCollider, box) then
                         local message
                         if composer.getVariable( "language" ) == "English" then
@@ -734,9 +774,15 @@ function gameloop()
                 if box.label=="river1" then
                     if detectCollision3(caravanCollider, box) then
                         speed=0
-                        crossRiverAlgorythm()
+                        crossRiverAlgorythm("elf_t1")
                         return
                     end
+                elseif box.label=="river2" then
+                    if detectCollision3(caravanCollider, box) then
+                        speed=0
+                        crossRiverAlgorythm("river2_exit")
+                        return
+                    end    
                 elseif box.label=="sea" then
                     if detectCollision3(caravanCollider, box) then
                         speed=0
@@ -746,22 +792,20 @@ function gameloop()
                 end
             end
         end
-        if not onRoad  then
-            if onRoadSatusChanged=="onRoad" then
-                print("offroad now")
-                if composer.getVariable( "language" ) == "English" then
-                    message = "Caravan is off-road now!"
-                elseif composer.getVariable( "language" ) == "Japanese" then
-                    message = "馬車が道を外れた！"
-                elseif composer.getVariable( "language" ) == "Spanish" then
-                    message = "La caravana se ha salido del camino!"
-                end
-                pauseAndShowQuickMessage(message)   
-                onRoadSatusChanged="offRoad"
-                onRoad=false
-                --**add event for unicorns dying faster from being offroad
+        if not onRoad and onRoadSatusChanged=="onRoad" then
+            print("offroad now")
+            if composer.getVariable( "language" ) == "English" then
+                message = "Caravan is off-road now!"
+            elseif composer.getVariable( "language" ) == "Japanese" then
+                message = "馬車が道を外れた！"
+            elseif composer.getVariable( "language" ) == "Spanish" then
+                message = "La caravana se ha salido del camino!"
             end
-        elseif onRoadSatusChanged=="offRoad" then
+            pauseAndShowQuickMessage(message)   
+            onRoadSatusChanged="offRoad"
+            onRoad=false
+            --**add event for unicorns dying faster from being offroad
+        elseif onRoad and onRoadSatusChanged=="offRoad" then
             print("onroad now")
             local message
             if composer.getVariable( "language" ) == "English" then
@@ -2028,7 +2072,20 @@ function scene:show(event)
             return
         end
 
-        --print("composer.getVariable(enteredMountain1)"..tostring(composer.getVariable("enteredMountain1")))
+        if composer.getVariable("enteredMainGameEnding") then
+            composer.setVariable("enteredMainGameEnding", false)
+            composer.gotoScene("menu")
+            --repeatedStuffDoneWhenLeavingTownsAndLandmarks(sceneGroup,"mountain1_exit")
+            return
+        end
+        
+        if composer.getVariable("enteredAlternateGameEnding") then
+            composer.setVariable("enteredMountain1", false)
+            composer.gotoScene("menu")
+            --repeatedStuffDoneWhenLeavingTownsAndLandmarks(sceneGroup,"mountain1_exit")
+            return
+        end
+
         if composer.getVariable("enteredMountain1") then
             composer.setVariable("enteredMountain1", false)
             repeatedStuffDoneWhenLeavingTownsAndLandmarks(sceneGroup,"mountain1_exit")
@@ -2208,6 +2265,7 @@ return scene
     --both for money and potions
 --bug with status button, leaveing a continue button I think
 --bug day gets set back to 1 after going into a town, probably needs to be changed ot a composer variable
+--bug the arc tool gets reset after going to towns or landmarks I think.
 --[[
 月みたいなので、馬車をかいてんする
 5:24 PM <amigojapan> hiro_at_work: 上矢印でスピードをます
