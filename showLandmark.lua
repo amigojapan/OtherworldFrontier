@@ -60,6 +60,7 @@ function scene:show(event)
         end
         landmarksShown = true
         print("background image: " .. composer.getVariable("backgroundImage"))
+        background=nil
         background = display.newImageRect(sceneGroup, composer.getVariable("backgroundImage"), 1000, 800)
         if background then
             background.x = display.contentCenterX

@@ -2,7 +2,8 @@
     "Lua.diagnostics.globals": [
         "lblLable",
         "gamePaused",
-        "gotoMistralsEnd"
+        "gotoMistralsEnd",
+        "background"
     ],
     "Lua.diagnostics.disable": [
         "need-check-nil"

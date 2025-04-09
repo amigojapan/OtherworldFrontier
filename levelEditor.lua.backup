@@ -760,19 +760,18 @@ function gameloop()
                 onRoadSatusChanged="offRoad"
                 --**add event for unicorns dying faster from being offroad
             end
-        else
-            if onRoadSatusChanged=="offRoad" then
-                print("onroad now")
-                if composer.getVariable( "language" ) == "English" then
-                    message = "Caravan is on-road now."
-                elseif composer.getVariable( "language" ) == "Japanese" then
-                    message = "馬車が道に戻った."
-                elseif composer.getVariable( "language" ) == "Spanish" then
-                    message = "La caravana ha regrresado al camino."
-                end
-                pauseAndShowQuickMessage(message)        
-                onRoadSatusChanged="onRoad"
+        elseif onRoadSatusChanged=="offRoad" then
+            print("onroad now")
+            local message
+            if composer.getVariable( "language" ) == "English" then
+                message = "Caravan is on-road now."
+            elseif composer.getVariable( "language" ) == "Japanese" then
+                message = "馬車が道に戻った."
+            elseif composer.getVariable( "language" ) == "Spanish" then
+                message = "La caravana ha regrresado al camino."
             end
+            pauseAndShowQuickMessage(message)
+            onRoadSatusChanged="onRoad"
         end
     end
 
@@ -1900,7 +1899,7 @@ function scene:show(event)
             if box.label=="mist_end_exit" then
                 mistralsEndStartPoint.x=box.x
                 mistralsEndStartPoint.y=box.y
-                found=ture
+                found=true
                 break
             end 
         end
@@ -2205,6 +2204,8 @@ return scene
 --bring new map in, crop it to fit the same size as current one, adjust map objects
 --(pending)set maximum stolen ammount
     --both for money and potions
+--bug with status button, leaveing a continue button I think
+--bug day gets set back to 1 after going into a town, probably needs to be changed ot a composer variable
 --[[
 月みたいなので、馬車をかいてんする
 5:24 PM <amigojapan> hiro_at_work: 上矢印でスピードをます
