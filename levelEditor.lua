@@ -22,10 +22,16 @@ local caravanGroup
 -- Constants
 local INITIAL_HP = 100        -- starting HP for each unicorn
 local BASE_FATIGUE_RATE = 10  -- base rate at which unicorns get tired (HP lost per unit speed per second)
-local gamePaused=false
+gamePaused=true
 -- Global unicorn table
 local unicorns = {}
 local gameover=false
+gameLoopTimer=nil
+
+function saveCaravan()
+    composer.setVariable("caravan", {x = caravanGroup.x, y = caravanGroup.y, rotation = caravan.rotation})    --**setGamePausedState(false)
+end
+
 ------------------------------------------------------------
 -- Function: createUnicorns
 -- Description:
@@ -173,33 +179,34 @@ end
 function  unPauseGame()
     disableContinueButton()
     hideTextArea()
-    gamePaused=false
+    setGamePausedState(false)
     if speed==0 then
         showRestingMenu()
     end
 end
-
 function pauseAndShowQuickMessage(message)
     RESETQUE()
-    gamePaused=true
+    setGamePausedState(true)
     showTextArea()
     CLS()
     message=message.."."--just a quick hack to handle the need to have an extra character or some reaosn in the SLOWPRINT
-    SLOWPRINT(50,message,unPauseGame)
-    enableContinueButton()
+    SLOWPRINT(50,message,unPauseGame)--emptyFunction does not fix the problem
+    --enableContinueButton()
 end
 function pauseAndShowQuickMessageThenCallFunction(message,functionL)
     RESETQUE()
-    gamePaused=true
+    setGamePausedState(true)
     showTextArea()
     CLS()
     message=message.."."--just a quick hack to handle the need to have an extra character or some reaosn in the SLOWPRINT
+    --SLOWPRINT(50,message,functionL)
+    
     SLOWPRINT(50,message,functionL)
-    enableContinueButton()
+    --enableContinueButton()
 end
 function pauseAndShowQuickMessageFast(message)
     RESETQUE()
-    gamePaused=true
+    setGamePausedState(true)
     showTextArea()
     CLS()
     message=message.."."--just a quick hack to handle the need to have an extra character or some reaosn in the SLOWPRINT
@@ -325,19 +332,21 @@ local function getSerializableBoxes()
     end
     return serializableBoxes
 end
-
+local daysPassed=0
 local townEntered=false
 function enterTown(returnMessage)
     if townEntered then
         return
     end
     townEntered=true
-    gamePaused=true
-    composer.setVariable("gamePaused", true)
+    setGamePausedState(true)
+    --composer.setVariable("gamePaused", true)
     hideEverything()
     hideTextArea()
     disableContinueButton()
     composer.setVariable(returnMessage, true)
+    composer.setVariable("daysPassed", daysPassed)
+    composer.setVariable("arc.x", arc.x)
     composer.setVariable("unicorns", unicorns)
     composer.setVariable("caravan", {x = caravanGroup.x, y = caravanGroup.y, rotation = caravan.rotation})
     composer.setVariable("tblBoxesData", getSerializableBoxes())  -- Store data, not objects
@@ -346,16 +355,34 @@ function enterTown(returnMessage)
 end
 
 function enterLandmark(returnMessage)
-    gamePaused=true
-    composer.setVariable("gamePaused", true)
+    setGamePausedState(true)
     hideEverything()
     hideTextArea()
     composer.setVariable(returnMessage, true)
+    composer.setVariable("daysPassed", daysPassed)
+    composer.setVariable("arc.x", arc.x)
     composer.setVariable("unicorns", unicorns)
+    
     composer.setVariable("caravan", {x = caravanGroup.x, y = caravanGroup.y, rotation = caravan.rotation})
+    print("stored caravan coordinates caravanGroup.x"..caravanGroup.x)
+
     composer.setVariable("tblBoxesData", getSerializableBoxes())  -- Store data, not objects
     composer.removeScene(composer.getSceneName("current"))
     composer.gotoScene("showLandmark")
+end
+
+function fallFromCliffGameOver()
+    --composer.removeScene(composer.getSceneName("current"))
+    local message
+    if composer.getVariable( "language" ) == "English" then
+        message="Your caravan fell from a cliff and you died.^^^        GAME OVER"
+    elseif composer.getVariable( "language" ) == "Japanese" then
+        message="崖から落ちて死んだ。^^^        GAME OVER"
+    elseif composer.getVariable( "language" ) == "Spanish" then
+        message="te has caido de un acantilado y has muero.^^^        GAME OVER"
+    end
+    pauseAndShowQuickMessageThenCallFunction(message, gameOver)
+    return
 end
 
 function gotoMainGameEnding()
@@ -383,7 +410,24 @@ function gotoMoutein3()
     enterLandmark("enteredMountain3")
 end
 
+function gotoFrozenTundraGameOver()
+    composer.setVariable("backgroundImage","backgrounds/frozen-tundra.png")
+    enterLandmark("enteredFrozenTundra")
+end
 
+function attackedByAngryGoblynEvent()
+    print("angry goblin attack event")
+    print("attackedByAngryGoblynEvent called, gamePaused is " .. tostring(gamePaused))
+    randomNumber= math.random(1,3)
+    if randomNumber==1 then
+        composer.setVariable("backgroundImage","backgrounds/Angry-Goblin1.png")
+    elseif randomNumber==2 then
+        composer.setVariable("backgroundImage","backgrounds/Angry-Goblin2.png")
+    elseif randomNumber==3 then
+        composer.setVariable("backgroundImage","backgrounds/Angry-Goblin3.png")
+    end
+    enterLandmark("enteredattackedByAngryGoblynEvent")
+end
 function gotoMistralsEnd()
     enterTown("enteredMistalsEnd")
 end
@@ -407,7 +451,7 @@ function gotoElvenTown3()
 end
 
 
-local daysPassed=0
+
 local lblDaysPassed = display.newText( tostring(daysPassed)..translate["Days Passed"], 200, 50, "fonts/ume-tgc5.ttf", 50 )
 
 function dayPassed()
@@ -435,9 +479,16 @@ end
 
 -- Helper function to get the next step
 function transitionCompleted()
-    gamePaused = false
+    setGamePausedState(false)
+    saveCaravan()
 end
+function emptyFunction()
 
+end
+function updateCaravanCoordinates(obj)
+    caravanGroup.x=obj.x
+    caravanGroup.x=obj.x
+end
 function teleportSuccess(exitBoxName)
     local box = findBox(exitBoxName)
     if box == nil then
@@ -447,6 +498,7 @@ function teleportSuccess(exitBoxName)
         caravanGroup.y = 400
         pauseAndShowQuickMessage("Teleport failed: destination not found!")
     else
+        setGamePausedState(true)
         transition.to( caravanGroup, { time=1500, x=box.x, y=box.y, onComplete=transitionCompleted } )
         print("Teleported to box.x:" .. box.x .. ", box.y:" .. box.y)
         --this was causing the persistent continue button, I would like to have this message, but I dont know how to do it safely
@@ -455,6 +507,11 @@ function teleportSuccess(exitBoxName)
         if exitBoxName=="river2_exit" then --(quick hack worked)trying quick fix to fix it for river2
             hideTextArea()
         end
+        if exitBoxName=="elf_t1" then --(quick hack worked)trying quick fix to fix it for river2
+            --hideTextArea()
+            --setGamePausedState(true)
+        end
+
     end
 end
 function teleportTo(teleportExit)
@@ -466,11 +523,14 @@ function teleportTo(teleportExit)
         caravanGroup.y = 400
         pauseAndShowQuickMessage("Teleport failed: destination not found!")
     else
+        setGamePausedState(true)
         transition.to( caravanGroup, { time=1500, x=box.x, y=box.y, onComplete=transitionCompleted } )
+        updateCaravanCoordinates(box)
         print("Teleported to box.x:" .. box.x .. ", box.y:" .. box.y)
         --this was causing the persistent continue button, I would like to have this message, but I dont know how to do it safely
         --this did not work either pauseAndShowQuickMessageThenCallFunction("You teleported to the other side of the river and entered an Elven village",emptyFunctionForWaiting)
     end
+    
 end
 
 
@@ -577,7 +637,7 @@ local function tryTeleport(char,exitBoxName)
     elseif composer.getVariable( "language" ) == "Spanish" then
         message = "Tratando de cruzar el rio, " .. char.name .. " lanza un hechizo de teletransporte! le cuesta 50MP"
     end
-    pauseAndShowQuickMessageThenCallFunction(
+   pauseAndShowQuickMessageThenCallFunction(
         message,
         function()
             char.MP = char.MP - 50
@@ -624,7 +684,7 @@ function afterTreasuChest1()
     speed=0
     hideTextArea()--this hideds the text rom before the teleport
 end
-
+local dayLimit=15--one more than the limit, on the 15th day the tunra will be frozen
 local landmarkShown = false
 function gameloop()
 	if gamePaused then
@@ -633,10 +693,39 @@ function gameloop()
     if not caravan then -- start doing this once hte caravan appears on screen
         print("caravan does not extist")
     else
-        --the following is true when comming back from another scene it seems -the return solves it
-        if caravan.rotation==nil then
+        if gamePaused==nil then
+            setGamePausedState(true)
             return
         end
+        print("gamePaused"..tostring(gamePaused))
+        -- Random event triggers
+        local randomNumber = math.random(1, 10000)
+        --if randomNumber < 50 then
+            --curseEvent()
+        --elseif randomNumber < 100 then
+            --robberyEvent()
+        --elseif randomNumber < 300 then
+        --    if not onRoad then
+        --        getStuckInRut() 
+        --    end
+        if randomNumber < 1001 then
+            --attackedByAngryGoblynEvent()
+        end
+
+        --the following is true when comming back from another scene it seems -the return solves it
+        if caravan.rotation==nil then
+            caravan.rotation=90
+            return
+        end
+        --restore saved caravan
+        local savedCaravan = composer.getVariable("caravan")
+        if savedCaravan then
+            print("loading savedCaravan.x"..savedCaravan.x)
+            caravanGroup.x = savedCaravan.x
+            caravanGroup.y = savedCaravan.y
+            caravan.rotation = savedCaravan.rotation
+        end
+        --move caravan
         print("caravan.rotation:"..caravan.rotation)
         local angle=caravan.rotation
         local angle_radians=math.rad(angle + 90 + 180)--(bugfix:I added 180 degrees cause the caravan was going backwords)converts degrees to radians
@@ -646,6 +735,8 @@ function gameloop()
         local newy=caravanGroup.y+distance*math.sin(angle_radians)
         caravanGroup.x=newx;
         caravanGroup.y=newy;
+        --save new caravan position
+        composer.setVariable("caravan", {x = caravanGroup.x, y = caravanGroup.y, rotation = caravan.rotation})    --**setGamePausedState(false)
         onRoad=false
         for index, box in ipairs(tblBoxes) do
             --detect collision with map objects
@@ -657,8 +748,18 @@ function gameloop()
                     end
                 elseif box.label=="elf_t1" then
                     if detectCollision4(caravanGroup,caravanCollider, box) then
-                        pauseAndShowQuickMessageThenCallFunction("Elven Town.^",gotoElvenTown1)
+                        print("Collision with elf_t1 detected!")
+                        print("Caravan position: x=", caravanGroup.x, "y=", caravanGroup.y)
+                        print("elf_t1 position: x=", box.x, "y=", box.y)                        pauseAndShowQuickMessageThenCallFunction("Elven Town.^",gotoElvenTown1)
                         return  -- No need to check further if we found a collision
+                    end
+                elseif box.label=="northern_tundra" then
+                    if detectCollision4(caravanGroup,caravanCollider, box) then
+                        onRoad = true
+                        if daysPassed>=dayLimit then
+                            gotoFrozenTundraGameOver()
+                            return  -- No need to check further if we found a collision
+                        end
                     end
                 elseif box.label=="elf_t2" then
                     if detectCollision4(caravanGroup,caravanCollider, box) then
@@ -765,6 +866,11 @@ function gameloop()
                         return
                     end
                 end
+            elseif box.color=="colorGreen" then
+                if detectCollision3(caravanCollider, box) then
+                    fallFromCliffGameOver()
+                    return
+                end
             elseif box.color=="colorRed" or box.color=="colorYellow" then
                 if detectCollision3(caravanCollider, box) then
                     onRoad = true
@@ -820,18 +926,6 @@ function gameloop()
             onRoad=true
         end
     end
-
-    -- Random event triggers
-    local randomNumber = math.random(1, 10000)
-    if randomNumber < 50 then
-        --curseEvent()
-    elseif randomNumber < 100 then
-        --robberyEvent()
-    elseif randomNumber < 300 then
-        if not onRoad then
-            getStuckInRut() 
-        end
-    end
     -- Handle HP draining for cursed characters
     local characters = composer.getVariable("characters")
     for i = #characters, 1, -1 do
@@ -858,7 +952,6 @@ function gameloop()
     end
 end
 
-local gameLoopTimer= timer.performWithDelay( caravanMoveInMilliseconds, gameloop, 0 )
 
 
 language=composer.getVariable( "language" )
@@ -866,6 +959,7 @@ translate=i18n_setlang(language)
 --translate["Choose Category"]
 
 function gameOver()
+    setGamePausedState(true)
     hideEverything()
     hideRestingMenu()
     hideTextArea()
@@ -951,12 +1045,18 @@ local function alertBoxNoClickedCompleteES()
     --enableContinueButton()
     gameStartES()
 end
+function setGamePausedState(value)
+    gamePaused = value
+    composer.setVariable("gamePaused", value)
+    --print("gamePaused set to " .. tostring(value) .. " at " .. debug.traceback())
+end
 
 function showControls()
     hideTextArea()
     disableContinueButton()
-    gamePaused=false
+    setGamePausedState(false)
 end
+gameLoopTimer = timer.performWithDelay( caravanMoveInMilliseconds, gameloop, 0 )
 function gameStartEN()
     RESETQUE()
     --           "1234567890123456789012345678901234567890"
@@ -1068,7 +1168,7 @@ local function healAllUnicornsHP()
 end
 
 function campOverNighht()
-    gamePaused=false--this is cause the following function chechs for if game is paused, quickhack
+    setGamePausedState(false)--this is cause the following function chechs for if game is paused, quickhack
     if not onRoad then
         local message
         if composer.getVariable( "language" ) == "English" then
@@ -1374,11 +1474,24 @@ function showRestingMenu()
     if not campingButton then
         offsetx=235
         offsety=700
+        local menuItem
+        if composer.getVariable( "language" ) == "English" then
+            menuItem="Camping"
+        elseif composer.getVariable( "language" ) == "Japanese" then
+            menuItem="キャンプ"
+        elseif composer.getVariable( "language" ) == "Spanish" then
+            menuItem="Campamento"
+        end
         local paint = {
             type = "image",
             filename = "img/camping.png"
         }
         campingButton = display.newRect( offsetx, offsety, 200, 200 )
+        --display.setDefault({ background = { r=0, g=0, b=0} })  --Set background color to red
+        --lblCampingButton = display.newText( menuItem, offsetx, offsety-60, "fonts/ume-tgc5.ttf", 50 )
+        --finish adding labels to the menu items
+        lblCampingButton = display.newText({ text = menuItem, x = offsetx, y = offsety-60, font = "fonts/ume-tgc5.ttf",background = {r=1, g=1, b=1 } }) 
+        lblCampingButton:setFillColor(1,1,0)
         campingButton.fill = paint
         campingButton.myName="campingButton"
         campingButton:addEventListener( "touch", menuButtonTouchListener ) 
@@ -1525,7 +1638,7 @@ local function showStatus()
     elseif composer.getVariable( "language" ) == "Spanish" then
         message=message.."oro:" .. composer.getVariable("gold") .. " gramos.^pociones de HP:" .. composer.getVariable("HPpotions") .. "pociones de MP:" ..  composer.getVariable("MPpotions").."^Comida:"..composer.getVariable("KGofFood").."KG."
     end
-    pauseAndShowQuickMessageFast(message)        
+    pauseAndShowQuickMessageFast(message)
 end
 
 local function myFireTouchListener( event )
@@ -1537,13 +1650,13 @@ local function myFireTouchListener( event )
     end
     return true  -- Prevents tap/touch propagation to underlying objects
 end
-if system.getInfo("environment") == "device" then
-    arcYPosition=50
-    arcXPosition=850
-else
-    arcYPosition=50
-    arcXPosition=50
-end
+--if system.getInfo("environment") == "device" then
+--    arcYPosition=50
+--    arcXPosition=850
+--else
+--    arcYPosition=50
+ --   arcXPosition=50
+--end
 
 arcYPosition=50
 arcXPosition=750
@@ -1874,37 +1987,55 @@ function findBox(name)
     return nil
 end
 
+
+
 local function repeatedStuffDoneWhenLeavingTownsAndLandmarks(sceneGroup,exitPoint)
+    composer.setVariable("justLeftTown",true)
+    timer.performWithDelay(20000, function() composer.setVariable("justLeftTown",false) end)
     initTextScreenByCorrectLanguage(sceneGroup)
     CLS()
     hideTextArea()
     -- Restore caravan
     local savedCaravan = composer.getVariable("caravan")
+    print("loading savedCaravan.x"..savedCaravan.x)
     caravanGroup.x = savedCaravan.x
     caravanGroup.y = savedCaravan.y
     caravan.rotation = savedCaravan.rotation
-    local newCaravanPosition = findBox(exitPoint)
-    if newCaravanPosition then
-        print("Teleporting to x:", newCaravanPosition.x, "y:", newCaravanPosition.y)
-    else
-        print("Error: 'test' box not found!")
-    end
-    if newCaravanPosition then
+    
+    print("exit point:"..exitPoint)
+    if exitPoint ~= "savedPoint" then
+        local newCaravanPosition = findBox(exitPoint)
+        if newCaravanPosition then
+            print("Teleporting to x:", newCaravanPosition.x, "y:", newCaravanPosition.y)
+        else
+            print("Error: 'test' box not found!")
+        end
+        if newCaravanPosition then
+            caravanGroup.x = newCaravanPosition.x
+            caravanGroup.y = newCaravanPosition.y
+            print("After setting: x:", caravanGroup.x, "y:", caravanGroup.y)
+        end
+
+        -- Move caravan to exit
+        setGamePausedState(true)
+        transition.to(caravanGroup, { time=0, x=newCaravanPosition.x, y=newCaravanPosition.y, onComplete=transitionCompleted })
         caravanGroup.x = newCaravanPosition.x
         caravanGroup.y = newCaravanPosition.y
-        print("After setting: x:", caravanGroup.x, "y:", caravanGroup.y)
+        print("2After setting: x:", caravanGroup.x, "y:", caravanGroup.y)
+    else
+        setGamePausedState(true)
+        transition.to(caravanGroup, { time=0, x=savedCaravan.x, y=savedCaravan.y, onComplete=transitionCompleted })
+        updateCaravanCoordinates(savedCaravan)
     end
-
-    -- Move caravan to exit
-    transition.to(caravanGroup, { time=0, x=newCaravanPosition.x, y=newCaravanPosition.y, onComplete=transitionCompleted })
-    caravanGroup.x = newCaravanPosition.x
-    caravanGroup.y = newCaravanPosition.y
-    print("2After setting: x:", caravanGroup.x, "y:", caravanGroup.y)
-
+    daysPassed=composer.getVariable("daysPassed")
+    arc.x=composer.getVariable("arc.x")
+    lblDaysPassed.text=tostring(daysPassed)..translate["Days Passed"]
     unicorns = composer.getVariable("unicorns")
-    gamePaused = false
-    composer.getVariable("gamePaused", false)
+    print("3After setting: x:", caravanGroup.x, "y:", caravanGroup.y)
+   
+    composer.setVariable("caravan", {x = caravanGroup.x, y = caravanGroup.y, rotation = caravan.rotation})    --**setGamePausedState(false)
 end
+
 local showCalledAlreadyHack=false--this did not fix it
 function scene:show(event)
     if showCalledAlreadyHack then
@@ -1913,12 +2044,13 @@ function scene:show(event)
     end
     local sceneGroup = self.view
     local phase = event.phase
-
     if (phase == "will") then
         -- Code here runs when the scene is still off screen (but is about to come on screen)
-        gamePaused=composer.getVariable("gamePaused")
-        if not gamePaused then
-            print("gamePaused is nil")
+        setGamePausedState(true)
+        gamePaused = composer.getVariable("gamePaused")
+        if gamePaused==nil then
+            print("gamePaused is nil changing to true")
+            gamePaused=true
         else
             print("gamePaused:"..tostring(gamePaused))
         end
@@ -1974,8 +2106,9 @@ function scene:show(event)
             mistralsEndStartPoint.y=display.contentCenterY
         end
         --**fix new bug when it clears the map after making a new box
+        setGamePausedState(true)
         transition.to( caravanGroup, { time=0, x=mistralsEndStartPoint.x, y=mistralsEndStartPoint.y, onComplete=transitionCompleted } )
-        
+        updateCaravanCoordinates(mistralsEndStartPoint)
         local paint = {
             type = "image",
             filename = "img/arrowDown.png"
@@ -1986,7 +2119,7 @@ function scene:show(event)
 
         local paint = {
             type = "image",
-            filename = "img/fireButton.png"
+            filename = "img/statusButton.png"
         }
         myFireButton = display.newRect( 1300+150+150, 50, 100, 100 )
         myFireButton.fill = paint
@@ -2072,17 +2205,40 @@ function scene:show(event)
             return
         end
 
+        if composer.getVariable("enteredFrozenTundra") then
+            composer.setVariable("enteredFrozenTundra", false)
+            gameOver()
+            return
+        end
+
+        if composer.getVariable("enteredattackedByAngryGoblynEvent") then
+            composer.setVariable("enteredattackedByAngryGoblynEvent", false)
+            girlNumber=2
+            local characters = composer.getVariable("characters")
+            local warriorGirl = characters[girlNumber]
+            girlNumber=4
+            local characters = composer.getVariable("characters")
+            local priesitessGirl = characters[girlNumber]
+            warriorGirl.isAlive=composer.getVariable("warriodGirlDies")
+            warriorGirl.MP=composer.getVariable("warriodGirlMP", warriorGirl.MP)
+            priesitessGirl.MP=composer.getVariable("priestGirlMP", priesitessGirl.MP)
+            if composer.getVariable("completlyFailed") then
+                gameOver() 
+            else
+                repeatedStuffDoneWhenLeavingTownsAndLandmarks(sceneGroup,"savedPoint")
+            end
+            return
+        end
+
         if composer.getVariable("enteredMainGameEnding") then
             composer.setVariable("enteredMainGameEnding", false)
             composer.gotoScene("menu")
-            --repeatedStuffDoneWhenLeavingTownsAndLandmarks(sceneGroup,"mountain1_exit")
             return
         end
         
         if composer.getVariable("enteredAlternateGameEnding") then
             composer.setVariable("enteredMountain1", false)
             composer.gotoScene("menu")
-            --repeatedStuffDoneWhenLeavingTownsAndLandmarks(sceneGroup,"mountain1_exit")
             return
         end
 
@@ -2107,6 +2263,7 @@ function scene:show(event)
 
         if composer.getVariable("enteredElvenTown1") then
             composer.setVariable("enteredElvenTown1", false)
+            print("here7")
             repeatedStuffDoneWhenLeavingTownsAndLandmarks(sceneGroup,"elf_t1_exit")
             return
         end
@@ -2162,19 +2319,19 @@ function scene:show(event)
         print("language:"..composer.getVariable( "language" ))
         if composer.getVariable( "language" ) == "English" then
             --clearBuggyObjects()
-            gamePaused=true
+            setGamePausedState(true)
             initTextScreen(sceneGroup,"EN")
             showTextArea()
             CLS()
             gameStartEN()
         elseif composer.getVariable( "language" ) == "Japanese" then
-            gamePaused=true
+            setGamePausedState(true)
             initTextScreen(sceneGroup,"JP")
             showTextArea()
             CLS()
             gameStartJP()
         elseif composer.getVariable( "language" ) == "Spanish" then
-            gamePaused=true
+            setGamePausedState(true)
             initTextScreen(sceneGroup,"ES")
             showTextArea()
             CLS()
@@ -2213,64 +2370,77 @@ scene:addEventListener("destroy", scene)
 -- -----------------------------------------------------------------------------------
 
 return scene
---(partly done)event someoen gets cursed, curses should be healed by either
+--(done)event someoen gets cursed, curses should be healed by either
     --(done)camping 30 percent chance or 
-    --(done)or the healer girl can use soem of her MP to uncurse someone 100 percent uses 30 MP
-    --(done)otherwise HP of hte cursed girl will keep on draning until she dies
+    --(done)or the healer girl can use some of her MP to uncurse someone 100 percent uses 30 MP
+    --(done)otherwise HP of the cursed girl will keep on draning until she dies
 --(done)event you get robbed, potions and gold can dissapear
---(pending)event attacked by angry goblin)change background image maybe? instead of switching to another scene, each adventurer should have a different attack power. like hte girl form ironreach shoudl have most power to easily defeat goblins, or maybe the tamer can tame them or the girl; that can call divine power can scare them away)
-    --for this it woudl be easiest to make attack be by ironrech girl, tame by tamer, scare by divine power girl
-    --tame and divine power shoudl cost MP of those girls oh yeah and mayeb hte random girl too         
-    --when you get attacked by goblins, you will get to choose who y ou wnat to solev the problem, the warrior by attackign hte golin, the tamer by appaeaseing the goblin, or the saiotn by scaring away the goblins with divine light or hte random girl which gives 50 percent success 50 percent failue.... but if one of them dies, you wont be able to use her powers anymroe
---(fix, making unicorns get more tired if they are going faster, it seems to be the same regardless of speed.done)handle unicorns getting tired, it should be that the more unicorns you have the more they share the workload of  pulling the caravan
-    --if the unicorns get too tired they can die, maybe each unicon can have it's own HP
-    --healer girl can heal a unicon using MP
-    --you can heal all unicon using HPpotions
-    --each unicorn depending on composer.getVariable("NumberOfUnicorns")  will have its own HP the more unicorns you have the less they will get tired because they share to pulling the caravan, and the faster you go the faster they get tired. when one gets too tired he will die.
 --(done)make a status window(showTextarea()) for you to see how your unicorns are doing, how long before hte turnda freezes too
---(penging)add obstacles on caravan's route so you cant go off the route, maybe even have an accident if you go off it
+--(done)add obstacles on caravan's route so you cant go off the route, maybe even have an accident if you go off it
     --I am lazy but the best way to do this would be to have a n event of fallling in a ditch, and time going by to restore getting back on the path
     --make a level editor to design the map collision sprites
 --(nah)add trading on route?
---(partly done)add camping, add tame  wild unicorn
+--(done)add camping, add tame  wild unicorn
     --(done)add paczel for hunting, maybe make slimes food and ghosts jot eddible
     --(done)really integrate paczel into the game, includeieng HP for health in paczel and MP for magic in paczel
     --(done)implement getting hungry, food
-    --(pending)add moster or meat count at top of paczel screen
 --(done)add use of potions to menu
 
 --(done)add cant camp when offtrail.
---(pending)fall off cliffs if you go thru mountains
+--(done)fall off cliffs if you go thru mountains
 --(done)easy to get stuck in a rut and lose time
---(pending)I guess land slides can force you to go  off route
+--(nah, too much effort and I already ahve tresures and secrets to incetivise going off road)pending)I guess land slides can force you to go  off route
 
---add quit game button, takes you back to menu screen
-    --implement warning too
 
 --(done)voy a hacer mas facil domesticar muchos unicornios de una vez... porque esta dificil asi como esta
 
 --(done)implement day counting, maybe a day per minute
---(pending)figuure out how many days should go by until tundra freezes, maybe this can vary by difficulty
 --(done)take make a day go by when you camp
 --(done made it 3KG a day,1 kilogram per meal, but only check it once per day)implement eating, maybe once or 3 times a day? once is easier
 
 --(done)add speedofgame , and regualte gameloop so that it works every other frame if speed is 2
 --(I think I fixed it) fix problem of negative potions (probably affects both MP and HP potions) https://x0.at/7bRR.png
---(I am not sure what caused this, it should nto have happened) also this hunting but https://x0.at/FiY7.png
---(pending) put some secret tresurechests on the map that can teleport you or give you lots of stuff,make it worth while to go off trail, 
+--(done) put some secret tresurechests on the map that can teleport you or give you lots of stuff,make it worth while to go off trail, 
     --maybe add some easter egg on these
---(pendingmaybe add options to select who you wnat to use MP or HP potions on, this will make the game harder but more like an RPG
---bring new map in, crop it to fit the same size as current one, adjust map objects
---(pending)set maximum stolen ammount
+--(nah, too much bother)pending,maybe add options to select who you want to use MP or HP potions on, this will make the game harder but more like an RPG
+--(donne)bring new map in, crop it to fit the same size as current one, adjust map objects
+--(this is more of a feature than a bug I think)the caravan only warns once when going off road, and also it does not mention whne you go back on road
+--(pending,do thtis??? maybe not, effort)add moster or meat count at top of paczel screen
+--(pending, maybe do maybe not)set maximum stolen ammount
     --both for money and potions
---bug with status button, leaveing a continue button I think
---bug day gets set back to 1 after going into a town, probably needs to be changed ot a composer variable
---bug the arc tool gets reset after going to towns or landmarks I think.
+--(fix, making unicorns get more tired if they are going faster, it seems to be the same regardless of speed.done)handle unicorns getting tired, it should be that the more unicorns you have the more they share the workload of  pulling the caravan
+    --if the unicorns get too tired they can die, maybe each unicon can have it's own HP
+    --healer girl can heal a unicon using MP
+    --you can heal all unicon using HPpotions
+    --each unicorn depending on composer.getVariable("NumberOfUnicorns")  will have its own HP the more unicorns you have the less they will get tired because they share to pulling the caravan, and the faster you go the faster they get tired. when one gets too tired he will die.
+--(fixed)bug day gets set back to 1 after going into a town, probably needs to be changed ot a composer variable
+--(this is hte most buging bug)bug with status button, leaveing a continue button I think
+    --sometimes it goes back purchase menu when clicking the continue button on screen
+        --this seems to happen only after teleporting or levaing towns
+    --trying to fix the levelEditor part made it so that the into part broke too
+--(fixed)bug the arc tool gets reset after going to towns or landmarks I think.
+--bug(I am not sure what caused this, it should not have happened) also this hunting but https://x0.at/FiY7.png
+--(I think I fixed it, but have not tested it yet)bug you go off road when on the northern tundra
+--add functions to save/load game
+    --implement warning too
+--add quit game button, takes you back to menu screen
+    --implement warning too
+--(pending)(temporarily set this to 14 days)figuure out how many days should go by until tundra freezes, maybe this can vary by difficulty
+--there seems to be too much food in easy mode, you dont need to buy any food or go hunting and you can finish the game
+--(pending)event attacked by angry goblin)change background image maybe? instead of switching to another scene, each adventurer should have a different attack power. like hte girl form ironreach shoudl have most power to easily defeat goblins, or maybe the tamer can tame them or the girl; that can call divine power can scare them away)
+    --for this it woudl be easiest to make attack be by ironrech girl, tame by tamer, scare by divine power girl
+    --tame and divine power shoudl cost MP of those girls oh yeah and mayeb hte random girl too         
+    --when you get attacked by goblins, you will get to choose who y ou wnat to solev the problem, the warrior by attackign hte golin, the tamer by appaeaseing the goblin, or the saiotn by scaring away the goblins with divine light or hte random girl which gives 50 percent success 50 percent failue.... but if one of them dies, you wont be able to use her powers anymroe
+--add labels to the menu buttons
+--(fixed,seems I needed to do translate.to instead of just setting hte x and y of caracan group...)bug the caravan position no longer persists between scene changes for some reason...
+--(fixed, Ichanged not keyword to ~= for some reason they seem to work differently)new bug, now after teletrasporting to the even town, it reenters the elven town for some reason, instead of going to the exit point
+--(this is fixed when eliminating the set game paused to false in transitioncomplete function, but it is still a problem if I dont wnat it to trigger when text is on screen, may need to make seperat pause variable juts for that.bug the angry troll event interrupts the intro screen
+--(fixed in last minutes of today)bug still trigering elf t1 eventho I caravangroup is at elf t1 exit... why? I had already fixed this, but it is happening again, and i　did nto document what I did to fix it I think...
 --[[
 月みたいなので、馬車をかいてんする
 5:24 PM <amigojapan> hiro_at_work: 上矢印でスピードをます
 5:25 PM <hiro_at_work> なるほど
-5:25 PM <amigojapan> hiro_at_work: 下矢印でスピードを止める、完全に止まると魔法のメニューが現れます
+5:25 PM <amigojapan> hiro_at_work: 下矢印でスピードを落とす、完全に止まると魔法のメニューが現れます
 5:25 PM <amigojapan> hiro_at_work: 赤いボタンでステータス見れます
 5:26 PM <amigojapan> hiro_at_work: キャンプをよくしないとユニコーンが死にます
 5:27 PM <amigojapan> hiro_at_work: 赤い線に沿ってゴールに進む

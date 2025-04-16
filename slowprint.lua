@@ -561,6 +561,7 @@ function SLOWPRINT(timeInMilllisecods,string,callbackFunctionWhenFinished)
         end
         --coroutine.resume(coPrintOneCharOfSlowPrint)
     --until #oneline==0
+        enableContinueButton()
 end
 function RESETQUE()
     stringForSlowPrint=""
