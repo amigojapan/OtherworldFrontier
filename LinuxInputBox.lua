@@ -347,7 +347,7 @@ function showInputBox(prompt,callback,predefinedBuffer)
 	inputBuffer=predefinedBuffer
 	--disable isHitTestable for all display objects
 	--setAllObjectsHitTestable(display.getCurrentStage(),false)
-	print("All objects set to isHitTestable = false")
+	--print("All objects set to isHitTestable = false")
 	
 	_callback=callback
 	--if okButton == nil then

@@ -3,7 +3,9 @@
         "lblLable",
         "gamePaused",
         "gotoMistralsEnd",
-        "background"
+        "background",
+        "globalSceneGroup",
+        "speed"
     ],
     "Lua.diagnostics.disable": [
         "need-check-nil"

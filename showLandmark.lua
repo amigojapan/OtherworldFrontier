@@ -4,21 +4,23 @@ require("LinuxAlertBox")
 require("slowprint")
 local scene = composer.newScene()
 
-background=nil
-
+local background=nil
+globalSceneGroup=nil
 function scene:create(event)
     local sceneGroup = self.view
+    --globalSceneGroup=sceneGroup
 end
 
 local transitioning = false
 local function returnToGame()
     print("returnToGame called")
     if transitioning then
-        print("Already transitioning, skipping")
+       print("Already transitioning, skipping")
         return
     end
     transitioning = true
     hideTextArea()
+    composer.setVariable("landmarksShown", false)
     composer.removeScene(composer.getSceneName("current"))
     composer.gotoScene(composer.getSceneName("previous"))
 end
@@ -33,7 +35,7 @@ function shopAriveEN()
 end
 function warriorAttack()
     local randomNumber=math.random(1,100)
-    if randomNumber<80 then
+    if randomNumber<30 then
         return true
     else
         return false
@@ -156,20 +158,22 @@ function shopAriveES()
     SLOWPRINT(100, "", returnToGame)
 end
 
-local landmarksShown = false
+composer.setVariable("landmarksShown", false)
 function scene:show(event)
     local sceneGroup = self.view
     local phase = event.phase
     if (phase == "will") then
         print("scene:show in showLandmark")
     elseif (phase == "did") then
-        if landmarksShown then
+        if composer.getVariable("landmarksShown")
+        then
+            composer.setVariable("landmarksShown", true)
             return
         end
-        landmarksShown = true
         print("background image: " .. composer.getVariable("backgroundImage"))
+        
         background=nil
-        background = display.newImageRect( composer.getVariable("backgroundImage"), 1000, 800)
+        background = display.newImageRect(composer.getVariable("backgroundImage"), 1000, 800)
         if background then
             background.x = display.contentCenterX
             background.y = display.contentCenterY

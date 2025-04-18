@@ -12,7 +12,7 @@ local scene = composer.newScene()
 -- -----------------------------------------------------------------------------------
 --items to customize purchase
 local backgroundImage="backgrounds/newMapCropped.png"
-local speed=0
+speed=0
 local granualrMovement=0.5
 local caravanMoveInMilliseconds=1000
 local caravanMovePixels=1
@@ -25,7 +25,7 @@ local BASE_FATIGUE_RATE = 10  -- base rate at which unicorns get tired (HP lost 
 gamePaused=true
 -- Global unicorn table
 local unicorns = {}
-local gameover=false
+gameover=false
 gameLoopTimer=nil
 
 function saveCaravan()
@@ -211,7 +211,7 @@ function pauseAndShowQuickMessageFast(message)
     CLS()
     message=message.."."--just a quick hack to handle the need to have an extra character or some reaosn in the SLOWPRINT
     PRINTFAST(message,100,100)
-    enableContinueButton()
+    --enableContinueButton()
 end
 
 -- Function to handle the robbery event
@@ -353,8 +353,12 @@ function enterTown(returnMessage)
     composer.removeScene(composer.getSceneName("current"))
     composer.gotoScene("unicornStableGeneral")
 end
-
+local landmarkShown=false
 function enterLandmark(returnMessage)
+    if landmarkShown then
+       return 
+    end
+    landmarkShown=true
     setGamePausedState(true)
     hideEverything()
     hideTextArea()
@@ -687,7 +691,7 @@ end
 local dayLimit=15--one more than the limit, on the 15th day the tunra will be frozen
 local landmarkShown = false
 function gameloop()
-	if gamePaused then
+	if gamePaused or gameover then
 		return
 	end
     if not caravan then -- start doing this once hte caravan appears on screen
@@ -700,16 +704,16 @@ function gameloop()
         print("gamePaused"..tostring(gamePaused))
         -- Random event triggers
         local randomNumber = math.random(1, 10000)
-        --if randomNumber < 50 then
-            --curseEvent()
-        --elseif randomNumber < 100 then
-            --robberyEvent()
-        --elseif randomNumber < 300 then
-        --    if not onRoad then
-        --        getStuckInRut() 
-        --    end
-        if randomNumber < 1001 then
-            --attackedByAngryGoblynEvent()
+        if randomNumber < 50 then
+            curseEvent()
+        elseif randomNumber < 100 then
+            robberyEvent()
+        elseif randomNumber < 200 then
+            if not onRoad then
+                getStuckInRut() 
+            end
+        elseif randomNumber < 230  then
+            attackedByAngryGoblynEvent()
         end
 
         --the following is true when comming back from another scene it seems -the return solves it
@@ -760,6 +764,7 @@ function gameloop()
                             gotoFrozenTundraGameOver()
                             return  -- No need to check further if we found a collision
                         end
+                        return
                     end
                 elseif box.label=="elf_t2" then
                     if detectCollision4(caravanGroup,caravanCollider, box) then
@@ -806,6 +811,7 @@ function gameloop()
                     end
                 elseif box.label=="mountain1" then
                     if detectCollision4(caravanGroup,caravanCollider, box) and not landmarkShown then
+                        speed=0
                         local message
                         if composer.getVariable( "language" ) == "English" then
                             message = "Landmark Reached!^"
@@ -820,6 +826,7 @@ function gameloop()
                     end
                 elseif box.label=="mountain2" then
                     if detectCollision4(caravanGroup,caravanCollider, box) and not landmarkShown then
+                        speed=0
                         local message
                         if composer.getVariable( "language" ) == "English" then
                             message = "Landmark Reached!^"
@@ -834,6 +841,7 @@ function gameloop()
                     end
                 elseif box.label=="mountain3" then
                     if detectCollision4(caravanGroup,caravanCollider, box) and not landmarkShown then
+                        speed=0
                         local message
                         if composer.getVariable( "language" ) == "English" then
                             message = "Landmark Reached!^"
@@ -960,6 +968,7 @@ translate=i18n_setlang(language)
 
 function gameOver()
     setGamePausedState(true)
+    gameover=true
     hideEverything()
     hideRestingMenu()
     hideTextArea()
@@ -1680,7 +1689,8 @@ local function dragObject( event, params )
 			body.x=event.x
 			body.y=arcYPosition
 			caravan.rotation=event.x
-		end
+            saveCaravan()
+        end
 		return true	
 	elseif "ended" == phase or "cancelled" == phase then
 	end
@@ -1990,6 +2000,7 @@ end
 
 
 local function repeatedStuffDoneWhenLeavingTownsAndLandmarks(sceneGroup,exitPoint)
+    --**set speed back to 0, the caravan keeps on moving after reaching melstroms peak
     composer.setVariable("justLeftTown",true)
     timer.performWithDelay(20000, function() composer.setVariable("justLeftTown",false) end)
     initTextScreenByCorrectLanguage(sceneGroup)
@@ -2223,6 +2234,7 @@ function scene:show(event)
             warriorGirl.MP=composer.getVariable("warriodGirlMP", warriorGirl.MP)
             priesitessGirl.MP=composer.getVariable("priestGirlMP", priesitessGirl.MP)
             if composer.getVariable("completlyFailed") then
+                setGamePausedState(true)
                 gameOver() 
             else
                 repeatedStuffDoneWhenLeavingTownsAndLandmarks(sceneGroup,"savedPoint")
@@ -2426,8 +2438,8 @@ return scene
 --add quit game button, takes you back to menu screen
     --implement warning too
 --(pending)(temporarily set this to 14 days)figuure out how many days should go by until tundra freezes, maybe this can vary by difficulty
---there seems to be too much food in easy mode, you dont need to buy any food or go hunting and you can finish the game
---(pending)event attacked by angry goblin)change background image maybe? instead of switching to another scene, each adventurer should have a different attack power. like hte girl form ironreach shoudl have most power to easily defeat goblins, or maybe the tamer can tame them or the girl; that can call divine power can scare them away)
+--(confirmed)there seems to be too much food in easy mode, you dont need to buy any food or go hunting and you can finish the game
+--(done)event attacked by angry goblin)change background image maybe? instead of switching to another scene, each adventurer should have a different attack power. like hte girl form ironreach shoudl have most power to easily defeat goblins, or maybe the tamer can tame them or the girl; that can call divine power can scare them away)
     --for this it woudl be easiest to make attack be by ironrech girl, tame by tamer, scare by divine power girl
     --tame and divine power shoudl cost MP of those girls oh yeah and mayeb hte random girl too         
     --when you get attacked by goblins, you will get to choose who y ou wnat to solev the problem, the warrior by attackign hte golin, the tamer by appaeaseing the goblin, or the saiotn by scaring away the goblins with divine light or hte random girl which gives 50 percent success 50 percent failue.... but if one of them dies, you wont be able to use her powers anymroe
@@ -2436,6 +2448,8 @@ return scene
 --(fixed, Ichanged not keyword to ~= for some reason they seem to work differently)new bug, now after teletrasporting to the even town, it reenters the elven town for some reason, instead of going to the exit point
 --(this is fixed when eliminating the set game paused to false in transitioncomplete function, but it is still a problem if I dont wnat it to trigger when text is on screen, may need to make seperat pause variable juts for that.bug the angry troll event interrupts the intro screen
 --(fixed in last minutes of today)bug still trigering elf t1 eventho I caravangroup is at elf t1 exit... why? I had already fixed this, but it is happening again, and i　did nto document what I did to fix it I think...
+--(fixed, needed to make the speed variable global)bug the caravan seems to still be moving a bit after reaching a landmark,the speed indicates 0 0 0.5 in terminal
+--bug the store gives a bug when buying too much , more than your budget, somehting in slowprint
 --[[
 月みたいなので、馬車をかいてんする
 5:24 PM <amigojapan> hiro_at_work: 上矢印でスピードをます
