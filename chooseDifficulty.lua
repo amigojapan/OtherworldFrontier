@@ -15,22 +15,22 @@ end
 
 local function easyMode()
 	composer.setVariable( "difficulty", "easy" )
-	composer.setVariable( "gold", 16000 )
+	composer.setVariable( "gold", 10000 )
 	composer.setVariable("HPpotions", 50)
 	composer.setVariable("MPpotions", 50)
 	composer.setVariable("NumberOfUnicorns", 40)
-	composer.setVariable("KGofFood", 100)
+	composer.setVariable("KGofFood", 50)
 	gotoSotryOrSkipStory()
 end
 
 
 local function normalMode()
 	composer.setVariable( "difficulty", "normal" )
-	composer.setVariable( "gold", 4000 )
+	composer.setVariable( "gold", 3000 )
 	composer.setVariable("HPpotions", 5)
 	composer.setVariable("MPpotions", 5)
 	composer.setVariable("NumberOfUnicorns", 20)
-	composer.setVariable("KGofFood", 50)
+	composer.setVariable("KGofFood", 25)
 	gotoSotryOrSkipStory()
 end
 
@@ -40,7 +40,7 @@ local function difficultMode()
 	composer.setVariable("HPpotions", 0)
 	composer.setVariable("MPpotions", 0)
 	composer.setVariable("NumberOfUnicorns", 2)
-	composer.setVariable("KGofFood", 0)
+	composer.setVariable("KGofFood", 10)
 	gotoSotryOrSkipStory()
 end
 

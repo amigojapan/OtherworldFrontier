@@ -211,7 +211,6 @@ function pauseAndShowQuickMessageFast(message)
     CLS()
     message=message.."."--just a quick hack to handle the need to have an extra character or some reaosn in the SLOWPRINT
     PRINTFAST(message,100,100)
-    enableContinueButton()
 end
 
 -- Function to handle the robbery event
@@ -483,8 +482,10 @@ end
 
 -- Helper function to get the next step
 function transitionCompleted()
-    setGamePausedState(false)
-    saveCaravan()
+    if composer.getVariable("gameStarted") then
+        setGamePausedState(false)
+        saveCaravan()
+    end
 end
 function emptyFunction()
 
@@ -1059,11 +1060,13 @@ function setGamePausedState(value)
     composer.setVariable("gamePaused", value)
     --print("gamePaused set to " .. tostring(value) .. " at " .. debug.traceback())
 end
+setGamePausedState(true)
 
 function showControls()
     hideTextArea()
     disableContinueButton()
     setGamePausedState(false)
+    composer.setVariable("gameStarted",true)
 end
 gameLoopTimer = timer.performWithDelay( caravanMoveInMilliseconds, gameloop, 0 )
 function gameStartEN()
@@ -1477,6 +1480,12 @@ function hideRestingMenu()
     useHPpotionButton.isVisible=false
     useMPpotionButton.isVisible=false
     goHuntingButton.isVisible=false
+    lblCampingButton.isVisible=false
+    lblTameButton.isVisible=false
+    lblUnCurseButton.isVisible=false
+    lblMPpotionButton.isVisible=false
+    lblHPpotionButton.isVisible=false
+    lblHuntingButton.isVisible=false
 end
 
 function showRestingMenu()
@@ -1496,9 +1505,6 @@ function showRestingMenu()
             filename = "img/camping.png"
         }
         campingButton = display.newRect( offsetx, offsety, 200, 200 )
-        --display.setDefault({ background = { r=0, g=0, b=0} })  --Set background color to red
-        --lblCampingButton = display.newText( menuItem, offsetx, offsety-60, "fonts/ume-tgc5.ttf", 50 )
-        --finish adding labels to the menu items
         lblCampingButton = display.newText({ text = menuItem, x = offsetx, y = offsety-60, font = "fonts/ume-tgc5.ttf",background = {r=1, g=1, b=1 } }) 
         lblCampingButton:setFillColor(1,1,0)
         campingButton.fill = paint
@@ -1509,7 +1515,16 @@ function showRestingMenu()
             filename = "img/taming-wild-unicorn.png"
         }
         offsetx=offsetx+250--50 is space between buttons
+        if composer.getVariable( "language" ) == "English" then
+            menuItem="Tame"
+        elseif composer.getVariable( "language" ) == "Japanese" then
+            menuItem="飼育"
+        elseif composer.getVariable( "language" ) == "Spanish" then
+            menuItem="Domar"
+        end
         tameUnicornButton = display.newRect( offsetx, offsety, 200, 200 )
+        lblTameButton = display.newText({ text = menuItem, x = offsetx, y = offsety-60, font = "fonts/ume-tgc5.ttf",background = {r=1, g=1, b=1 } }) 
+        lblTameButton:setFillColor(1,1,0)
         tameUnicornButton.fill = paint
         tameUnicornButton.myName="tameUnicornButton"
         tameUnicornButton:addEventListener( "touch", menuButtonTouchListener ) 
@@ -1518,7 +1533,16 @@ function showRestingMenu()
             filename = "img/unCurse.png"
         }
         offsetx=offsetx+250--50 is space between buttons
+        if composer.getVariable( "language" ) == "English" then
+            menuItem="uncurse"
+        elseif composer.getVariable( "language" ) == "Japanese" then
+            menuItem="解呪"
+        elseif composer.getVariable( "language" ) == "Spanish" then
+            menuItem="desmaldecir"
+        end
         unCurseButton = display.newRect( offsetx, offsety, 200, 200 )
+        lblUnCurseButton = display.newText({ text = menuItem, x = offsetx, y = offsety-60, font = "fonts/ume-tgc5.ttf",background = {r=1, g=1, b=1 } }) 
+        lblUnCurseButton:setFillColor(1,1,0)
         unCurseButton.fill = paint
         unCurseButton.myName="unCurseButton"
         unCurseButton:addEventListener( "touch", menuButtonTouchListener ) 
@@ -1527,7 +1551,16 @@ function showRestingMenu()
             filename = "img/useHPpotion.png"
         }
         offsetx=offsetx+250--50 is space between buttons
+        if composer.getVariable( "language" ) == "English" then
+            menuItem="HP potion"
+        elseif composer.getVariable( "language" ) == "Japanese" then
+            menuItem="回復薬"
+        elseif composer.getVariable( "language" ) == "Spanish" then
+            menuItem="pocion HP"
+        end
         useHPpotionButton = display.newRect( offsetx, offsety, 200, 200 )
+        lblHPpotionButton = display.newText({ text = menuItem, x = offsetx, y = offsety-60, font = "fonts/ume-tgc5.ttf",background = {r=1, g=1, b=1 } }) 
+        lblHPpotionButton:setFillColor(1,1,0)
         useHPpotionButton.fill = paint
         useHPpotionButton.myName="useHPpotionButton"
         useHPpotionButton:addEventListener( "touch", menuButtonTouchListener ) 
@@ -1536,7 +1569,16 @@ function showRestingMenu()
             filename = "img/useMPpotion.png"
         }
         offsetx=offsetx+250--50 is space between buttons
+        if composer.getVariable( "language" ) == "English" then
+            menuItem="MP potion"
+        elseif composer.getVariable( "language" ) == "Japanese" then
+            menuItem="魔回復薬"
+        elseif composer.getVariable( "language" ) == "Spanish" then
+            menuItem="pocion MP"
+        end
         useMPpotionButton = display.newRect( offsetx, offsety, 200, 200 )
+        lblMPpotionButton = display.newText({ text = menuItem, x = offsetx, y = offsety-60, font = "fonts/ume-tgc5.ttf",background = {r=1, g=1, b=1 } }) 
+        lblMPpotionButton:setFillColor(1,1,0)
         useMPpotionButton.fill = paint
         useMPpotionButton.myName="useMPpotionButton"
         useMPpotionButton:addEventListener( "touch", menuButtonTouchListener ) 
@@ -1545,7 +1587,16 @@ function showRestingMenu()
             filename = "img/goHunting.png"
         }
         offsetx=offsetx+250--50 is space between buttons
+        if composer.getVariable( "language" ) == "English" then
+            menuItem="Hunt"
+        elseif composer.getVariable( "language" ) == "Japanese" then
+            menuItem="狩猟"
+        elseif composer.getVariable( "language" ) == "Spanish" then
+            menuItem="Caseria"
+        end
         goHuntingButton = display.newRect( offsetx, offsety, 200, 200 )
+        lblHuntingButton = display.newText({ text = menuItem, x = offsetx, y = offsety-60, font = "fonts/ume-tgc5.ttf",background = {r=1, g=1, b=1 } }) 
+        lblHuntingButton:setFillColor(1,1,0)
         goHuntingButton.fill = paint
         goHuntingButton.myName="goHuntingButton"
         goHuntingButton:addEventListener( "touch", menuButtonTouchListener ) 
@@ -1556,6 +1607,12 @@ function showRestingMenu()
         useHPpotionButton.isVisible=true
         useMPpotionButton.isVisible=true
         goHuntingButton.isVisible=true
+        lblCampingButton.isVisible=true
+        lblTameButton.isVisible=true
+        lblUnCurseButton.isVisible=true
+        lblMPpotionButton.isVisible=true
+        lblHPpotionButton.isVisible=true
+        lblHuntingButton.isVisible=true
     end 
 end
 
@@ -2045,6 +2102,19 @@ local function repeatedStuffDoneWhenLeavingTownsAndLandmarks(sceneGroup,exitPoin
     print("3After setting: x:", caravanGroup.x, "y:", caravanGroup.y)
    
     composer.setVariable("caravan", {x = caravanGroup.x, y = caravanGroup.y, rotation = caravan.rotation})    --**setGamePausedState(false)
+    disableContinueButton()
+end
+function unicornAnimationLoop()
+
+end
+function animateUnicorns()
+    --detach timer
+    if speed==0 then
+        return
+    else
+        --sert timer at 1000/speed
+    end
+    --make a seperate animation loop for the unicorns
 end
 
 local showCalledAlreadyHack=false--this did not fix it
@@ -2213,6 +2283,7 @@ function scene:show(event)
             composer.setVariable( "gettingInput", false )
             local savedCaravan=composer.getVariable("caravan")
             restoreSceneAfterExist(sceneGroup,savedCaravan)
+            disableContinueButton()
             return
         end
 
@@ -2350,6 +2421,7 @@ function scene:show(event)
             gameStartES()
         end
 	end
+    --disableContinueButton()
 end
 
 -- hide()
@@ -2418,15 +2490,13 @@ return scene
 --(donne)bring new map in, crop it to fit the same size as current one, adjust map objects
 --(this is more of a feature than a bug I think)the caravan only warns once when going off road, and also it does not mention whne you go back on road
 --(pending,do thtis??? maybe not, effort)add moster or meat count at top of paczel screen
---(pending, maybe do maybe not)set maximum stolen ammount
-    --both for money and potions
 --(fix, making unicorns get more tired if they are going faster, it seems to be the same regardless of speed.done)handle unicorns getting tired, it should be that the more unicorns you have the more they share the workload of  pulling the caravan
     --if the unicorns get too tired they can die, maybe each unicon can have it's own HP
     --healer girl can heal a unicon using MP
     --you can heal all unicon using HPpotions
     --each unicorn depending on composer.getVariable("NumberOfUnicorns")  will have its own HP the more unicorns you have the less they will get tired because they share to pulling the caravan, and the faster you go the faster they get tired. when one gets too tired he will die.
 --(fixed)bug day gets set back to 1 after going into a town, probably needs to be changed ot a composer variable
---(this is hte most buging bug)bug with status button, leaveing a continue button I think
+--(fixed)(this is hte most buging bug)bug with status button, leaveing a continue button I think
     --sometimes it goes back purchase menu when clicking the continue button on screen
         --this seems to happen only after teleporting or levaing towns
     --trying to fix the levelEditor part made it so that the into part broke too
@@ -2449,6 +2519,12 @@ return scene
 --(this is fixed when eliminating the set game paused to false in transitioncomplete function, but it is still a problem if I dont wnat it to trigger when text is on screen, may need to make seperat pause variable juts for that.bug the angry troll event interrupts the intro screen
 --(fixed in last minutes of today)bug still trigering elf t1 eventho I caravangroup is at elf t1 exit... why? I had already fixed this, but it is happening again, and i　did nto document what I did to fix it I think...
 --(fixed, needed to make the speed variable global)bug the caravan seems to still be moving a bit after reaching a landmark,the speed indicates 0 0 0.5 in terminal
+--(fixed, it got fixed together with the new bug I fixed with the story mode)bug the store gives a bug when buying too much , more than your budget, somehting in slowprint
+--(fixed after adding several disableokbutton intot he code)...ignore this:maybe still slightly buggy.I think I fixed it by setting the visible button stuff in slowprint)bug after clickign info button after teleporting  into elevn town the continue button takes me back to the purchase unicorns window...maybe need to eliminate enableokbutton from the uniconstable I think
+--(fixed I think, by adding composer.setVariable("gameStarted",true))bug, events happen eventho the game should be paused in the initial titles
+--(fixed by adding functionality to handle fastprint in slowprint.lua)bug, info screen is lacking a continue button.
+--(pending, maybe do maybe not)set maximum stolen ammount
+    --both for money and potions
 --[[
 月みたいなので、馬車をかいてんする
 5:24 PM <amigojapan> hiro_at_work: 上矢印でスピードをます
@@ -2460,3 +2536,4 @@ return scene
 5:30 PM → PJBoy joined (~PJBoy@user/pjboy)
 5:31 PM <amigojapan> hiro_at_work: 魔法は野生のユニコーンを飼いならす魔法と呪いを解かす魔法。緑のはHPを回復するポーション紫のはMPを回復するポーション、あとは狩猟で食べ物をかるのが完成は明日でしょう…
 ]]
+

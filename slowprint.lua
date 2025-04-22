@@ -1,3 +1,7 @@
+local composer = require("composer")
+local scene = composer.newScene()
+
+
 local tableLines = {}
 local cursor = { Line = 1, Column = 1 }
 local columns = 40
@@ -8,7 +12,7 @@ local stringForSlowPrint
 local STRING="なし"
 local printing=false
 local localizedSpace=nil
-lblContinue=nil
+composer.setVariable("lblContinue",nil)
 Lang=nil
 textZoneRectangle=nil
 characterTimer=nil
@@ -146,13 +150,22 @@ function replaceStringOfRomajiWithDoubleWidthCHaracters2(str)
     --(Done)add doubel width space
     return (str:gsub(".", function(c) return mapping[c] or c end))
 end
+
+local continueDisabled=false
 function continue()
+    if continueDisabled then
+        disableContinueButton()
+        continueDisabled=false
+        hideTextArea()
+        setGamePausedState(false)
+        return
+    end
     if printing==false then
         timer.cancel(characterTimer)
         print(tostring(callbackFunction))
         callbackFunction()
         print("continue next")
-        disableContinueButton()
+        --disableContinueButton()
     else
         timer.cancel(characterTimer)
         characterTimer=timer.performWithDelay( 1, coPrintOneCharOfSlowPrint, 0, "charTimer" )
@@ -205,22 +218,17 @@ function initTextScreen(sceneGroup,language)
     print("Lang:"..Lang)
     if Lang=="JP" then
         print("here4!!")
-        lblContinue = display.newText(sceneGroup, "[>>]",(columns-12)*fontWH, 200 + ((rows-1.6) * fontWH), "fonts/ume-tgc5.ttf", fontWH)
+        composer.setVariable("lblContinue",display.newText(sceneGroup, "[>>]",(columns-12)*fontWH, 200 + ((rows-1.6) * fontWH), "fonts/ume-tgc5.ttf", fontWH))
         --lblContinue = display.newText(sceneGroup, "Continue...", 200, 200, "fonts/ume-tgc5.ttf", fontWH)
     else
         print("here5!!")
-        lblContinue = display.newText(sceneGroup, "[Continue...]", 750, 996, "fonts/ume-tgc5.ttf", fontWH)
+        composer.setVariable("lblContinue",display.newText(sceneGroup, "[Continue...]", 750, 996, "fonts/ume-tgc5.ttf", fontWH))
     end
-    lblContinue:addEventListener( "tap", continue )
+    composer.getVariable("lblContinue"):addEventListener( "tap", continue )
 end 
 function hideTextArea()
     for key, lblLine in ipairs(tableLines) do
         lblLine.isVisible=false
-        if lblContinue then
-            lblContinue.isVisible=false
-            lblContinue:removeSelf()
-            lblContinue=nil
-        end
     end
     textZoneRectangle.isVisible=false
 end
@@ -330,7 +338,9 @@ function PRINT(STR)
             --cursor.Column=cursor.Column-0.5
         --end
         -- Concatenate text correctly
-        
+        if currentLine==nil then
+            return
+        end
         local textbefore = currentLine:sub(1, cursor.Column - 1)
         local textafter
         if characterWasAscii then
@@ -371,6 +381,7 @@ end
 
 
 function PRINTFAST(STR)
+    continueDisabled=true
     if Lang=="JP" then
         STR=replaceStringOfRomajiWithDoubleWidthCHaracters2(STR)
     end
@@ -454,6 +465,8 @@ function PRINTFAST(STR)
             end
         end
     end
+    printing=false
+    enableContinueButton()
 end
 
 local oneline
@@ -575,49 +588,12 @@ function QUESLOWPRINT(string)
 end
 function disableContinueButton()
     print("disableContinueButton() called")
-    if lblContinue then    
-        lblContinue.isVisible=false
-        lblContinue.isHitTestable=false
-        if lblContinue.removeSelf then
-            lblContinue:removeSelf()
-            lblContinue=nil
-        end
-    end
+    composer.getVariable("lblContinue").isVisible=false
+        --lblContinue.isHitTestable=false
 end
 function enableContinueButton()
     --there is a bug in here, but it seems to not appear anymore so I commented this and the code at the end:if not Lang==nil then--quick and direty fix cause it seems something is calling this with null language
         print("enableContinueButton() called")
-        if lblContinue then
-            lblContinue.isVisible=true
-            lblContinue.isHitTestable=true
-        end
-        
-        if Lang=="JP" then
-            aspectRatio = 8
-            fontWH = 8 * aspectRatio
-            columns = 21
-            rows = 14
-            magicalNumber=0
-            localizedSpace="　"
-        else
-            aspectRatio = 4
-            fontWH = 16 * aspectRatio
-            columns = 40
-            rows = 14
-            magicalNumber=1200--dunno why but I need to substract this number to get the right size of the red rectangle(it seems the smaller the bigger the rectangle gets)
-            localizedSpace=" "
-        end
-    
-        if Lang=="JP" then
-            print("here4!!")
-            lblContinue = display.newText( "[>>]",(columns-12)*fontWH, 200 + ((rows-1.6) * fontWH), "fonts/ume-tgc5.ttf", fontWH)
-            --lblContinue = display.newText(sceneGroup, "Continue...", 200, 200, "fonts/ume-tgc5.ttf", fontWH)
-        else
-            print("here5!!")
-            lblContinue = display.newText("[Continue...]", 750, 996, "fonts/ume-tgc5.ttf", fontWH)
-        end
-        lblContinue:addEventListener( "tap", continue )
-    --else
-    --    print("Warning:enableContinueButton() while language is still nil")
-    --end
+        composer.getVariable("lblContinue").isVisible=true
+            --lblContinue.isHitTestable=true
 end

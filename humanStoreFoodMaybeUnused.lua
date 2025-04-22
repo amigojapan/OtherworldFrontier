@@ -183,7 +183,7 @@ function scene:show(event)
         if composer.getVariable( "language" ) == "English" then
             --clearBuggyObjects()
             initTextScreen(sceneGroup,"EN")
-            enableContinueButton()
+            --enableContinueButton()
             showTextArea()
             CLS()
             shopAriveEN()

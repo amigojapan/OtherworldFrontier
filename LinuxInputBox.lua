@@ -38,6 +38,7 @@ end
 function inputAccepted()
 	LinuxInputBoxElements.iHitTestable=false
 	LinuxInputBoxElements.isVisible=false
+	disableContinueButton()
 	composer.setVariable("inputBuffer",inputBuffer)
 	composer.removeScene("LinuxScreenKeyboard")
 	composer.gotoScene(composer.getSceneName( "previous" ))
@@ -48,6 +49,7 @@ function okButtonTouchListener( event )
 		removerInputBox()
 		inputAccepted()
 	end
+	disableContinueButton()
     return true  -- Prevents tap/touch propagation to underlying objects
 end
 
@@ -93,6 +95,7 @@ function removeScreenKeyboard()
 			value:removeSelf()
 		end
 	end
+	disableContinueButton()
 end
 
 function logDisplayObjects()
@@ -157,6 +160,7 @@ function removerInputBox(event)
 
 	logDisplayObjects()
 	LinuxInputBoxElements.isVisible=false
+	disableContinueButton()
 end
 
 --handle keystrokes

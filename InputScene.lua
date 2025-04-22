@@ -49,15 +49,15 @@ local function alertBoxYesClickedComplete( )
     composer.gotoScene( nextScreenName, options )
 end
 local function alertBoxNoClickedCompleteEN()
-    enableContinueButton()
+    --enableContinueButton()
     promptsetVariableEN()
 end
 local function alertBoxNoClickedCompleteJP()
-    enableContinueButton()
+    --enableContinueButton()
     promptsetVariableJP()
 end
 local function alertBoxNoClickedCompleteES()
-    enableContinueButton()
+    --enableContinueButton()
     promptsetVariableES()
 end
 
@@ -155,7 +155,7 @@ function scene:show(event)
         if composer.getVariable( "language" ) == "English" then
             --clearBuggyObjects()
             initTextScreen(sceneGroup,"EN")
-            enableContinueButton()
+            --enableContinueButton()
             showTextArea()
             CLS()
             promptsetVariableEN()

@@ -5,7 +5,8 @@
         "gotoMistralsEnd",
         "background",
         "globalSceneGroup",
-        "speed"
+        "speed",
+        "lblContinue"
     ],
     "Lua.diagnostics.disable": [
         "need-check-nil"

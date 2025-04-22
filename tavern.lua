@@ -53,7 +53,7 @@ function askUserIfTheyLikeNameEN(userinput)
     alertBoxNoClickedCompleteEN
     )
     removerInputBox()
-    disableContinueButton()--this automatically gets enabled on the next screem so no need to enable it again
+    --disableContinueButton()--this automatically gets enabled on the next screem so no need to enable it again
 end
 
 function askUserIfTheyLikeNameJP(userinput)
@@ -65,7 +65,7 @@ function askUserIfTheyLikeNameJP(userinput)
     alertBoxNoClickedCompleteJP
     )
     removerInputBox()
-    disableContinueButton()--this automatically gets enabled on the next screem so no need to enable it again
+    --disableContinueButton()--this automatically gets enabled on the next screem so no need to enable it again
 end
 function askUserIfTheyLikeNameES(userinput)
     composer.setVariable( "MCname", userinput)
@@ -76,7 +76,7 @@ function askUserIfTheyLikeNameES(userinput)
     alertBoxNoClickedCompleteES
     )
     removerInputBox()
-    disableContinueButton()--this automatically gets enabled on the next screem so no need to enable it again
+    --disableContinueButton()--this automatically gets enabled on the next screem so no need to enable it again
 end
 
 composer.setVariable("setVariable","MCname")

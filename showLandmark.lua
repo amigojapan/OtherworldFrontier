@@ -35,7 +35,7 @@ function shopAriveEN()
 end
 function warriorAttack()
     local randomNumber=math.random(1,100)
-    if randomNumber<30 then
+    if randomNumber<15 then
         return true
     else
         return false
@@ -43,7 +43,7 @@ function warriorAttack()
 end
 function priestessAttack()
     local randomNumber=math.random(1,100)
-    if randomNumber<50 then
+    if randomNumber<27 then
         return true
     else
         return false
@@ -183,7 +183,7 @@ function scene:show(event)
         print("language: " .. composer.getVariable("language"))
         if composer.getVariable("language") == "English" then
             initTextScreen(sceneGroup, "EN")
-            enableContinueButton()
+           --enableContinueButton()
             showTextArea()
             CLS()
             shopAriveEN()
