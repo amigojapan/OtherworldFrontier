@@ -713,13 +713,14 @@ function gameloop()
             if not onRoad then
                 getStuckInRut() 
             end
-        elseif randomNumber < 230  then
+        elseif randomNumber < 210  then
             attackedByAngryGoblynEvent()
         end
 
         --the following is true when comming back from another scene it seems -the return solves it
         if caravan.rotation==nil then
             caravan.rotation=90
+            setRotationOfCaravan(caravan.rotation)
             return
         end
         --restore saved caravan
@@ -729,6 +730,7 @@ function gameloop()
             caravanGroup.x = savedCaravan.x
             caravanGroup.y = savedCaravan.y
             caravan.rotation = savedCaravan.rotation
+            setRotationOfCaravan(caravan.rotation)
         end
         --move caravan
         print("caravan.rotation:"..caravan.rotation)
@@ -1130,6 +1132,7 @@ function unicornsFaster()
             hideRestingMenu()
         end
     end
+    animateUnicorns()
 end
 
 function healCusedCharacterByIndex(index,message)
@@ -1625,6 +1628,7 @@ function unicornsSlower()
     if speed <= 0 then
         showRestingMenu()
     end
+    animateUnicorns()
 end
 
 local function myUpTouchListener( event )
@@ -1746,6 +1750,7 @@ local function dragObject( event, params )
 			body.x=event.x
 			body.y=arcYPosition
 			caravan.rotation=event.x
+            setRotationOfCaravan(caravan.rotation)
             saveCaravan()
         end
 		return true	
@@ -2036,6 +2041,7 @@ function restoreSceneAfterExist(sceneGroup,savedCaravan)
     caravanGroup.x=savedCaravan.x
     caravanGroup.y=savedCaravan.y
     caravan.rotation=savedCaravan.rotation
+    setRotationOfCaravan(caravan.rotation)
     unicorns=composer.getVariable("unicorns")
     tblBoxes=composer.getVariable("tblBoxesData")
     restoreBoxesFromTable(sceneGroup)
@@ -2069,7 +2075,8 @@ local function repeatedStuffDoneWhenLeavingTownsAndLandmarks(sceneGroup,exitPoin
     caravanGroup.x = savedCaravan.x
     caravanGroup.y = savedCaravan.y
     caravan.rotation = savedCaravan.rotation
-    
+    setRotationOfCaravan(caravan.rotation)
+
     print("exit point:"..exitPoint)
     if exitPoint ~= "savedPoint" then
         local newCaravanPosition = findBox(exitPoint)
@@ -2104,19 +2111,74 @@ local function repeatedStuffDoneWhenLeavingTownsAndLandmarks(sceneGroup,exitPoin
     composer.setVariable("caravan", {x = caravanGroup.x, y = caravanGroup.y, rotation = caravan.rotation})    --**setGamePausedState(false)
     disableContinueButton()
 end
-function unicornAnimationLoop()
+local uniconAnimationTimer
+local caravanIMG1
+local caravanIMG2
+local caravanIMG3
+local caravanIMG4
+local caravanIMG5
+local caravanIMG6
+local caravanIMG7
+local caravanIMG8
+local frame=1
 
+function hideCaravanSprites()
+    caravanIMG1.isVisible=false
+    caravanIMG2.isVisible=false
+    caravanIMG3.isVisible=false
+    caravanIMG4.isVisible=false
+    caravanIMG5.isVisible=false
+    caravanIMG6.isVisible=false
+    caravanIMG7.isVisible=false
+    caravanIMG8.isVisible=false
+end
+function unicornAnimationLoop()
+    hideCaravanSprites()
+    if frame==1 then
+        caravanIMG2.isVisible=true
+    elseif frame==2 then
+        caravanIMG3.isVisible=true
+    elseif frame==3 then
+        caravanIMG4.isVisible=true
+    elseif frame==4 then
+        caravanIMG5.isVisible=true
+    elseif frame==5 then
+        caravanIMG6.isVisible=true
+    elseif frame==6 then
+        caravanIMG7.isVisible=true
+    elseif frame==7 then
+        caravanIMG8.isVisible=true
+    elseif frame==8 then
+        caravanIMG1.isVisible=true    
+    end
+    frame=frame+1
+    if frame==9 then
+        frame=1
+    end
 end
 function animateUnicorns()
     --detach timer
+    if uniconAnimationTimer then
+        timer.cancel( uniconAnimationTimer )
+    end
     if speed==0 then
         return
     else
         --sert timer at 1000/speed
+        uniconAnimationTimer=timer.performWithDelay(1000/speed, unicornAnimationLoop)
     end
-    --make a seperate animation loop for the unicorns
 end
 
+function setRotationOfCaravan(degrees)
+    caravanIMG1.rotation = degrees
+    caravanIMG2.rotation = degrees
+    caravanIMG3.rotation = degrees
+    caravanIMG4.rotation = degrees
+    caravanIMG5.rotation = degrees
+    caravanIMG6.rotation = degrees
+    caravanIMG7.rotation = degrees
+    caravanIMG8.rotation = degrees
+end
 local showCalledAlreadyHack=false--this did not fix it
 function scene:show(event)
     if showCalledAlreadyHack then
@@ -2177,6 +2239,40 @@ function scene:show(event)
         }
         caravanCollider = display.newRect( caravanGroup, 0, 0, 10, 10 )
         caravanCollider.fill = paint
+        local paint = {
+            type = "image",
+            filename = "animations/caravan/caravan1.png"
+        }
+        caravanIMG1 = display.newRect( caravanGroup, 0 , 0, 100, 100 )
+        caravanIMG1.fill = paint
+        paint.filename = "animations/caravan/caravan2.png"
+        caravanIMG2 = display.newRect( caravanGroup, 0 , 0, 100, 100 )
+        caravanIMG2.fill = paint
+        caravanIMG2.isVisible=false
+        paint.filename = "animations/caravan/caravan3.png"
+        caravanIMG3 = display.newRect( caravanGroup, 0 , 0, 100, 100 )
+        caravanIMG3.fill = paint
+        caravanIMG3.isVisible=false
+        paint.filename = "animations/caravan/caravan4.png"
+        caravanIMG4 = display.newRect( caravanGroup, 0 , 0, 100, 100 )
+        caravanIMG4.fill = paint
+        caravanIMG4.isVisible=false
+        paint.filename = "animations/caravan/caravan5.png"
+        caravanIMG5 = display.newRect( caravanGroup, 0 , 0, 100, 100 )
+        caravanIMG5.fill = paint
+        caravanIMG5.isVisible=false
+        paint.filename = "animations/caravan/caravan6.png"
+        caravanIMG6 = display.newRect( caravanGroup, 0 , 0, 100, 100 )
+        caravanIMG6.fill = paint
+        caravanIMG6.isVisible=false
+        paint.filename = "animations/caravan/caravan7.png"
+        caravanIMG7 = display.newRect( caravanGroup, 0 , 0, 100, 100 )
+        caravanIMG7.fill = paint
+        caravanIMG7.isVisible=false
+        paint.filename = "animations/caravan/caravan8.png"
+        caravanIMG8 = display.newRect( caravanGroup, 0 , 0, 100, 100 )
+        caravanIMG8.fill = paint
+        caravanIMG8.isVisible=false
         --moving caravan to center of screen
         --remmeber that groups move reative to teh placement of the objects in their original position, so always set the objects to 0,0 first
         local mistralsEndStartPoint=findBox("mist_end_exit")
@@ -2264,6 +2360,7 @@ function scene:show(event)
             caravanGroup.x=savedCaravan.x
             caravanGroup.y=savedCaravan.y
             caravan.rotation=savedCaravan.rotation
+            setRotationOfCaravan(caravan.rotation)
             unicorns=composer.getVariable("unicorns")
             lblDaysPassed.isVisible=true
             --local MPAfterHunting=composer.getVariable("mainCharMPAfterHunting")

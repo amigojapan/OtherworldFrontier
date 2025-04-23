@@ -50,23 +50,63 @@ function priestessAttack()
     end
 end
 function priestesstAlgorythm(priesitessGirl,message)
-    if priesitessGirl.isAlive then
-        if priesitessGirl.MP<30 then
-            message=message..priesitessGirl.name .. "does not have 30 MP, so she cannot cast divine light spell, the angry goblin atatcks and you die.^"
-            composer.setVariable("completlyFailed", true)
-        else
-            failed=priestessAttack()
-            if failed then
-                message=message..priesitessGirl.name .. " casts her divine light spell failed, the angry goblin atatcks and you die.^"
+    if composer.getVariable("language") == "English" then
+        if priesitessGirl.isAlive then
+            if priesitessGirl.MP<30 then
+                message=message..priesitessGirl.name .. "does not have 30 MP, so she cannot cast divine light spell, the angry goblin atatcks and you die.^"
                 composer.setVariable("completlyFailed", true)
             else
-                message=message..priesitessGirl.name.." casts her divine light spell, a bright light shines from above and hte golin runs away.^"
-                priesitessGirl.MP=priesitessGirl.MP-30
+                failed=priestessAttack()
+                if failed then
+                    message=message..priesitessGirl.name .. "'s divine light spell fails, the angry goblin atatcks and you die.^"
+                    composer.setVariable("completlyFailed", true)
+                else
+                    message=message..priesitessGirl.name.." casts her divine light spell, a bright light shines from above and the golin runs away.^"
+                    priesitessGirl.MP=priesitessGirl.MP-30
+                end
             end
+        else
+            message=message..priesitessGirl.name .. "Nobody can deal with this problem, angry goblin atatcks and you die.^"
+            composer.setVariable("completlyFailed", true)
         end
-    else
-        message=message..priesitessGirl.name .. "Nobody can deal with this problem, angry goblin atatcks and you die.^"
-        composer.setVariable("completlyFailed", true)
+    elseif composer.getVariable("language") == "Japanese" then
+        if priesitessGirl.isAlive then
+            if priesitessGirl.MP<30 then
+                message=message..priesitessGirl.name .. "が３０MPを持ってないから、聖なる光のおまじないが出せない。怒ったゴブリンが攻撃して、全チームが死ぬ。^"
+                composer.setVariable("completlyFailed", true)
+            else
+                failed=priestessAttack()
+                if failed then
+                    message=message..priesitessGirl.name .. "の聖なる光のおまじないは失敗した。怒ったゴブリンが攻撃して、全チームが死ぬ。^"
+                    composer.setVariable("completlyFailed", true)
+                else
+                    message=message..priesitessGirl.name.."が聖なる光のおまじないを唱え、空から眩しい光が照らしてくる、ゴブリンが逃げる。^"
+                    priesitessGirl.MP=priesitessGirl.MP-30
+                end
+            end
+        else
+            message=message..priesitessGirl.name .. "誰もこの状況に対応できない。怒ったゴブリンが攻撃して全チームが死ぬ。^"
+            composer.setVariable("completlyFailed", true)
+        end
+    elseif composer.getVariable("language") == "Spanish" then
+        if priesitessGirl.isAlive then
+            if priesitessGirl.MP<30 then
+                message=message..priesitessGirl.name .. " no tiene 30 MP, asi que no puede hacer el hechizo de luz Divina. el duende furioso attaca y mueres.^"
+                composer.setVariable("completlyFailed", true)
+            else
+                failed=priestessAttack()
+                if failed then
+                    message=message..priesitessGirl.name .. " el hechizo de la luz Divina falla, el duende furioso ataca y mueres.^"
+                    composer.setVariable("completlyFailed", true)
+                else
+                    message=message..priesitessGirl.name.." suelta su hechizo de luz Divina, una luz muy brillante sale del ciello, asusta al duende y se escapa.^"
+                    priesitessGirl.MP=priesitessGirl.MP-30
+                end
+            end
+        else
+            message=message..priesitessGirl.name .. " Nadie puede contender con este problema, el duende furioso te ataca y te mueres.^"
+            composer.setVariable("completlyFailed", true)
+        end    
     end
     return message
 end
@@ -80,7 +120,7 @@ function shopAriveJP()
         QUESLOWPRINT("皆で仲良くハッピーエンド^")
         QUESLOWPRINT("^^ゲームプランナー・プログラマー・著作権：^")
         QUESLOWPRINT("パドウ・ウスマー・エー(amigojapan)^")
-        QUESLOWPRINT("^グラフィックス・キャラクターデザイナー・プログラマー：若松 晶^")
+        QUESLOWPRINT("^グラフィックス・キャラクターデザイナー：若松 晶^")
         QUESLOWPRINT("^音声・音楽：Albert Korman(Zcom)^")
         QUESLOWPRINT("^^        END.^")
     elseif composer.getVariable("backgroundImage") == "backgrounds/altEnding.png" then
@@ -98,10 +138,89 @@ function shopAriveJP()
     elseif composer.getVariable("backgroundImage") == "backgrounds/Evermist-Hills.png" then
         QUESLOWPRINT("Evermist　Hillsにようこそ!^")
     elseif composer.getVariable("backgroundImage") == "backgrounds/Enchanted-Spires.png" then
-        QUESLOWPRINT("Evermist　Hillsにようこそ!^")
+        QUESLOWPRINT("Enchanted Spiresにようこそ!^")
     elseif composer.getVariable("backgroundImage") == "backgrounds/frozen-tundra.png" then
         QUESLOWPRINT("旅は14日間以上掛かったから、ツンドラが凍って通れないんだ、^")
         QUESLOWPRINT("目的にたどり着けない。^^^         GAME OVER^")
+    elseif composer.getVariable("backgroundImage") == "backgrounds/Angry-Goblin1.png" or composer.getVariable("backgroundImage") == "backgrounds/Angry-Goblin2.png" or composer.getVariable("backgroundImage") == "backgrounds/Angry-Goblin3.png" then
+        local characters = composer.getVariable("characters")
+		local girlNumber=2
+		local warriorGirl = characters[girlNumber]
+        girlNumber=4
+		local priesitessGirl = characters[girlNumber]	
+		local message="怒ったゴブリンを見かっけた。^^"
+        local failed=false
+        if not priesitessGirl.isAlive and not warriorGirl.isAlive then
+            message=message..warriorGirl.name.."と"..priesitessGirl.name.."が死んでる。この状況に誰も対応できない。怒ったゴブリンが攻撃する。チーム全員死んじゃう。^"
+            composer.setVariable("completlyFailed", true)
+        else
+            if warriorGirl.isAlive then
+                if warriorGirl.MP<30 then
+                    message=message..warriorGirl.name .. "が３０MPがないから、コントールのおまじないが出来ない。^"
+                    if priesitessGirl.isAlive then
+                        message=priestesstAlgorythm(priesitessGirl,message)
+                    end
+                else
+                    failed=warriorAttack()
+                    if failed then
+                        message=message..warriorGirl.name.."のおまじないが失敗した。彼女が死んじゃう。^"
+                        warriorGirl.isAlive=false
+                        if priesitessGirl.isAlive then
+                            message=priestesstAlgorythm(priesitessGirl,message)
+                        end
+                    else
+                        message=message..warriorGirl.name.."がソードを振り上げる。コントロールのおまじないを唱え、ゴブリンが歩いて帰る。^"
+                        warriorGirl.MP=warriorGirl.MP-30
+                    end
+                end
+            else
+                if priesitessGirl.isAlive then
+                    message=priestesstAlgorythm(priesitessGirl,message)
+                end
+            end
+	    --composer.setVariable("warriorGirlMPAfterHunting", warriorGirl.MP)
+        end
+        composer.setVariable("warriodGirlDies", warriorGirl.isAlive)
+        composer.setVariable("warriodGirlMP", warriorGirl.MP)
+        composer.setVariable("priestGirlMP", priesitessGirl.MP)        
+        QUESLOWPRINT(message)
+    else
+        QUESLOWPRINT("Erorr, landmark not found.^")
+    end
+    SLOWPRINT(textSpeed, "", returnToGame)
+end
+function shopAriveEN()
+    RESETQUE()
+    local textSpeed=100
+    if composer.getVariable("backgroundImage") == "backgrounds/crown-of-eternity.png" then
+        textSpeed=200
+        QUESLOWPRINT("Congratulations!^")
+        QUESLOWPRINT("your deepest wish was that your teammates come back from the dead!^")
+        QUESLOWPRINT("they ressurect and you have a happy ending!^")
+        QUESLOWPRINT("^^Game designer/Porgrammer/Copyrighht:^")
+        QUESLOWPRINT("Usmar A. Padow (amigojapan)^")
+        QUESLOWPRINT("^Graphics/Character designer：若松 晶^")
+        QUESLOWPRINT("^Sound FX/Music:Albert Korman(Zcom)^")
+        QUESLOWPRINT("^^        END.^")
+    elseif composer.getVariable("backgroundImage") == "backgrounds/altEnding.png" then
+        textSpeed=200
+        QUESLOWPRINT("Congratulations!^")
+        QUESLOWPRINT("You are a person that thinks outside the box!^")
+        QUESLOWPRINT("You live a slow beach life in south-eastern penninsula.^")
+        QUESLOWPRINT("^^Game designer/Porgrammer/Copyrighht:^")
+        QUESLOWPRINT("Usmar A. Padow (amigojapan)^")
+        QUESLOWPRINT("^Graphics/Character designer:Akira Wakamatsu^")
+        QUESLOWPRINT("^Sound FX/Music:Albert Korman(Zcom)^")
+        QUESLOWPRINT("^^        END.^")
+    elseif composer.getVariable("backgroundImage") == "backgrounds/Maelstrom-Peak.png" then
+        QUESLOWPRINT("Welcome to Maelstrom Peak!^")
+    elseif composer.getVariable("backgroundImage") == "backgrounds/Evermist-Hills.png" then
+        QUESLOWPRINT("Welcome to Evermist Hills!^")
+    elseif composer.getVariable("backgroundImage") == "backgrounds/Enchanted-Spires.png" then
+        QUESLOWPRINT("Welcome to Enchanted Spires!^")
+    elseif composer.getVariable("backgroundImage") == "backgrounds/frozen-tundra.png" then
+        QUESLOWPRINT("The trip took more than 14 days, the Northen Tundra froze over,^")
+        QUESLOWPRINT("You can't reach yoru destination^^^         GAME OVER^")
     elseif composer.getVariable("backgroundImage") == "backgrounds/Angry-Goblin1.png" or composer.getVariable("backgroundImage") == "backgrounds/Angry-Goblin2.png" or composer.getVariable("backgroundImage") == "backgrounds/Angry-Goblin3.png" then
         local characters = composer.getVariable("characters")
 		local girlNumber=2
@@ -152,10 +271,82 @@ end
 
 function shopAriveES()
     RESETQUE()
-    QUESLOWPRINT("^Bienvenida a Melstorms Peak!^")
-    QUESLOWPRINT("^^test line2^")
-    QUESLOWPRINT("^^test line3^")
-    SLOWPRINT(100, "", returnToGame)
+    local textSpeed=100
+    if composer.getVariable("backgroundImage") == "backgrounds/crown-of-eternity.png" then
+        textSpeed=200
+        QUESLOWPRINT("Felicidades!^")
+        QUESLOWPRINT("Tu deseo mas intimo fue que tus amigas resusitaran!^")
+        QUESLOWPRINT("Ellas vuelven a la vida! y tienes un final feliz!^")
+        QUESLOWPRINT("^^Diseño del Juego/Programacion/Derechos reservados:^")
+        QUESLOWPRINT("Usmar A. Padow (amigojapan)^")
+        QUESLOWPRINT("^Diseñadora grafica y de personajes:Akira Wakamatsu^")
+        QUESLOWPRINT("^Effectos de sonido/Musica:Albert Korman(Zcom)^")
+        QUESLOWPRINT("^^        FIN.^")
+    elseif composer.getVariable("backgroundImage") == "backgrounds/altEnding.png" then
+        textSpeed=200
+        QUESLOWPRINT("Felicidades!^")
+        QUESLOWPRINT("Tu eres una persona que puede pensar fuera del rectangulo!^")
+        QUESLOWPRINT("Vives una vida lenta por la playa en la península sud-este.^")
+        QUESLOWPRINT("^^Diseño del Juego/Programacion/Derechos reservados:^")
+        QUESLOWPRINT("Usmar A. Padow (amigojapan)^")
+        QUESLOWPRINT("^Diseñadora grafica y de personajes:Akira Wakamatsu^")
+        QUESLOWPRINT("^Effectos de sonido/Musica:Albert Korman(Zcom)^")
+        QUESLOWPRINT("^^        FIN.^")
+    elseif composer.getVariable("backgroundImage") == "backgrounds/Maelstrom-Peak.png" then
+        QUESLOWPRINT("Bienvenida a Maelstrom Peak!^")
+    elseif composer.getVariable("backgroundImage") == "backgrounds/Evermist-Hills.png" then
+        QUESLOWPRINT("Bienvenida a Evermist Hills!^")
+    elseif composer.getVariable("backgroundImage") == "backgrounds/Enchanted-Spires.png" then
+        QUESLOWPRINT("Bienvenida a Enchanted Spires!^")
+    elseif composer.getVariable("backgroundImage") == "backgrounds/frozen-tundra.png" then
+        QUESLOWPRINT("El viaje tardo mas de 14 dias, La Tundra del Norte se congelo,^")
+        QUESLOWPRINT("No puedes alcanzar tu destino.^^^         GAME OVER^")
+    elseif composer.getVariable("backgroundImage") == "backgrounds/Angry-Goblin1.png" or composer.getVariable("backgroundImage") == "backgrounds/Angry-Goblin2.png" or composer.getVariable("backgroundImage") == "backgrounds/Angry-Goblin3.png" then
+        local characters = composer.getVariable("characters")
+		local girlNumber=2
+		local warriorGirl = characters[girlNumber]
+        girlNumber=4
+		local priesitessGirl = characters[girlNumber]	
+		local message="Te encuentas con un duende furioso.^^"
+        local failed=false
+        if not priesitessGirl.isAlive and not warriorGirl.isAlive then
+            message=message..warriorGirl.name.." y "..priesitessGirl.name.." estan muertas, asi que nadie puede contender con el problema el duende furioso ataca y mueres.^"
+            composer.setVariable("completlyFailed", true)
+        else
+            if warriorGirl.isAlive then
+                if warriorGirl.MP<30 then
+                    message=message..warriorGirl.name .. " no tiene 30 MP, no puede lanzar su hechizo de control^"
+                    if priesitessGirl.isAlive then
+                        message=priestesstAlgorythm(priesitessGirl,message)
+                    end
+                else
+                    failed=warriorAttack()
+                    if failed then
+                        message=message.."El hechizo de " .. warriorGirl.name.." ha fallado, y ella se muere.^"
+                        warriorGirl.isAlive=false
+                        if priesitessGirl.isAlive then
+                            message=priestesstAlgorythm(priesitessGirl,message)
+                        end
+                    else
+                        message=message..warriorGirl.name.." sube su espada al cielo y lanza su hechizo de control, el duende se va caminando.^"
+                        warriorGirl.MP=warriorGirl.MP-30
+                    end
+                end
+            else
+                if priesitessGirl.isAlive then
+                    message=priestesstAlgorythm(priesitessGirl,message)
+                end
+            end
+	    --composer.setVariable("warriorGirlMPAfterHunting", warriorGirl.MP)
+        end
+        composer.setVariable("warriodGirlDies", warriorGirl.isAlive)
+        composer.setVariable("warriodGirlMP", warriorGirl.MP)
+        composer.setVariable("priestGirlMP", priesitessGirl.MP)        
+        QUESLOWPRINT(message)
+    else
+        QUESLOWPRINT("Erorr, landmark not found ES.^")
+    end
+    SLOWPRINT(textSpeed, "", returnToGame)
 end
 
 composer.setVariable("landmarksShown", false)
