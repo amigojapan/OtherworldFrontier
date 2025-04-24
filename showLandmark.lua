@@ -377,17 +377,17 @@ function scene:show(event)
            --enableContinueButton()
             showTextArea()
             CLS()
-            shopAriveEN()
+            shopAriveEN()--I dont knbow what to rename this to
         elseif composer.getVariable("language") == "Japanese" then
             initTextScreen(sceneGroup, "JP")
             showTextArea()
             CLS()
-            shopAriveJP()
+            shopAriveJP()--I dont knbow what to rename this to
         elseif composer.getVariable("language") == "Spanish" then
             initTextScreen(sceneGroup, "ES")
             showTextArea()
             CLS()
-            shopAriveES()
+            shopAriveES()--I dont knbow what to rename this to
         end
     end
 end
