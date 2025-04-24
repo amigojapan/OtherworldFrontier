@@ -1869,7 +1869,8 @@ local function saveLevel()
     local serializableBoxes = getSerializableBoxes()
     local jsonString = json.encode(serializableBoxes)
     
-    local path = system.pathForFile("level.json", system.DocumentsDirectory)
+    --local path = system.pathForFile("level.json", system.DocumentsDirectory)--this is the sandbox directory
+    local path = system.pathForFile("level.json", system.ResourceDirectory)--this is the main directory
     local file, errorString = io.open(path, "w")
     
     if file then
@@ -1888,7 +1889,8 @@ end
 
 -- Function to load level.json and reconstruct tblBoxes
 local function loadLevel()
-    local path = system.pathForFile("level.json", system.DocumentsDirectory)
+    --local path = system.pathForFile("level.json", system.DocumentsDirectory)
+    local path = system.pathForFile("level.json", system.ResourceDirectory)--this is the main directory
     local file, errorString = io.open(path, "r")
     if file then
         local jsonString = file:read("*a")
@@ -2622,6 +2624,10 @@ return scene
 --(fixed by adding functionality to handle fastprint in slowprint.lua)bug, info screen is lacking a continue button.
 --(pending, maybe do maybe not)set maximum stolen ammount
     --both for money and potions
+--(pending)remove unneeded labels
+--(pending)repurpose save and load labels to save and load games
+    --add warnings
+--(pending)add speed settings
 --[[
 月みたいなので、馬車をかいてんする
 5:24 PM <amigojapan> hiro_at_work: 上矢印でスピードをます

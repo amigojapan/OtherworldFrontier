@@ -174,7 +174,7 @@ function promptForNnumerOfUnicornsEN()
 end
 
 function promptForNnumerOfUnicornsES()
-    disableContinueButton
+    disableContinueButton()
     showInputBox("cuantos unicornios quieres comprar?:", verifyPurchaseES)
 end
 
