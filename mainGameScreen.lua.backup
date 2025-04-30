@@ -350,8 +350,7 @@ function enterTown(returnMessage)
     composer.setVariable("caravan", {x = caravanGroup.x, y = caravanGroup.y, rotation = caravan.rotation})
     composer.setVariable("tblBoxesData", getSerializableBoxes())  -- Store data, not objects
     composer.removeScene(composer.getSceneName("current"))
-    --composer.gotoScene("unicornStableGeneral")
-    composer.gotoScene("shopMenu")
+    composer.gotoScene("unicornStableGeneral")
 end
 local landmarkShown=false
 function enterLandmark(returnMessage)
@@ -1058,22 +1057,9 @@ local function alertBoxNoClickedCompleteES()
     --enableContinueButton()
     gameStartES()
 end
-function togglePause()
-    oppositeValue=not composer.getVariable("gamePaused")
-    setGamePausedState(oppositeValue)
-end
-
-local pauseButton = display.newText("[Unpause]", 500, 50, native.systemFont, 20)
-pauseButton:addEventListener("tap", togglePause)
-
 function setGamePausedState(value)
     gamePaused = value
     composer.setVariable("gamePaused", value)
-    if composer.getVariable("gamePaused") then
-        pauseButton.text="[Unpause]"
-    else
-        pauseButton.text="[Pause]"
-    end
     --print("gamePaused set to " .. tostring(value) .. " at " .. debug.traceback())
 end
 setGamePausedState(true)
@@ -2129,14 +2115,11 @@ local function onsetLabelButtonTap(event)
     return true
 end
 
-
-
 local saveButton = display.newText("Save", 300, 50, native.systemFont, 20)
 saveButton:addEventListener("tap", onSaveButtonTap)
 
 local loadButton = display.newText("Load", 400, 50, native.systemFont, 20)
 loadButton:addEventListener("tap", onLoadButtonTap)
-
 
 local setLabelButton = display.newText("[Set Label]", 500, 50, native.systemFont, 20)
 setLabelButton:addEventListener("tap", onsetLabelButtonTap)
@@ -2765,7 +2748,7 @@ return scene
 --(fixed by adding functionality to handle fastprint in slowprint.lua)bug, info screen is lacking a continue button.
 --(pending, maybe do maybe not)set maximum stolen ammount
     --both for money and potions
---(done)remove unneeded labels and color boxes
+--(pending)remove unneeded labels and color boxes
     --label for level editor too
 --(pending)repurpose save , load labels to save and load games
     --also add quit option
@@ -2774,9 +2757,7 @@ return scene
 --(pending), autocapicalize names
 --(pending)move paczel controls to adjust for resolution
 --(pending)add default names to story mode
---(I think it is fixed, untested yet), there is an overlap in the end of trial period screen and purchase button
---(done)add a menu to go to each kind of store
---(pending)add the ammount of the item we have inside hte store and in the menu
+--(pending), there is an overlap in the end of trial period screen and purchase button
 --[[
 月みたいなので、馬車をかいてんする
 5:24 PM <amigojapan> hiro_at_work: 上矢印でスピードをます

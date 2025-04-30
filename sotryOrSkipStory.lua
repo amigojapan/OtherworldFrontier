@@ -92,6 +92,7 @@ audio.reserveChannels( 1 )
 		local btnLevelEditor = display.newText( sceneGroup, "Level editor", display.contentCenterX, offsetY, "fonts/ume-tgc5.ttf", 40 )
 		btnLevelEditor:setFillColor( 0.82, 0.86, 1 )
 		btnLevelEditor:addEventListener( "tap", gotoLevelEditor )
+		btnLevelEditor.isVisible=false
 
 		offsetY=offsetY+100
 		local lblHope = display.newText( sceneGroup, translate["We would like you to see the story at least once."], display.contentCenterX, offsetY, "fonts/ume-tgc5.ttf", 55 )

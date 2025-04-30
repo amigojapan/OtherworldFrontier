@@ -10,7 +10,7 @@ local scene = composer.newScene()
 -- -----------------------------------------------------------------------------------
 composer.setVariable("setVariable","MPpotions")
 composer.setVariable("backgroundImage","backgrounds/human-shop.png")
-composer.setVariable("nextScreenName","mainGameScreen")
+composer.setVariable("nextScreenName","shopMenu")
 composer.setVariable("itemPrice",30)--10 grams of gold per kilogram of food
 composer.setVariable("itemSoldEN","MP Potion")
 composer.setVariable("itemCounterVariableEN","Bottle of MP potion")

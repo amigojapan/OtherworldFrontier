@@ -160,7 +160,7 @@ function promptItemCountdJP()
     disableContinueButton()
     --this is nil for some reason here lblContinue.isVisible=false
     composer.setVariable("inputBuffer","input unset")
-    composer.setVariable("inputBoxPrompt","How many "..itemCounterVariableEN.." do you want to buy?:")
+    composer.setVariable("inputBoxPrompt","アイテム「"..itemCounterVariableJP.."」何個買いたい?:")
     composer.gotoScene("LinuxScreenKeyboardScene")
 end
 function promptItemCountdEN()
@@ -173,7 +173,7 @@ end
 function promptItemCountdES()
     disableContinueButton()
     composer.setVariable("inputBuffer","input unset")
-    composer.setVariable("inputBoxPrompt","How many "..itemCounterVariableEN.." do you want to buy?:")
+    composer.setVariable("inputBoxPrompt","Cuantos "..itemCounterVariableES.." quieres comprar?:")
     composer.gotoScene("LinuxScreenKeyboardScene")
 end
 

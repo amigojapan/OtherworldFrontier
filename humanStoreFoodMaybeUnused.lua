@@ -129,7 +129,12 @@ end
 function promptForKGofFoodEN()
     showInputBox("How many KG of food do you want to buy?:", verifyPurchaseEN)
 end
-
+function promptForKGofFoodJP()
+    showInputBox("食料何キロ買いたい？:", verifyPurchaseEN)
+end
+function promptForKGofFoodES()
+    showInputBox("Cuantos Kilos de comida quieres comprar?:", verifyPurchaseEN)
+end
 function promptForNnumerOfUnicornsES()
     showInputBox("dale nombre a la aventurera 4:", askUserIfTheyLikeNameES)
 end

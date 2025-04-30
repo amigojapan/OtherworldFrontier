@@ -9,7 +9,7 @@ local scene = composer.newScene()
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
 -- -----------------------------------------------------------------------------------
 
-function gotoUnicornStable()       --continue on journey
+function gotoMistralsEnd()       --continue on journey
         local options =
         {
             effect = "fade",
@@ -17,7 +17,7 @@ function gotoUnicornStable()       --continue on journey
             params = {
             }
         }
-        composer.gotoScene( "unicornStableGeneral", options )
+        composer.gotoScene( "shopMenu", options )
 end
 
 -- -----------------------------------------------------------------------------------
@@ -113,7 +113,7 @@ end
 
 function adventurer2saysJP()
     RESETQUE()
-    QUESLOWPRINT("^^"..composer.getVariable( "adventurer2").."も改「店で必要なものをそろわなきゃ」と言った。。")
+    QUESLOWPRINT("^^"..composer.getVariable( "adventurer2").."も改「店で必要なものをそろえなきゃ」と言った。。")
     SLOWPRINT(50,"",adventurer3saysJP)
 end
 
@@ -132,7 +132,7 @@ end
 function adventureBeginsJP()
     RESETQUE()
     QUESLOWPRINT("^^そして、ここから冒険が始まる…。")
-    SLOWPRINT(50,"",gotoUnicornStable)
+    SLOWPRINT(50,"",gotoMistralsEnd)
 end
 
 
@@ -185,7 +185,7 @@ function adventureBeginsEN()
     RESETQUE()
     --           "1234567890123456789012345678901234567890"
     QUESLOWPRINT("^^and so the adventure began....")
-    SLOWPRINT(50,"",gotoUnicornStable)
+    SLOWPRINT(50,"",gotoMistralsEnd)
 end
 
 function youSayES()
@@ -220,7 +220,7 @@ end
 function adventureBeginsES()
     RESETQUE()
     QUESLOWPRINT("^^y asi comienza la aventura....")
-    SLOWPRINT(50,"",gotoUnicornStable)
+    SLOWPRINT(50,"",gotoMistralsEnd)
 end
 
 -- show()
