@@ -971,6 +971,7 @@ translate=i18n_setlang(language)
 --translate["Choose Category"]
 
 function gameOver()
+    RESETQUE()
     setGamePausedState(true)
     gameover=true
     hideEverything()
@@ -2140,6 +2141,7 @@ loadButton:addEventListener("tap", onLoadButtonTap)
 function quitAffirmative()
     --this seemed to have frozen my linux system, try calling gamepaus() tomorrow
     --and add option to resequence the text in thatos.exit()
+    gameOver()
 end
 
 function onquitButtonTap()
@@ -2794,7 +2796,7 @@ return scene
 --(done)remove unneeded labels and color boxes
     --label for level editor too
 --(pending)repurpose save , load labels to save and load games
-    --also add quit option
+    --(done)also add quit option
     --add warnings
 --(pending)add speed settings
 --(pending), autocapicalize names
