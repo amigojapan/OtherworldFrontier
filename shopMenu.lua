@@ -124,13 +124,13 @@ audio.reserveChannels( 1 )
         btnPurchaseFood:addEventListener( "tap", gotoPurchaseFood )
 
 		offsetY=offsetY+75
-        local btnPurchaseMPPotions = display.newText( sceneGroup, translate["Purchase MP Potions"].." "..translate["Item count"].." "..composer.getVariable("MPpotions")..","..translate["Price"]..":50g", display.contentCenterX, offsetY, "fonts/ume-tgc5.ttf", 40 )
+        local btnPurchaseMPPotions = display.newText( sceneGroup, translate["Purchase MP Potions"].." "..translate["Item count"].." "..composer.getVariable("MPpotions")..","..translate["Price"]..":30g", display.contentCenterX, offsetY, "fonts/ume-tgc5.ttf", 40 )
         btnPurchaseMPPotions:setFillColor( 0.82, 0.86, 1 )
 	    btnPurchaseMPPotions:addEventListener( "tap", gotoPurchaseMPPotions )
 
 
         offsetY=offsetY+75
-        local btnPurchaseHPPotions = display.newText( sceneGroup, translate["Purchase HP Potions"].." "..translate["Item count"].." "..composer.getVariable("HPpotions")..","..translate["Price"]..":30g", display.contentCenterX, offsetY, "fonts/ume-tgc5.ttf", 40 )
+        local btnPurchaseHPPotions = display.newText( sceneGroup, translate["Purchase HP Potions"].." "..translate["Item count"].." "..composer.getVariable("HPpotions")..","..translate["Price"]..":50g", display.contentCenterX, offsetY, "fonts/ume-tgc5.ttf", 40 )
 		btnPurchaseHPPotions:setFillColor( 0.82, 0.86, 1 )
 	    btnPurchaseHPPotions:addEventListener( "tap", gotoPurchaseHPPotions )
 

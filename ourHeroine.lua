@@ -56,7 +56,7 @@ function askUserIfTheyLikeNameEN(userinput)
     )
 end
 function promtForNameEN()
-    showInputBox("Please enter your name:", askUserIfTheyLikeNameEN,"testname")
+    showInputBox("Please enter your name:", askUserIfTheyLikeNameEN)
 end
 function welcomeHeroineEN()
     --CLS()

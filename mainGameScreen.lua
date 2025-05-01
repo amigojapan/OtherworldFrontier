@@ -919,7 +919,7 @@ function gameloop()
             elseif composer.getVariable( "language" ) == "Spanish" then
                 message = "La caravana se ha salido del camino!"
             end
-            pauseAndShowQuickMessage(message)   
+            --this was a nuisense　pauseAndShowQuickMessage(message)   
             onRoadSatusChanged="offRoad"
             onRoad=false
             --**add event for unicorns dying faster from being offroad
@@ -933,7 +933,7 @@ function gameloop()
             elseif composer.getVariable( "language" ) == "Spanish" then
                 message = "La caravana ha regrresado al camino."
             end
-            pauseAndShowQuickMessage(message)
+            --this was a nuisense　pauseAndShowQuickMessage(message)
             onRoadSatusChanged="onRoad"
             onRoad=true
         end
@@ -2137,6 +2137,32 @@ saveButton:addEventListener("tap", onSaveButtonTap)
 local loadButton = display.newText("Load", 400, 50, native.systemFont, 20)
 loadButton:addEventListener("tap", onLoadButtonTap)
 
+function quitAffirmative()
+    --this seemed to have frozen my linux system, try calling gamepaus() tomorrow
+    --and add option to resequence the text in thatos.exit()
+end
+
+function onquitButtonTap()
+    setGamePausedState(true)
+    local message="unknown langauge"
+    if composer.getVariable( "language" ) == "English" then
+        message="Quit Game?"
+    elseif composer.getVariable( "language" ) == "Japanese" then
+        message="ゲーム終了しますか？"
+    elseif composer.getVariable( "language" ) == "Spanish" then
+        message="Dejar el juego?"
+   end
+    AlertBox(
+    "",
+    message,
+    quitAffirmative,
+    unPauseGame
+    )
+end
+
+local quitButton = display.newText("Quit", 600, 50, native.systemFont, 20)
+quitButton:addEventListener("tap", onquitButtonTap)
+
 
 local setLabelButton = display.newText("[Set Label]", 500, 50, native.systemFont, 20)
 setLabelButton:addEventListener("tap", onsetLabelButtonTap)
@@ -2772,11 +2798,11 @@ return scene
     --add warnings
 --(pending)add speed settings
 --(pending), autocapicalize names
---(pending)move paczel controls to adjust for resolution
---(pending)add default names to story mode
+--(done)add default names to story mode
 --(I think it is fixed, untested yet), there is an overlap in the end of trial period screen and purchase button
 --(done)add a menu to go to each kind of store
 --(pending)add the ammount of the item we have inside hte store and in the menu
+--(pending)move paczel controls to adjust for resolution
 --[[
 月みたいなので、馬車をかいてんする
 5:24 PM <amigojapan> hiro_at_work: 上矢印でスピードをます

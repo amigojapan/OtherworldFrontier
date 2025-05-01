@@ -37,7 +37,7 @@ function scene:show(event)
         --local background = display.newImageRect( sceneGroup, backgroundImage, 1000,800 )
 		--background.x = display.contentCenterX
 		--background.y = display.contentCenterY
-        showInputBox(composer.getVariable("inputBoxPrompt"), inputDone)
+        showInputBox(composer.getVariable("inputBoxPrompt"), inputDone,composer.getVariable("defaultName"))
 	end
 end
 

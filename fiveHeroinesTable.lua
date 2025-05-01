@@ -9,6 +9,7 @@ local scene = composer.newScene()
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
 -- -----------------------------------------------------------------------------------
 
+composer.setVariable("defaultName","Rose")
 composer.setVariable("setVariable","adventurer1")
 composer.setVariable("backgroundImage","backgrounds/adventurer1.png")
 composer.setVariable("nextScreenName","Adventurer1introduction")

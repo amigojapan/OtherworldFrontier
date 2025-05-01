@@ -8,6 +8,7 @@ local scene = composer.newScene()
 -- Code outside of the scene event functions below will only be executed ONCE unless
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
 -- -----------------------------------------------------------------------------------
+composer.setVariable("defaultName","Lilac")
 composer.setVariable("setVariable","adventurer3")
 composer.setVariable("backgroundImage","backgrounds/adventurer3.png")
 composer.setVariable("nextScreenName","Adventurer3introduction")
