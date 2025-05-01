@@ -17,6 +17,10 @@ function gotoMistralsEnd()       --continue on journey
             params = {
             }
         }
+
+        --clear this when the main game screen enters so that the name does nto apepar in teh store
+        composer.setVariable("defaultName","")
+
         composer.gotoScene( "shopMenu", options )
 end
 

@@ -1016,9 +1016,9 @@ local sceneGroup = self.view
     if composer.getVariable("inputBuffer") ==nil then
         composer.setVariable("inputBuffer", "input unset")
     end
-    -- Initialize the characters table using names from Composer variables
+    -- Initialize the characters table using names from Composer variables, and default HP, MP
     local characters = {
-        {name = composer.getVariable("MCname") or "Default MC", isAlive=true, HP = 50, maxHP = 100, MP = 100, maxMP = 100, isCursed = false},
+        {name = composer.getVariable("MCname") or "Default MC", isAlive=true, HP = 100, maxHP = 100, MP = 100, maxMP = 100, isCursed = false},
         {name = composer.getVariable("adventurer1") or "Default Adv1", isAlive=true, HP = 100, maxHP = 100, MP = 100, maxMP = 100, isCursed = false},
         {name = composer.getVariable("adventurer2") or "Default Adv2", isAlive=true, HP = 100, maxHP = 100, MP = 100, maxMP = 100, isCursed = false},
         {name = composer.getVariable("adventurer3") or "Default Adv3", isAlive=true, HP = 100, maxHP = 100, MP = 100, maxMP = 100, isCursed = false},
@@ -1909,39 +1909,39 @@ local function alertBoxNoClickedComplete()
     showInputBox("what is your name?:",callback)
 end
 
+function saveData(data,filename)
+    local jsonString = json.encode(data)
+    local path = system.pathForFile(filename, system.DocumentsDirectory)--this is the sandbox directory
+    local file, errorString = io.open(path, "w")   
+    if file then
+        file:write(jsonString)
+        io.close(file)
+        return "success"
+    else
+        return "failed"
+    end
+end
 
 function saveAffirmative()
     --local serializableBoxes = getSerializableBoxes()
     saveCaravan()
-    local data=composer.getVariable("caravan")
-    local jsonString = json.encode(data)
-    
-    local path = system.pathForFile("saveCaravanFile.json", system.DocumentsDirectory)--this is the sandbox directory
-    --local path = system.pathForFile("level.json", system.ResourceDirectory)--this is the main directory
-    local file, errorString = io.open(path, "w")
-    
-    if file then
-        file:write(jsonString)
-        io.close(file)
-        print("Level saved successfully.")
-    else
-        print("Error saving level: " .. errorString)
+    if saveData(composer.getVariable("caravan"),"saveCaravanFile.json") == "failed" then
+        pauseAndShowQuickMessageFast("Error saving game.")
+        return
     end
-    local data=composer.getVariable("characters")
-    local jsonString = json.encode(data)
-    
-    local path = system.pathForFile("saveChacartersFile.json", system.DocumentsDirectory)--this is the sandbox directory
-    --local path = system.pathForFile("level.json", system.ResourceDirectory)--this is the main directory
-    local file, errorString = io.open(path, "w")
-    
-    if file then
-        file:write(jsonString)
-        io.close(file)
-        print("Level saved successfully.")
-    else
-        print("Error saving level: " .. errorString)
-    end
-
+    saveData(composer.getVariable("characters"),"saveChacartersFile.json")
+    --saveData(composer.getVariable( "MCname"),"saveChacartersFile.json")
+    saveData(composer.getVariable( "gold"),"saveGoldFile.json")
+    --saveData(composer.getVariable( "adventurer1"),"saveChacartersFile.json")
+    --saveData(composer.getVariable( "adventurer2"),"saveChacartersFile.json")
+    --saveData(composer.getVariable( "adventurer3"),"saveChacartersFile.json")
+    --saveData(composer.getVariable( "adventurer4"),"saveChacartersFile.json")
+    saveData(composer.getVariable("HPpotions"),"saveHPpotionsFile.json")
+    saveData(composer.getVariable("MPpotions"),"saveMPpotionsFile.json")
+    saveData(composer.getVariable("unicorns"),"saveUnicornsFile.json")
+    if saveData(composer.getVariable("KGofFood"),"saveKGofFoodFile.json")  == "success" then
+        pauseAndShowQuickMessageFast("Save succesful!")
+    end 
 end
 
 function saveProgress()
@@ -1961,36 +1961,53 @@ function saveProgress()
     unPauseGame
     )
 end
+function loadData(variableNameString,filename)
+    local path = system.pathForFile(filename, system.DocumentsDirectory)--this is the sandbox directory
+    local file, errorString = io.open(path, "r")
+    local successFailure
+    if file then
+        successFailure="success"
+    else
+        successFailure="failed"
+    end
+    local jsonString = file:read("*a")
+    io.close(file)
+    local data = json.decode(jsonString)
+    composer.setVariable(variableNameString, data)
+    return successFailure
+end
+
 
 function loadAffirmative()
     local path = system.pathForFile("saveCaravanFile.json", system.DocumentsDirectory)--this is the sandbox directory
     local file, errorString = io.open(path, "r")
-    if file then
-        local jsonString = file:read("*a")
-        io.close(file)
-        local data = json.decode(jsonString)
-        composer.setVariable("caravan", data)
-        local obj={}
-        obj.rotation=composer.getVariable("caravan").rotation
-        obj.x=composer.getVariable("caravan").x
-        obj.y=composer.getVariable("caravan").y
-        setGamePausedState(true)
-        transition.to( caravanGroup, { time=1500, x=obj.x, y=obj.y, onComplete=transitionCompleted } )
-        updateCaravanCoordinates(obj)
-        caravan.rotation=obj.rotation
-        print("Teleported to box.x:" .. box.x .. ", box.y:" .. box.y)
-    else
-        pauseAndShowQuickMessageFast("error loading files")
+    if loadData("caravan","saveCaravanFile.json") == "failed" then
+        pauseAndShowQuickMessageFast("Error loading game.")
+        return
     end
-    local path = system.pathForFile("saveChacartersFile.json", system.DocumentsDirectory)--this is the sandbox directory
-    local file, errorString = io.open(path, "r")
-    if file then
-        local jsonString = file:read("*a")
-        io.close(file)
-        local data = json.decode(jsonString)
-        composer.setVariable("characters", data)
-    end
-    pauseAndShowQuickMessageFast("game loaded")
+    loadData("characters","saveChacartersFile.json")
+    --loadData(composer.getVariable( "MCname"),"saveChacartersFile.json")
+    loadData("gold","saveGoldFile.json")
+    --loadData(composer.getVariable( "adventurer1"),"saveChacartersFile.json")
+    --loadData(composer.getVariable( "adventurer2"),"saveChacartersFile.json")
+    --loadData(composer.getVariable( "adventurer3"),"saveChacartersFile.json")
+    --loadData(composer.getVariable( "adventurer4"),"saveChacartersFile.json")
+    loadData("HPpotions","saveHPpotionsFile.json")
+    loadData("MPpotions","saveMPpotionsFile.json")
+    loadData("unicorns","saveUnicornsFile.json")
+    loadData("KGofFood","saveKGofFoodFile.json")
+    
+    --relocate caravan to saved position
+    local obj={}
+    obj.rotation=composer.getVariable("caravan").rotation
+    obj.x=composer.getVariable("caravan").x
+    obj.y=composer.getVariable("caravan").y
+    setGamePausedState(true)
+    transition.to( caravanGroup, { time=0, x=obj.x, y=obj.y, onComplete=transitionCompleted } )
+    updateCaravanCoordinates(obj)
+    caravan.rotation=obj.rotation
+    print("Teleported to box.x:" .. box.x .. ", box.y:" .. box.y)
+    pauseAndShowQuickMessageFast("Load succesful!")
 end
 
 
@@ -2726,6 +2743,10 @@ function scene:show(event)
            end
         end
         --cleanupInvisibleObjects(display.getCurrentStage(),sceneGroup)
+        
+        --clear this when the main game screen enters so that the name does nto apepar in teh store
+        composer.setVariable("defaultName","")
+
         print("language:"..composer.getVariable( "language" ))
         if composer.getVariable( "language" ) == "English" then
             --clearBuggyObjects()
@@ -2854,16 +2875,17 @@ return scene
     --both for money and potions
 --(done)remove unneeded labels and color boxes
     --label for level editor too
---(pending)repurpose save , load labels to save and load games
+--(done)repurpose save , load labels to save and load games
     --(done)also add quit option
-    --add warnings
+    --(done)add warnings
 --(pending)add speed settings
---(pending), autocapicalize names
+--(pending), autocapicalize first letter of names
 --(done)add default names to story mode
 --(I think it is fixed, untested yet), there is an overlap in the end of trial period screen and purchase button
 --(done)add a menu to go to each kind of store
 --(pending)add the ammount of the item we have inside hte store and in the menu
 --(pending)move paczel controls to adjust for resolution
+--(fixed)new bug, name of character appears in shopping screen, I think I can fix it by changing the value of hte defaultname thing right when the game starts
 --[[
 月みたいなので、馬車をかいてんする
 5:24 PM <amigojapan> hiro_at_work: 上矢印でスピードをます

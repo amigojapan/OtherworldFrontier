@@ -20,6 +20,9 @@ local function visitChurch()
         btnVisitChurch.text="Todas las maldiciones se han curado"
     end
     btnVisitChurch:setFillColor( 0, 1, 0 )
+	if composer.getVariable("characters")==nil then
+		return
+	end
     local characters = composer.getVariable("characters") 
     for girlNumber=1,5,1 do--init,maxval,step
         char=characters[girlNumber]
