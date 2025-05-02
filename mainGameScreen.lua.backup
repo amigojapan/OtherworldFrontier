@@ -28,8 +28,18 @@ local unicorns = {}
 gameover=false
 gameLoopTimer=nil
 
+local saveButton = display.newText("Save", 300, 50, native.systemFont, 20)
+
+
+local loadButton = display.newText("Load", 400, 50, native.systemFont, 20)
+
+
+local pauseButton = display.newText("[Unpause]", 500, 50, native.systemFont, 20)
+
+
 function saveCaravan()
     composer.setVariable("caravan", {x = caravanGroup.x, y = caravanGroup.y, rotation = caravan.rotation})    --**setGamePausedState(false)
+    print("saved caravan at x:"..caravanGroup.x.." y:"..caravanGroup.y)
 end
 
 ------------------------------------------------------------
@@ -350,7 +360,8 @@ function enterTown(returnMessage)
     composer.setVariable("caravan", {x = caravanGroup.x, y = caravanGroup.y, rotation = caravan.rotation})
     composer.setVariable("tblBoxesData", getSerializableBoxes())  -- Store data, not objects
     composer.removeScene(composer.getSceneName("current"))
-    composer.gotoScene("unicornStableGeneral")
+    --composer.gotoScene("unicornStableGeneral")
+    composer.gotoScene("shopMenu")
 end
 local landmarkShown=false
 function enterLandmark(returnMessage)
@@ -691,6 +702,24 @@ function afterTreasuChest1()
 end
 local dayLimit=15--one more than the limit, on the 15th day the tunra will be frozen
 local landmarkShown = false
+function randomEvents()
+    local randomNumber = math.random(1, 10000)
+    if randomNumber < 50/2 then
+        setGamePausedState(true)
+        curseEvent()
+    elseif randomNumber < 100/2 then
+        setGamePausedState(true)
+        robberyEvent()
+    elseif randomNumber < 200 then
+        if not onRoad then
+            setGamePausedState(true)
+            getStuckInRut() 
+        end
+    elseif randomNumber < 210/2  then
+        setGamePausedState(true)
+        attackedByAngryGoblynEvent()
+    end
+end
 function gameloop()
 	if gamePaused or gameover then
 		return
@@ -704,17 +733,8 @@ function gameloop()
         end
         print("gamePaused"..tostring(gamePaused))
         -- Random event triggers
-        local randomNumber = math.random(1, 10000)
-        if randomNumber < 50 then
-            curseEvent()
-        elseif randomNumber < 100 then
-            robberyEvent()
-        elseif randomNumber < 200 then
-            if not onRoad then
-                getStuckInRut() 
-            end
-        elseif randomNumber < 210  then
-            attackedByAngryGoblynEvent()
+        if composer.getVariable("lblContinue").isVisible==false then --this should prevent the bug where events happen when another screen has a continue button
+            randomEvents()
         end
 
         --the following is true when comming back from another scene it seems -the return solves it
@@ -918,7 +938,7 @@ function gameloop()
             elseif composer.getVariable( "language" ) == "Spanish" then
                 message = "La caravana se ha salido del camino!"
             end
-            pauseAndShowQuickMessage(message)   
+            --this was a nuisense　pauseAndShowQuickMessage(message)   
             onRoadSatusChanged="offRoad"
             onRoad=false
             --**add event for unicorns dying faster from being offroad
@@ -932,7 +952,7 @@ function gameloop()
             elseif composer.getVariable( "language" ) == "Spanish" then
                 message = "La caravana ha regrresado al camino."
             end
-            pauseAndShowQuickMessage(message)
+            --this was a nuisense　pauseAndShowQuickMessage(message)
             onRoadSatusChanged="onRoad"
             onRoad=true
         end
@@ -970,6 +990,7 @@ translate=i18n_setlang(language)
 --translate["Choose Category"]
 
 function gameOver()
+    RESETQUE()
     setGamePausedState(true)
     gameover=true
     hideEverything()
@@ -1014,9 +1035,9 @@ local sceneGroup = self.view
     if composer.getVariable("inputBuffer") ==nil then
         composer.setVariable("inputBuffer", "input unset")
     end
-    -- Initialize the characters table using names from Composer variables
+    -- Initialize the characters table using names from Composer variables, and default HP, MP
     local characters = {
-        {name = composer.getVariable("MCname") or "Default MC", isAlive=true, HP = 50, maxHP = 100, MP = 100, maxMP = 100, isCursed = false},
+        {name = composer.getVariable("MCname") or "Default MC", isAlive=true, HP = 100, maxHP = 100, MP = 100, maxMP = 100, isCursed = false},
         {name = composer.getVariable("adventurer1") or "Default Adv1", isAlive=true, HP = 100, maxHP = 100, MP = 100, maxMP = 100, isCursed = false},
         {name = composer.getVariable("adventurer2") or "Default Adv2", isAlive=true, HP = 100, maxHP = 100, MP = 100, maxMP = 100, isCursed = false},
         {name = composer.getVariable("adventurer3") or "Default Adv3", isAlive=true, HP = 100, maxHP = 100, MP = 100, maxMP = 100, isCursed = false},
@@ -1057,9 +1078,20 @@ local function alertBoxNoClickedCompleteES()
     --enableContinueButton()
     gameStartES()
 end
+function togglePause()
+    oppositeValue=not composer.getVariable("gamePaused")
+    setGamePausedState(oppositeValue)
+end
+pauseButton:addEventListener("tap", togglePause)
+
 function setGamePausedState(value)
     gamePaused = value
     composer.setVariable("gamePaused", value)
+    if composer.getVariable("gamePaused") then
+        pauseButton.text="[Unpause]"
+    else
+        pauseButton.text="[Pause]"
+    end
     --print("gamePaused set to " .. tostring(value) .. " at " .. debug.traceback())
 end
 setGamePausedState(true)
@@ -1409,30 +1441,36 @@ function hideEverything()
     --        caravanGroup:removeSelf()
     --    end
     --end
-    caravanGroup.isVisible=false
-    myUpButton.isVisible=false
-    myDownButton.isVisible=false
-    myFireButton.isVisible=false
-    arc.isVisible=false
-    lblDaysPassed.isVisible=false
-    lblLabel.isVisible=false
-    for index, box in ipairs(tblBoxes) do
-        box.isVisible=false
+    if caravanGroup then --hack to fix bug after winning in paczel where caravanGroup is nil, dunno  why
+        caravanGroup.isVisible=false
+        myUpButton.isVisible=false
+        myDownButton.isVisible=false
+        myFireButton.isVisible=false
+        arc.isVisible=false
+        lblDaysPassed.isVisible=false
+        lblLabel.isVisible=false
+        saveButton.isVisible=false
+        loadButton.isVisible=false
+        pauseButton.isVisible=false
+        for index, box in ipairs(tblBoxes) do
+            box.isVisible=false
+        end
     end
     hideRestingMenu()
 end
 function goHuntingPaczel()
+    saveCaravan()
     composer.setVariable( "gameMode", "Paczel" )
     gameMode = composer.getVariable( "gameMode" )
     print("gameMode:"..gameMode)
     composer.setVariable("numberOfPowerUps",5)
     composer.setVariable("numberOfMonsters",5)
     hideEverything()
-    composer.removeScene(composer.getSceneName( "current" ))
     composer.setVariable("wentHunting", true)
-    composer.setVariable("caravan",caravan)    
+    --composer.setVariable("caravan",caravan)    
     composer.setVariable("unicorns",unicorns)
     hideTextArea()
+    composer.removeScene(composer.getSceneName( "current" ))
     composer.gotoScene( "paczel" )
 end
 
@@ -1890,13 +1928,44 @@ local function onSaveButtonTap(event)
     saveProgress()
     return true
 end
+saveButton:addEventListener("tap", onSaveButtonTap)
 local function alertBoxNoClickedComplete()
     showInputBox("what is your name?:",callback)
 end
 
+function saveData(data,filename)
+    local jsonString = json.encode(data)
+    local path = system.pathForFile(filename, system.DocumentsDirectory)--this is the sandbox directory
+    local file, errorString = io.open(path, "w")   
+    if file then
+        file:write(jsonString)
+        io.close(file)
+        return "success"
+    else
+        return "failed"
+    end
+end
 
 function saveAffirmative()
-
+    --local serializableBoxes = getSerializableBoxes()
+    saveCaravan()
+    if saveData(composer.getVariable("caravan"),"saveCaravanFile.json") == "failed" then
+        pauseAndShowQuickMessageFast("Error saving game.")
+        return
+    end
+    saveData(composer.getVariable("characters"),"saveChacartersFile.json")
+    --saveData(composer.getVariable( "MCname"),"saveChacartersFile.json")
+    saveData(composer.getVariable( "gold"),"saveGoldFile.json")
+    --saveData(composer.getVariable( "adventurer1"),"saveChacartersFile.json")
+    --saveData(composer.getVariable( "adventurer2"),"saveChacartersFile.json")
+    --saveData(composer.getVariable( "adventurer3"),"saveChacartersFile.json")
+    --saveData(composer.getVariable( "adventurer4"),"saveChacartersFile.json")
+    saveData(composer.getVariable("HPpotions"),"saveHPpotionsFile.json")
+    saveData(composer.getVariable("MPpotions"),"saveMPpotionsFile.json")
+    saveData(composer.getVariable("unicorns"),"saveUnicornsFile.json")
+    if saveData(composer.getVariable("KGofFood"),"saveKGofFoodFile.json")  == "success" then
+        pauseAndShowQuickMessageFast("Save succesful!")
+    end 
 end
 
 function saveProgress()
@@ -1916,9 +1985,53 @@ function saveProgress()
     unPauseGame
     )
 end
+function loadData(variableNameString,filename)
+    local path = system.pathForFile(filename, system.DocumentsDirectory)--this is the sandbox directory
+    local file, errorString = io.open(path, "r")
+    local successFailure
+    if file then
+        successFailure="success"
+    else
+        successFailure="failed"
+    end
+    local jsonString = file:read("*a")
+    io.close(file)
+    local data = json.decode(jsonString)
+    composer.setVariable(variableNameString, data)
+    return successFailure
+end
+
 
 function loadAffirmative()
-
+    local path = system.pathForFile("saveCaravanFile.json", system.DocumentsDirectory)--this is the sandbox directory
+    local file, errorString = io.open(path, "r")
+    if loadData("caravan","saveCaravanFile.json") == "failed" then
+        pauseAndShowQuickMessageFast("Error loading game.")
+        return
+    end
+    loadData("characters","saveChacartersFile.json")
+    --loadData(composer.getVariable( "MCname"),"saveChacartersFile.json")
+    loadData("gold","saveGoldFile.json")
+    --loadData(composer.getVariable( "adventurer1"),"saveChacartersFile.json")
+    --loadData(composer.getVariable( "adventurer2"),"saveChacartersFile.json")
+    --loadData(composer.getVariable( "adventurer3"),"saveChacartersFile.json")
+    --loadData(composer.getVariable( "adventurer4"),"saveChacartersFile.json")
+    loadData("HPpotions","saveHPpotionsFile.json")
+    loadData("MPpotions","saveMPpotionsFile.json")
+    loadData("unicorns","saveUnicornsFile.json")
+    loadData("KGofFood","saveKGofFoodFile.json")
+    
+    --relocate caravan to saved position
+    local obj={}
+    obj.rotation=composer.getVariable("caravan").rotation
+    obj.x=composer.getVariable("caravan").x
+    obj.y=composer.getVariable("caravan").y
+    setGamePausedState(true)
+    transition.to( caravanGroup, { time=0, x=obj.x, y=obj.y, onComplete=transitionCompleted } )
+    updateCaravanCoordinates(obj)
+    caravan.rotation=obj.rotation
+    print("Teleported to box.x:" .. box.x .. ", box.y:" .. box.y)
+    pauseAndShowQuickMessageFast("Load succesful!")
 end
 
 
@@ -1939,9 +2052,81 @@ function loadProgrress()
     unPauseGame
     )
 end
+function loadFromJson()
+    local path = system.pathForFile("level.json", system.ResourceDirectory)--this is the main directory
+    local file, errorString = io.open(path, "r")
+    if file then
+        local jsonString = file:read("*a")
+        io.close(file)
+        --print("json sting:"..jsonString)
+        local serializableBoxes = json.decode(jsonString)
+        
+        -- Clear existing boxes
+        for i = #tblBoxes, 1, -1 do
+            local box = tblBoxes[i]
+            box:removeSelf() -- Remove from display
+            table.remove(tblBoxes, i) -- Remove from table
+        end
+        --diagnostic
+        print("Number of items: " .. #serializableBoxes) -- Should match JSON array length
+        for i, data in ipairs(serializableBoxes) do
+            print("Item " .. i .. " type: " .. type(data)) -- Should be "table"
+            if type(data) == "table" then
+                print("Item " .. i .. " label: " .. tostring(data.label)) -- Should show label or "nil"
+            end
+            if data.label==nil then
+                print("nil label found in data, skipping")
+            else
+                -- Box creation code
+            end
+        end
+        local mistranlsEndInData=false
+        -- Recreate boxes from loaded data
+        for _, data in ipairs(serializableBoxes) do
+                if data.label==nil then
+                    print("nil label found in data, skipping")
+                else
+                --local box = display.newImageRect("img/block-white.png", data.size, data.size)
+                if data.color=="colorWhite" then
+                    box = display.newImageRect("img/block-white.png", 32, 32)    
+                elseif data.color=="colorRed" then
+                    box = display.newImageRect("img/block-red.png", 32, 32)    
+                elseif data.color=="colorGreen" then
+                    box = display.newImageRect("img/block-green.png", 32, 32)    
+                elseif data.color=="colorBlue" then
+                    box = display.newImageRect("img/block-blue.png", 32, 32)    
+                elseif data.color=="colorYellow" then
+                    box = display.newImageRect("img/block.png", 32, 32)    
+                end
+                print("label:"..data.label)
+                if data.label=="mist_end_exit" then
+                    mistranlsEndInData=true
+                end
+                box.label = data.label
+                box.color = data.color
+                box.x = data.x
+                box.y = data.y
+                box.size = data.size
+                box.alpha = 0
+                box:addEventListener("tap", boxListener) -- Add your tap listener if needed
+                table.insert(tblBoxes, box)
+            end
+        end
+        print("Level loaded successfully.")
+    else
+        print("Error loading level: " .. errorString)
+    end
+    if mistranlsEndInData then
+        print("mistrals end in data")
+    else
+        print("warning:mistrals end NOT in data")
+    end
+end
+
 -- Function to load level.json and reconstruct tblBoxes
 local function loadLevel()
-    loadProgrress()
+    
+    loadFromJson()
     --[[
     --local path = system.pathForFile("level.json", system.DocumentsDirectory)
     local path = system.pathForFile("level.json", system.ResourceDirectory)--this is the main directory
@@ -2015,83 +2200,13 @@ local function loadLevel()
     ]]
 end
 
-function loadLevel()
-    local path = system.pathForFile("level.json", system.ResourceDirectory)--this is the main directory
-    local file, errorString = io.open(path, "r")
-    if file then
-        local jsonString = file:read("*a")
-        io.close(file)
-        --print("json sting:"..jsonString)
-        local serializableBoxes = json.decode(jsonString)
-        
-        -- Clear existing boxes
-        for i = #tblBoxes, 1, -1 do
-            local box = tblBoxes[i]
-            box:removeSelf() -- Remove from display
-            table.remove(tblBoxes, i) -- Remove from table
-        end
-        --diagnostic
-        print("Number of items: " .. #serializableBoxes) -- Should match JSON array length
-        for i, data in ipairs(serializableBoxes) do
-            print("Item " .. i .. " type: " .. type(data)) -- Should be "table"
-            if type(data) == "table" then
-                print("Item " .. i .. " label: " .. tostring(data.label)) -- Should show label or "nil"
-            end
-            if data.label==nil then
-                print("nil label found in data, skipping")
-            else
-                -- Box creation code
-            end
-        end
-        local mistranlsEndInData=false
-        -- Recreate boxes from loaded data
-        for _, data in ipairs(serializableBoxes) do
-                if data.label==nil then
-                    print("nil label found in data, skipping")
-                else
-                --local box = display.newImageRect("img/block-white.png", data.size, data.size)
-                if data.color=="colorWhite" then
-                    box = display.newImageRect("img/block-white.png", 32, 32)    
-                elseif data.color=="colorRed" then
-                    box = display.newImageRect("img/block-red.png", 32, 32)    
-                elseif data.color=="colorGreen" then
-                    box = display.newImageRect("img/block-green.png", 32, 32)    
-                elseif data.color=="colorBlue" then
-                    box = display.newImageRect("img/block-blue.png", 32, 32)    
-                elseif data.color=="colorYellow" then
-                    box = display.newImageRect("img/block.png", 32, 32)    
-                end
-                print("label:"..data.label)
-                if data.label=="mist_end_exit" then
-                    mistranlsEndInData=true
-                end
-                box.label = data.label
-                box.color = data.color
-                box.x = data.x
-                box.y = data.y
-                box.size = data.size
-                box.alpha = 0
-                box:addEventListener("tap", boxListener) -- Add your tap listener if needed
-                table.insert(tblBoxes, box)
-            end
-        end
-        print("Level loaded successfully.")
-    else
-        print("Error loading level: " .. errorString)
-    end
-    if mistranlsEndInData then
-        print("mistrals end in data")
-    else
-        print("warning:mistrals end NOT in data")
-    end
-end
 
 -- Load button listener
 local function onLoadButtonTap(event)
-    loadLevel()
+    loadProgrress()
     return true
 end
-
+loadButton:addEventListener("tap", onLoadButtonTap)
 local function onsetLabelButtonTap(event)
     composer.setVariable("setVariable","Label")
     composer.setVariable("backgroundImage","backgrounds/adventurer3.png")
@@ -2115,11 +2230,36 @@ local function onsetLabelButtonTap(event)
     return true
 end
 
-local saveButton = display.newText("Save", 300, 50, native.systemFont, 20)
-saveButton:addEventListener("tap", onSaveButtonTap)
 
-local loadButton = display.newText("Load", 400, 50, native.systemFont, 20)
-loadButton:addEventListener("tap", onLoadButtonTap)
+
+
+function quitAffirmative()
+    --this seemed to have frozen my linux system, try calling gamepaus() tomorrow
+    --and add option to resequence the text in thatos.exit()
+    gameOver()
+end
+
+function onquitButtonTap()
+    setGamePausedState(true)
+    local message="unknown langauge"
+    if composer.getVariable( "language" ) == "English" then
+        message="Quit Game?"
+    elseif composer.getVariable( "language" ) == "Japanese" then
+        message="ゲーム終了しますか？"
+    elseif composer.getVariable( "language" ) == "Spanish" then
+        message="Dejar el juego?"
+   end
+    AlertBox(
+    "",
+    message,
+    quitAffirmative,
+    unPauseGame
+    )
+end
+
+local quitButton = display.newText("Quit", 600, 50, native.systemFont, 20)
+quitButton:addEventListener("tap", onquitButtonTap)
+
 
 local setLabelButton = display.newText("[Set Label]", 500, 50, native.systemFont, 20)
 setLabelButton:addEventListener("tap", onsetLabelButtonTap)
@@ -2433,7 +2573,38 @@ function scene:show(event)
         --myUpButton.alpha=0.3
 
 
+
         --background
+
+        if composer.getVariable("wentHunting") then
+            local bg = display.newImageRect( sceneGroup, backgroundImage, 1500,800 )
+            bg.x = display.contentCenterX
+            bg.y = display.contentCenterY
+
+            composer.setVariable("wentHunting",false)
+            initTextScreenByCorrectLanguage(sceneGroup)
+            CLS()
+            hideTextArea()
+            local savedCaravan=composer.getVariable("caravan")
+            transition.to( caravanGroup, { time=0, x=savedCaravan.x, y=savedCaravan.y, onComplete=transitionCompleted } )
+            caravanGroup.x=savedCaravan.x
+            caravanGroup.y=savedCaravan.y
+            caravan.rotation=savedCaravan.rotation
+            setRotationOfCaravan(caravan.rotation)
+            unicorns=composer.getVariable("unicorns")
+            lblDaysPassed.isVisible=true
+            --local MPAfterHunting=composer.getVariable("mainCharMPAfterHunting")
+            --local girlNumber = 1
+            --local characters = composer.getVariable("characters")
+            --local mainChar = characters[girlNumber]
+
+            --mainChar.MP = MPAfterHunting
+            
+             
+            --bg:addEventListener( "tap", tapListener )
+    
+            return
+        end
         local background = display.newImageRect( sceneGroup, backgroundImage, 1500,800 )
         background.x = display.contentCenterX
         background.y = display.contentCenterY
@@ -2477,27 +2648,7 @@ function scene:show(event)
     
 
 
-        if composer.getVariable("wentHunting") then
-            composer.setVariable("wentHunting",false)
-            initTextScreenByCorrectLanguage(sceneGroup)
-            CLS()
-            hideTextArea()
-            local savedCaravan=composer.getVariable("caravan")
-            caravanGroup.x=savedCaravan.x
-            caravanGroup.y=savedCaravan.y
-            caravan.rotation=savedCaravan.rotation
-            setRotationOfCaravan(caravan.rotation)
-            unicorns=composer.getVariable("unicorns")
-            lblDaysPassed.isVisible=true
-            --local MPAfterHunting=composer.getVariable("mainCharMPAfterHunting")
-            --local girlNumber = 1
-            --local characters = composer.getVariable("characters")
-            --local mainChar = characters[girlNumber]
-
-            --mainChar.MP = MPAfterHunting
-            return
-        end
-
+        
         if composer.getVariable( "gettingInput" ) then--change name of this variabel if gettig more inputs in both here and where called
             --initTextScreen(sceneGroup,"JP")
             --showTextArea()
@@ -2538,12 +2689,14 @@ function scene:show(event)
 
         if composer.getVariable("enteredMainGameEnding") then
             composer.setVariable("enteredMainGameEnding", false)
+            hideEverything()
             composer.gotoScene("menu")
             return
         end
         
         if composer.getVariable("enteredAlternateGameEnding") then
             composer.setVariable("enteredMountain1", false)
+            hideEverything()
             composer.gotoScene("menu")
             return
         end
@@ -2622,6 +2775,10 @@ function scene:show(event)
            end
         end
         --cleanupInvisibleObjects(display.getCurrentStage(),sceneGroup)
+        
+        --clear this when the main game screen enters so that the name does nto apepar in teh store
+        composer.setVariable("defaultName","")
+
         print("language:"..composer.getVariable( "language" ))
         if composer.getVariable( "language" ) == "English" then
             --clearBuggyObjects()
@@ -2748,16 +2905,24 @@ return scene
 --(fixed by adding functionality to handle fastprint in slowprint.lua)bug, info screen is lacking a continue button.
 --(pending, maybe do maybe not)set maximum stolen ammount
     --both for money and potions
---(pending)remove unneeded labels and color boxes
+--(done)remove unneeded labels and color boxes
     --label for level editor too
---(pending)repurpose save , load labels to save and load games
-    --also add quit option
-    --add warnings
+--(done)repurpose save , load labels to save and load games
+    --(done)also add quit option
+    --(done)add warnings
 --(pending)add speed settings
---(pending), autocapicalize names
---(pending)move paczel controls to adjust for resolution
---(pending)add default names to story mode
---(pending), there is an overlap in the end of trial period screen and purchase button
+--(pending), autocapicalize first letter of names
+--(done)add default names to story mode
+--(I think it is fixed, untested yet), there is an overlap in the end of trial period screen and purchase button
+--(done)add a menu to go to each kind of store
+--(done in town, I dont think it is nesseary in the store now)add the ammount of the item we have inside hte store and in the menu
+--(fixed)new bug, name of character appears in shopping screen, I think I can fix it by changing the value of hte defaultname thing right when the game starts
+--(done)try iuncreasing the speed of the fireball in paczel, see if it still can get the monsters
+--(done)makes ure the fireball goes off screen after fireing it in paczel
+--(done)dont allow events to happen if continue button is visible, this should prevent the bus of hte troll attackign and hte continue button nto dismissing the scrren(I think)
+    --(done)also pause game when event occurs for the same reason, we dont want tow things happening at once
+--(done)move paczel controls to adjust for resolution
+--(fixed)bug,after winning in paczel, the caravan is returning to mistralsEndStartPoint
 --[[
 月みたいなので、馬車をかいてんする
 5:24 PM <amigojapan> hiro_at_work: 上矢印でスピードをます

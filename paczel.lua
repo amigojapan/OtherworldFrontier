@@ -238,7 +238,7 @@ function returnToMainGameScreen()
 	print("end paczel reached")
 	clearAllSprites()
 	composer.removeScene(composer.getSceneName( "current" ))
-	composer.gotoScene( composer.getPrevious() )
+	composer.gotoScene( "mainGameScreen" )
 end
 function handleRatCollision(sprite)
 	if sprite.isVisible==false then
@@ -366,7 +366,7 @@ function scene:show( event )
 		end
 		--adjuet MP for the main game screen too
 		composer.setVariable("mainCharMPAfterHunting", mainChar.MP)
-		--numberOfPowerUps = composer.getVariable( "numberOfPowerUps" )
+		numberOfPowerUps = composer.getVariable( "numberOfPowerUps" )
 		for counter=1,numberOfPowerUps do
 			generateRandomPowerUp()
 		end
@@ -776,7 +776,7 @@ function fireball()
 			fireBall.width=gridSize*3
 			fireBall.height=gridSize*3
 			audio.play(fireSoundEffect)
-			transition.to(fireBall, {time = timeForMoveInMilliseconds+25000, y = -500, onComplete = onCompletecallbackFireball})
+			transition.to(fireBall, {time = timeForMoveInMilliseconds+15000, y = -2500, onComplete = onCompletecallbackFireball})
 		end
 		if tom.direction=="left" then
 			print("up fireball")
@@ -785,7 +785,7 @@ function fireball()
 			fireBall.width=gridSize*3
 			fireBall.height=gridSize*3
 			audio.play(fireSoundEffect)
-			transition.to(fireBall, {time = timeForMoveInMilliseconds+25000, x = -500, onComplete = onCompletecallbackFireball})
+			transition.to(fireBall, {time = timeForMoveInMilliseconds+15000, x = -2500, onComplete = onCompletecallbackFireball})
 		end
 		if tom.direction=="down" then
 			print("up fireball")
@@ -794,7 +794,7 @@ function fireball()
 			fireBall.width=gridSize*3
 			fireBall.height=gridSize*3
 			audio.play(fireSoundEffect)
-			transition.to(fireBall, {time = timeForMoveInMilliseconds+25000, y = 1500, onComplete = onCompletecallbackFireball})
+			transition.to(fireBall, {time = timeForMoveInMilliseconds+15000, y = 2500, onComplete = onCompletecallbackFireball})
 		end
 		if tom.direction=="right" then
 			print("up fireball")
@@ -803,7 +803,7 @@ function fireball()
 			fireBall.width=gridSize*3
 			fireBall.height=gridSize*3
 			audio.play(fireSoundEffect)
-			transition.to(fireBall, {time = timeForMoveInMilliseconds+25000, x = 1500, onComplete = onCompletecallbackFireball})
+			transition.to(fireBall, {time = timeForMoveInMilliseconds+15000, x = 2500, onComplete = onCompletecallbackFireball})
 		end
 		numberOfFireballs=numberOfFireballs-1
 	else --freezeball
@@ -947,8 +947,8 @@ function myLeftTouchListener( event )
     end
     return true  -- Prevents tap/touch propagation to underlying objects
 end
-offsetx=450
-offsety=300
+offsetx=1000
+offsety=500
 
 local paint = {
     type = "image",
@@ -1075,7 +1075,7 @@ local paint = {
     type = "image",
     filename = "img/fireButton.png"
 }
-myFireButton = display.newRect( offsetx-270, 300+offsety, 100, 100 )
+myFireButton = display.newRect( offsetx-700, 300+offsety, 100, 100 )
 myFireButton.fill = paint
 myFireButton:addEventListener( "touch", myFireTouchListener )  -- Add a "touch" listener to the obj
 
@@ -1115,6 +1115,9 @@ function detectCollision(x1, y1, width1, height1, x2, y2, width2, height2)
     end
 end
 function detectCollision2(movingObject,sprite)
+	if movingObject==nil then
+		return
+	end
 	x1=movingObject.x - (movingObject.width / 2)
 	y1=movingObject.y - (movingObject.height / 2)
 	width1=movingObject.width

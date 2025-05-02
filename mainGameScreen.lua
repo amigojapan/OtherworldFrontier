@@ -28,8 +28,18 @@ local unicorns = {}
 gameover=false
 gameLoopTimer=nil
 
+local saveButton = display.newText("Save", 300, 50, native.systemFont, 20)
+
+
+local loadButton = display.newText("Load", 400, 50, native.systemFont, 20)
+
+
+local pauseButton = display.newText("[Unpause]", 500, 50, native.systemFont, 20)
+
+
 function saveCaravan()
     composer.setVariable("caravan", {x = caravanGroup.x, y = caravanGroup.y, rotation = caravan.rotation})    --**setGamePausedState(false)
+    print("saved caravan at x:"..caravanGroup.x.." y:"..caravanGroup.y)
 end
 
 ------------------------------------------------------------
@@ -1072,8 +1082,6 @@ function togglePause()
     oppositeValue=not composer.getVariable("gamePaused")
     setGamePausedState(oppositeValue)
 end
-
-local pauseButton = display.newText("[Unpause]", 500, 50, native.systemFont, 20)
 pauseButton:addEventListener("tap", togglePause)
 
 function setGamePausedState(value)
@@ -1433,30 +1441,36 @@ function hideEverything()
     --        caravanGroup:removeSelf()
     --    end
     --end
-    caravanGroup.isVisible=false
-    myUpButton.isVisible=false
-    myDownButton.isVisible=false
-    myFireButton.isVisible=false
-    arc.isVisible=false
-    lblDaysPassed.isVisible=false
-    lblLabel.isVisible=false
-    for index, box in ipairs(tblBoxes) do
-        box.isVisible=false
+    if caravanGroup then --hack to fix bug after winning in paczel where caravanGroup is nil, dunno  why
+        caravanGroup.isVisible=false
+        myUpButton.isVisible=false
+        myDownButton.isVisible=false
+        myFireButton.isVisible=false
+        arc.isVisible=false
+        lblDaysPassed.isVisible=false
+        lblLabel.isVisible=false
+        saveButton.isVisible=false
+        loadButton.isVisible=false
+        pauseButton.isVisible=false
+        for index, box in ipairs(tblBoxes) do
+            box.isVisible=false
+        end
     end
     hideRestingMenu()
 end
 function goHuntingPaczel()
+    saveCaravan()
     composer.setVariable( "gameMode", "Paczel" )
     gameMode = composer.getVariable( "gameMode" )
     print("gameMode:"..gameMode)
     composer.setVariable("numberOfPowerUps",5)
     composer.setVariable("numberOfMonsters",5)
     hideEverything()
-    composer.removeScene(composer.getSceneName( "current" ))
     composer.setVariable("wentHunting", true)
-    composer.setVariable("caravan",caravan)    
+    --composer.setVariable("caravan",caravan)    
     composer.setVariable("unicorns",unicorns)
     hideTextArea()
+    composer.removeScene(composer.getSceneName( "current" ))
     composer.gotoScene( "paczel" )
 end
 
@@ -1914,6 +1928,7 @@ local function onSaveButtonTap(event)
     saveProgress()
     return true
 end
+saveButton:addEventListener("tap", onSaveButtonTap)
 local function alertBoxNoClickedComplete()
     showInputBox("what is your name?:",callback)
 end
@@ -2191,7 +2206,7 @@ local function onLoadButtonTap(event)
     loadProgrress()
     return true
 end
-
+loadButton:addEventListener("tap", onLoadButtonTap)
 local function onsetLabelButtonTap(event)
     composer.setVariable("setVariable","Label")
     composer.setVariable("backgroundImage","backgrounds/adventurer3.png")
@@ -2217,11 +2232,6 @@ end
 
 
 
-local saveButton = display.newText("Save", 300, 50, native.systemFont, 20)
-saveButton:addEventListener("tap", onSaveButtonTap)
-
-local loadButton = display.newText("Load", 400, 50, native.systemFont, 20)
-loadButton:addEventListener("tap", onLoadButtonTap)
 
 function quitAffirmative()
     --this seemed to have frozen my linux system, try calling gamepaus() tomorrow
@@ -2563,7 +2573,38 @@ function scene:show(event)
         --myUpButton.alpha=0.3
 
 
+
         --background
+
+        if composer.getVariable("wentHunting") then
+            local bg = display.newImageRect( sceneGroup, backgroundImage, 1500,800 )
+            bg.x = display.contentCenterX
+            bg.y = display.contentCenterY
+
+            composer.setVariable("wentHunting",false)
+            initTextScreenByCorrectLanguage(sceneGroup)
+            CLS()
+            hideTextArea()
+            local savedCaravan=composer.getVariable("caravan")
+            transition.to( caravanGroup, { time=0, x=savedCaravan.x, y=savedCaravan.y, onComplete=transitionCompleted } )
+            caravanGroup.x=savedCaravan.x
+            caravanGroup.y=savedCaravan.y
+            caravan.rotation=savedCaravan.rotation
+            setRotationOfCaravan(caravan.rotation)
+            unicorns=composer.getVariable("unicorns")
+            lblDaysPassed.isVisible=true
+            --local MPAfterHunting=composer.getVariable("mainCharMPAfterHunting")
+            --local girlNumber = 1
+            --local characters = composer.getVariable("characters")
+            --local mainChar = characters[girlNumber]
+
+            --mainChar.MP = MPAfterHunting
+            
+             
+            --bg:addEventListener( "tap", tapListener )
+    
+            return
+        end
         local background = display.newImageRect( sceneGroup, backgroundImage, 1500,800 )
         background.x = display.contentCenterX
         background.y = display.contentCenterY
@@ -2607,27 +2648,7 @@ function scene:show(event)
     
 
 
-        if composer.getVariable("wentHunting") then
-            composer.setVariable("wentHunting",false)
-            initTextScreenByCorrectLanguage(sceneGroup)
-            CLS()
-            hideTextArea()
-            local savedCaravan=composer.getVariable("caravan")
-            caravanGroup.x=savedCaravan.x
-            caravanGroup.y=savedCaravan.y
-            caravan.rotation=savedCaravan.rotation
-            setRotationOfCaravan(caravan.rotation)
-            unicorns=composer.getVariable("unicorns")
-            lblDaysPassed.isVisible=true
-            --local MPAfterHunting=composer.getVariable("mainCharMPAfterHunting")
-            --local girlNumber = 1
-            --local characters = composer.getVariable("characters")
-            --local mainChar = characters[girlNumber]
-
-            --mainChar.MP = MPAfterHunting
-            return
-        end
-
+        
         if composer.getVariable( "gettingInput" ) then--change name of this variabel if gettig more inputs in both here and where called
             --initTextScreen(sceneGroup,"JP")
             --showTextArea()
@@ -2882,25 +2903,29 @@ return scene
 --(fixed after adding several disableokbutton intot he code)...ignore this:maybe still slightly buggy.I think I fixed it by setting the visible button stuff in slowprint)bug after clickign info button after teleporting  into elevn town the continue button takes me back to the purchase unicorns window...maybe need to eliminate enableokbutton from the uniconstable I think
 --(fixed I think, by adding composer.setVariable("gameStarted",true))bug, events happen eventho the game should be paused in the initial titles
 --(fixed by adding functionality to handle fastprint in slowprint.lua)bug, info screen is lacking a continue button.
---(pending, maybe do maybe not)set maximum stolen ammount
-    --both for money and potions
 --(done)remove unneeded labels and color boxes
     --label for level editor too
 --(done)repurpose save , load labels to save and load games
     --(done)also add quit option
     --(done)add warnings
---(pending)add speed settings
---(pending), autocapicalize first letter of names
 --(done)add default names to story mode
 --(I think it is fixed, untested yet), there is an overlap in the end of trial period screen and purchase button
 --(done)add a menu to go to each kind of store
---(pending)add the ammount of the item we have inside hte store and in the menu
---(pending)move paczel controls to adjust for resolution
+--(done in town, I dont think it is nesseary in the store now)add the ammount of the item we have inside hte store and in the menu
 --(fixed)new bug, name of character appears in shopping screen, I think I can fix it by changing the value of hte defaultname thing right when the game starts
---try iuncreasing the speed of the fireball in paczel, see if it still can get the monsters
--- makes ure the fireball goes off screen after fireing it in paczel
+--(done)try iuncreasing the speed of the fireball in paczel, see if it still can get the monsters
+--(done)makes ure the fireball goes off screen after fireing it in paczel
 --(done)dont allow events to happen if continue button is visible, this should prevent the bus of hte troll attackign and hte continue button nto dismissing the scrren(I think)
-    --also pause game when event occurs for the same reason, we dont want tow things happening at once
+    --(done)also pause game when event occurs for the same reason, we dont want tow things happening at once
+--(done)move paczel controls to adjust for resolution
+--(fixed)bug,after winning in paczel, the caravan is returning to mistralsEndStartPoint
+
+--(pending)add speed settings
+
+--(pending), autocapicalize first letter of names
+--(pending, maybe do maybe not)set maximum stolen ammount
+    --both for money and potions
+
 --[[
 月みたいなので、馬車をかいてんする
 5:24 PM <amigojapan> hiro_at_work: 上矢印でスピードをます
