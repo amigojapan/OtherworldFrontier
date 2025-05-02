@@ -692,6 +692,24 @@ function afterTreasuChest1()
 end
 local dayLimit=15--one more than the limit, on the 15th day the tunra will be frozen
 local landmarkShown = false
+function randomEvents()
+    local randomNumber = math.random(1, 10000)
+    if randomNumber < 50/2 then
+        setGamePausedState(true)
+        curseEvent()
+    elseif randomNumber < 100/2 then
+        setGamePausedState(true)
+        robberyEvent()
+    elseif randomNumber < 200 then
+        if not onRoad then
+            setGamePausedState(true)
+            getStuckInRut() 
+        end
+    elseif randomNumber < 210/2  then
+        setGamePausedState(true)
+        attackedByAngryGoblynEvent()
+    end
+end
 function gameloop()
 	if gamePaused or gameover then
 		return
@@ -705,17 +723,8 @@ function gameloop()
         end
         print("gamePaused"..tostring(gamePaused))
         -- Random event triggers
-        local randomNumber = math.random(1, 10000)
-        if randomNumber < 50 then
-            curseEvent()
-        elseif randomNumber < 100 then
-            robberyEvent()
-        elseif randomNumber < 200 then
-            if not onRoad then
-                getStuckInRut() 
-            end
-        elseif randomNumber < 210  then
-            attackedByAngryGoblynEvent()
+        if composer.getVariable("lblContinue").isVisible==false then --this should prevent the bug where events happen when another screen has a continue button
+            randomEvents()
         end
 
         --the following is true when comming back from another scene it seems -the return solves it
@@ -2659,12 +2668,14 @@ function scene:show(event)
 
         if composer.getVariable("enteredMainGameEnding") then
             composer.setVariable("enteredMainGameEnding", false)
+            hideEverything()
             composer.gotoScene("menu")
             return
         end
         
         if composer.getVariable("enteredAlternateGameEnding") then
             composer.setVariable("enteredMountain1", false)
+            hideEverything()
             composer.gotoScene("menu")
             return
         end
@@ -2886,6 +2897,10 @@ return scene
 --(pending)add the ammount of the item we have inside hte store and in the menu
 --(pending)move paczel controls to adjust for resolution
 --(fixed)new bug, name of character appears in shopping screen, I think I can fix it by changing the value of hte defaultname thing right when the game starts
+--try iuncreasing the speed of the fireball in paczel, see if it still can get the monsters
+-- makes ure the fireball goes off screen after fireing it in paczel
+--(done)dont allow events to happen if continue button is visible, this should prevent the bus of hte troll attackign and hte continue button nto dismissing the scrren(I think)
+    --also pause game when event occurs for the same reason, we dont want tow things happening at once
 --[[
 月みたいなので、馬車をかいてんする
 5:24 PM <amigojapan> hiro_at_work: 上矢印でスピードをます
