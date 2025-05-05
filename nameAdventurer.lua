@@ -9,6 +9,10 @@ local scene = composer.newScene()
 -- Code outside of the scene event functions below will only be executed ONCE unless
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
 -- -----------------------------------------------------------------------------------
+function firstToUpper(str)
+    return (str:gsub("^%l", string.upper))
+end
+
 --items to customize purchase
 local setVariable=composer.getVariable("setVariable")
 local backgroundImage=composer.getVariable("backgroundImage")
@@ -36,7 +40,7 @@ end
 -- Handler that gets notified when the alert closes
 local function alertBoxYesClickedComplete( )
     --continue on journey
-    composer.setVariable( setVariable, composer.getVariable("inputBuffer"))
+    composer.setVariable( setVariable, firstToUpper(composer.getVariable("inputBuffer")))
     composer.setVariable("inputBuffer", "input unset")
     local options =
     {
@@ -64,6 +68,7 @@ end
 
 function verifyNameEN(userinput)
     print("userinput:"..userinput)
+    userinput=firstToUpper(userinput)
     AlertBox(
     "",--no title
     prompt1EN..userinput..prompt2EN,
@@ -73,6 +78,7 @@ function verifyNameEN(userinput)
 end
 
 function verifyNameJP(userinput)
+    userinput=firstToUpper(userinput)
     AlertBox(
     "",--no title
     prompt1JP..userinput..prompt2JP,
@@ -82,6 +88,7 @@ function verifyNameJP(userinput)
 end
 
 function verifyNameES(userinput)
+    userinput=firstToUpper(userinput)
     AlertBox(
     "",--no title
     prompt1ES..userinput..prompt2ES,

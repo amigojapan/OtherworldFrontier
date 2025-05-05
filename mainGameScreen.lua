@@ -28,6 +28,12 @@ local unicorns = {}
 gameover=false
 gameLoopTimer=nil
 
+if composer.getVariable( "speed" )==nil then
+    composer.setVariable( "speed", 1)
+end
+composer.setVariable( "skipFrame", false)
+
+
 local saveButton = display.newText("Save", 300, 50, native.systemFont, 20)
 
 
@@ -230,7 +236,7 @@ function robberyEvent()
     if itemToSteal == "gold" then
         local gold = composer.getVariable("gold")
         if gold > 0 then
-            local amount = math.random(1, gold)
+            local amount = math.random(1, math.round(gold/4))
             composer.setVariable("gold", gold - amount)
             local message 
             if composer.getVariable( "language" ) == "English" then
@@ -245,7 +251,7 @@ function robberyEvent()
     elseif itemToSteal == "HPpotions" then
         local HPpotions = composer.getVariable("HPpotions")
         if HPpotions > 0 then
-            local amount = math.random(1, HPpotions)
+            local amount = math.random(1, math.round(HPpotions/4))
             composer.setVariable("HPpotions", HPpotions - amount)
             local message
             if composer.getVariable( "language" ) == "English" then
@@ -260,7 +266,7 @@ function robberyEvent()
     elseif itemToSteal == "MPpotions" then
         local MPpotions = composer.getVariable("MPpotions")
         if MPpotions > 0 then
-            local amount = math.random(1, MPpotions)
+            local amount = math.random(1, math.round(MPpotions/4))
             composer.setVariable("MPpotions", MPpotions - amount)
             local message
             if composer.getVariable( "language" ) == "English" then
@@ -515,7 +521,7 @@ function teleportSuccess(exitBoxName)
         pauseAndShowQuickMessage("Teleport failed: destination not found!")
     else
         setGamePausedState(true)
-        transition.to( caravanGroup, { time=1500, x=box.x, y=box.y, onComplete=transitionCompleted } )
+        transition.to( caravanGroup, { time=1500*composer.getVariable( "speed" ), x=box.x, y=box.y, onComplete=transitionCompleted } )
         print("Teleported to box.x:" .. box.x .. ", box.y:" .. box.y)
         --this was causing the persistent continue button, I would like to have this message, but I dont know how to do it safely
         --this did not work either pauseAndShowQuickMessageThenCallFunction("You teleported to the other side of the river and entered an Elven village",emptyFunctionForWaiting)
@@ -540,7 +546,7 @@ function teleportTo(teleportExit)
         pauseAndShowQuickMessage("Teleport failed: destination not found!")
     else
         setGamePausedState(true)
-        transition.to( caravanGroup, { time=1500, x=box.x, y=box.y, onComplete=transitionCompleted } )
+        transition.to( caravanGroup, { time=1500*composer.getVariable( "speed" ), x=box.x, y=box.y, onComplete=transitionCompleted } )
         updateCaravanCoordinates(box)
         print("Teleported to box.x:" .. box.x .. ", box.y:" .. box.y)
         --this was causing the persistent continue button, I would like to have this message, but I dont know how to do it safely
@@ -1000,12 +1006,21 @@ function gameOver()
     composer.gotoScene("GameOver")
 end
 
-local dayTimer= timer.performWithDelay( 60000, dayPassed, 0 ) -- day takes one minute
+local dayTimer= timer.performWithDelay( 60000*composer.getVariable( "speed" ), dayPassed, 0 ) -- day takes one minute
 
 local lastTime = system.getTimer() -- Get the current time in milliseconds
 
 -- In your game loop or an "enterFrame" listener:
 local function updateFrame(event)
+    --skip a frame every other frame in slow mode
+    if composer.getVariable( "speed" ) == 2 then
+        if composer.getVariable( "skipFrame")==false then
+            composer.setVariable( "skipFrame", true)
+            return
+        else
+            composer.setVariable( "skipFrame", false)
+        end
+    end
     if gamePaused then
 		return
 	end
@@ -1102,7 +1117,7 @@ function showControls()
     setGamePausedState(false)
     composer.setVariable("gameStarted",true)
 end
-gameLoopTimer = timer.performWithDelay( caravanMoveInMilliseconds, gameloop, 0 )
+gameLoopTimer = timer.performWithDelay( caravanMoveInMilliseconds*composer.getVariable( "speed" ), gameloop, 0 )
 function gameStartEN()
     RESETQUE()
     --           "1234567890123456789012345678901234567890"
@@ -2331,7 +2346,7 @@ end
 local function repeatedStuffDoneWhenLeavingTownsAndLandmarks(sceneGroup,exitPoint)
     --**set speed back to 0, the caravan keeps on moving after reaching melstroms peak
     composer.setVariable("justLeftTown",true)
-    timer.performWithDelay(20000, function() composer.setVariable("justLeftTown",false) end)
+    timer.performWithDelay(20000*composer.getVariable( "speed" ), function() composer.setVariable("justLeftTown",false) end)
     initTextScreenByCorrectLanguage(sceneGroup)
     CLS()
     hideTextArea()
@@ -2431,7 +2446,7 @@ function animateUnicorns()
         return
     else
         --sert timer at 1000/speed
-        uniconAnimationTimer=timer.performWithDelay(1000/speed, unicornAnimationLoop)
+        uniconAnimationTimer=timer.performWithDelay(1000/speed*composer.getVariable( "speed" ), unicornAnimationLoop)
     end
 end
 
@@ -2920,10 +2935,10 @@ return scene
 --(done)move paczel controls to adjust for resolution
 --(fixed)bug,after winning in paczel, the caravan is returning to mistralsEndStartPoint
 
---(pending)add speed settings
+--(done)add speed settings
 
---(pending), autocapicalize first letter of names
---(pending, maybe do maybe not)set maximum stolen ammount
+--(done), autocapicalize first letter of names
+--(done,decided on making it the maximum/4, maybe do maybe not)set maximum stolen ammount
     --both for money and potions
 
 --[[

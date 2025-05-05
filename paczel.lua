@@ -188,7 +188,7 @@ function gameOver()
 		tomFacingDownCollapsedImg.isVisible=true
 	end
 	clearAllWitchSprites()
-	restartGameTimer = timer.performWithDelay( 3000*speed, restartGame, 0 )
+	restartGameTimer = timer.performWithDelay( 3000*composer.getVariable( "speed" ), restartGame, 0 )
 	if fireRatTimer then
 		timer.cancel(fireRatTimer)--(not fixed)trying to stop the monsters from flipping twice after second round
 	end
@@ -697,13 +697,13 @@ function moveInDirection(dx, dy, direction, movingObject)
 	end
 	
 	if direction == "left" and not collided then
-		transition.to(movingObject, {time = timeForMoveInMilliseconds/numberOfSteps, x = movingObject.x - (gridSize/numberOfSteps), onComplete = onCompletecallback})
+		transition.to(movingObject, {time = timeForMoveInMilliseconds/numberOfSteps*composer.getVariable( "speed" ), x = movingObject.x - (gridSize/numberOfSteps), onComplete = onCompletecallback})
 	elseif direction == "right" and not collided then
-		transition.to(movingObject, {time = timeForMoveInMilliseconds/numberOfSteps, x = movingObject.x + (gridSize/numberOfSteps), onComplete = onCompletecallback})
+		transition.to(movingObject, {time = timeForMoveInMilliseconds/numberOfSteps*composer.getVariable( "speed" ), x = movingObject.x + (gridSize/numberOfSteps), onComplete = onCompletecallback})
 	elseif direction == "up" and not collided then
-		transition.to(movingObject, {time = timeForMoveInMilliseconds/numberOfSteps, y = movingObject.y - (gridSize/numberOfSteps), onComplete = onCompletecallback})
+		transition.to(movingObject, {time = timeForMoveInMilliseconds/numberOfSteps*composer.getVariable( "speed" ), y = movingObject.y - (gridSize/numberOfSteps), onComplete = onCompletecallback})
 	elseif direction == "down" and not collided then
-		transition.to(movingObject, {time = timeForMoveInMilliseconds/numberOfSteps, y = movingObject.y + (gridSize/numberOfSteps), onComplete = onCompletecallback})	
+		transition.to(movingObject, {time = timeForMoveInMilliseconds/numberOfSteps*composer.getVariable( "speed" ), y = movingObject.y + (gridSize/numberOfSteps), onComplete = onCompletecallback})	
 	end	
 	collided=false
 end
@@ -776,7 +776,7 @@ function fireball()
 			fireBall.width=gridSize*3
 			fireBall.height=gridSize*3
 			audio.play(fireSoundEffect)
-			transition.to(fireBall, {time = timeForMoveInMilliseconds+15000, y = -2500, onComplete = onCompletecallbackFireball})
+			transition.to(fireBall, {time = timeForMoveInMilliseconds+15000*composer.getVariable( "speed" ), y = -2500, onComplete = onCompletecallbackFireball})
 		end
 		if tom.direction=="left" then
 			print("up fireball")
@@ -785,7 +785,7 @@ function fireball()
 			fireBall.width=gridSize*3
 			fireBall.height=gridSize*3
 			audio.play(fireSoundEffect)
-			transition.to(fireBall, {time = timeForMoveInMilliseconds+15000, x = -2500, onComplete = onCompletecallbackFireball})
+			transition.to(fireBall, {time = timeForMoveInMilliseconds+15000*composer.getVariable( "speed" ), x = -2500, onComplete = onCompletecallbackFireball})
 		end
 		if tom.direction=="down" then
 			print("up fireball")
@@ -794,7 +794,7 @@ function fireball()
 			fireBall.width=gridSize*3
 			fireBall.height=gridSize*3
 			audio.play(fireSoundEffect)
-			transition.to(fireBall, {time = timeForMoveInMilliseconds+15000, y = 2500, onComplete = onCompletecallbackFireball})
+			transition.to(fireBall, {time = timeForMoveInMilliseconds+15000*composer.getVariable( "speed" ), y = 2500, onComplete = onCompletecallbackFireball})
 		end
 		if tom.direction=="right" then
 			print("up fireball")
@@ -803,7 +803,7 @@ function fireball()
 			fireBall.width=gridSize*3
 			fireBall.height=gridSize*3
 			audio.play(fireSoundEffect)
-			transition.to(fireBall, {time = timeForMoveInMilliseconds+15000, x = 2500, onComplete = onCompletecallbackFireball})
+			transition.to(fireBall, {time = timeForMoveInMilliseconds+15000*composer.getVariable( "speed" ), x = 2500, onComplete = onCompletecallbackFireball})
 		end
 		numberOfFireballs=numberOfFireballs-1
 	else --freezeball
@@ -811,13 +811,13 @@ function fireball()
 			print("up freezeball")
 			fireBall=display.newImage("img/tmp-frezeball.png", tom.x, tom.y-gridSize, gridSize, gridSize)
 			fireBall.isVisible=true
-			transition.to(fireBall, {time = timeForMoveInMilliseconds, alpha = 0, onComplete = onCompletecallbackFrezeball})
+			transition.to(fireBall, {time = timeForMoveInMilliseconds*composer.getVariable( "speed" ), alpha = 0, onComplete = onCompletecallbackFrezeball})
 		end
 		if tom.direction=="left" then
 			print("up freezeball")
 			fireBall=display.newImage("img/tmp-frezeball.png", tom.x-gridSize, tom.y, gridSize, gridSize)
 			fireBall.isVisible=true
-			transition.to(fireBall, {time = timeForMoveInMilliseconds, alpha = 0, onComplete = onCompletecallbackFrezeball})
+			transition.to(fireBall, {time = timeForMoveInMilliseconds*composer.getVariable( "speed" ), alpha = 0, onComplete = onCompletecallbackFrezeball})
 		end
 		if tom.direction=="down" then
 			print("up freezeball")
@@ -829,7 +829,7 @@ function fireball()
 			print("up freezeball")
 			fireBall=display.newImage("img/tmp-frezeball.png", tom.x+gridSize, tom.y, gridSize, gridSize)
 			fireBall.isVisible=true
-			transition.to(fireBall, {time = timeForMoveInMilliseconds, alpha = 0, onComplete = onCompletecallbackFrezeball})
+			transition.to(fireBall, {time = timeForMoveInMilliseconds*composer.getVariable( "speed" ), alpha = 0, onComplete = onCompletecallbackFrezeball})
 		end
 		audio.play(freezeSoundEffect)
 	end
@@ -932,7 +932,7 @@ function myLeftTouchListener( event )
 		end
 		moveTomLeft()
 		currentButton=myLeftButton
-		fireTimerController = timer.performWithDelay( (timeForMoveInMilliseconds+100)*speed, moveTomLeft, 0 )
+		fireTimerController = timer.performWithDelay( (timeForMoveInMilliseconds+100)*composer.getVariable( "speed" ), moveTomLeft, 0 )
         print( "object touched = " .. tostring(event.target) )  -- "event.target" is the touched object
 	elseif ( event.phase == "moved" ) then
 		if isWithinBounds(myLeftButton, event) == false then
@@ -966,7 +966,7 @@ function myRightTouchListener( event )
 		end
 		moveTomRight()
 		currentButton=myRightButton
-		fireTimerController = timer.performWithDelay( (timeForMoveInMilliseconds+100)*speed, moveTomRight, 0 )
+		fireTimerController = timer.performWithDelay( (timeForMoveInMilliseconds+100)*composer.getVariable( "speed" ), moveTomRight, 0 )
         print( "object touched = " .. tostring(event.target) )  -- "event.target" is the touched object
 	elseif ( event.phase == "moved" ) then
 		if isWithinBounds(myLeftButton, event) == false then
@@ -996,7 +996,7 @@ local function myUpTouchListener( event )
 		end
 		moveTomUp()
 		currentButton=myUpButton
-		fireTimerController = timer.performWithDelay( (timeForMoveInMilliseconds+100)*speed, moveTomUp, 0 )
+		fireTimerController = timer.performWithDelay( (timeForMoveInMilliseconds+100)*composer.getVariable( "speed" ), moveTomUp, 0 )
         print( "object touched = " .. tostring(event.target) )  -- "event.target" is the touched object
 	elseif ( event.phase == "moved" ) then
 		if isWithinBounds(myUpButton, event) == false then
@@ -1026,7 +1026,7 @@ local function myDownTouchListener( event )
 		end
 		moveTomDown()
 		currentButton=myDownButton
-		fireTimerController = timer.performWithDelay( (timeForMoveInMilliseconds+100)*speed, moveTomDown, 0 )
+		fireTimerController = timer.performWithDelay( (timeForMoveInMilliseconds+100)*composer.getVariable( "speed" ), moveTomDown, 0 )
         print( "object touched = " .. tostring(event.target) )  -- "event.target" is the touched object
 	elseif ( event.phase == "moved" ) then
 		if isWithinBounds(myDownButton, event) == false then
@@ -1056,7 +1056,7 @@ local function myFireTouchListener( event )
 		end
 		fireball()
 		currentButton=myFireButton
-		fireTimerMagic = timer.performWithDelay( (timeForMoveInMilliseconds+100)*speed, fireball, 0 )
+		fireTimerMagic = timer.performWithDelay( (timeForMoveInMilliseconds+100)*composer.getVariable( "speed" ), fireball, 0 )
         print( "object touched = " .. tostring(event.target) )  -- "event.target" is the touched object
 	elseif ( event.phase == "moved" ) then
 		if isWithinBounds(myFireButton, event) == false then
@@ -1104,7 +1104,7 @@ function gameloop()
 	end
 end
 
-fireRatTimer = timer.performWithDelay( (timeForMoveInMilliseconds+100)*speed, gameloop, 0 )
+fireRatTimer = timer.performWithDelay( (timeForMoveInMilliseconds+100)*composer.getVariable( "speed" ), gameloop, 0 )
 
 
 function detectCollision(x1, y1, width1, height1, x2, y2, width2, height2) 

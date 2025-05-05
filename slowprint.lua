@@ -16,6 +16,11 @@ composer.setVariable("lblContinue",nil)
 Lang=nil
 textZoneRectangle=nil
 characterTimer=nil
+
+if composer.getVariable( "speed" )==nil then
+    composer.setVariable( "speed", 1)
+end
+
 function replaceStringOfRomajiWithDoubleWidthCHaracters(str)
     local doubleWidthString
     --！＂＃＄％＆＇（）＊＋，－．／０１２３４５６７８９：；＜＝＞？＠［＼］＾＿｀｛｜｝～￠￡￢￣￤￥￦ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚ
@@ -537,6 +542,7 @@ end
 --local utf8 = require "utf8"
 --utf8.len(stringForSlowPrint)>40
 function SLOWPRINT(timeInMilllisecods,string,callbackFunctionWhenFinished)
+    timeInMilllisecods=timeInMilllisecods*composer.getVariable( "speed" )
     callbackFunction=callbackFunctionWhenFinished
     print("hereX")
     print(tostring(callbackFunction))

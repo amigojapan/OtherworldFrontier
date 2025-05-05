@@ -39,7 +39,7 @@ local function difficultMode()
 	composer.setVariable( "gold", 400 )
 	composer.setVariable("HPpotions", 0)
 	composer.setVariable("MPpotions", 0)
-	composer.setVariable("NumberOfUnicorns", 2)
+	composer.setVariable("NumberOfUnicorns", 5)
 	composer.setVariable("KGofFood", 10)
 	gotoSotryOrSkipStory()
 end
