@@ -918,7 +918,7 @@ function gameloop()
             elseif composer.getVariable( "language" ) == "Spanish" then
                 message = "La caravana se ha salido del camino!"
             end
-            --this was a nuisense pauseAndShowQuickMessage(message)   
+            pauseAndShowQuickMessage(message)   
             onRoadSatusChanged="offRoad"
             onRoad=false
             --**add event for unicorns dying faster from being offroad
@@ -932,7 +932,7 @@ function gameloop()
             elseif composer.getVariable( "language" ) == "Spanish" then
                 message = "La caravana ha regrresado al camino."
             end
-            --this was a nuisense pauseAndShowQuickMessage(message)
+            pauseAndShowQuickMessage(message)
             onRoadSatusChanged="onRoad"
             onRoad=true
         end

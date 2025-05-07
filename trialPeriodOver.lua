@@ -52,7 +52,7 @@ function scene:create( event )
 	local lblTitle = display.newText( sceneGroup, "Trial end", display.contentCenterX, 50, "fonts/ume-tgc5.ttf", 75 )
 	lblTitle:setFillColor( 0.82, 0.86, 1 )
 
-	local highScoresButton = display.newText( sceneGroup, "purchase, 購入、comprar", display.contentCenterX, 1100, "fonts/ume-tgc5.ttf", 44 )
+	local highScoresButton = display.newText( sceneGroup, "purchase, 購入、comprar", display.contentCenterX, 800, "fonts/ume-tgc5.ttf", 44 )
 	highScoresButton:setFillColor( 0.75, 0.78, 1 )
 	highScoresButton:addEventListener( "tap", gotoURL )
 

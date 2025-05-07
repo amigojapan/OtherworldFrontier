@@ -16,7 +16,7 @@ local function visitChurch()
 	    btnVisitChurch.text="All curses have been lifted"
     elseif language=="Japanese" then
         btnVisitChurch.text="全人の呪いが解けた"
-    elseif language=="Japanese" then
+    elseif language=="Spanish" then
         btnVisitChurch.text="Todas las maldiciones se han curado"
     end
     btnVisitChurch:setFillColor( 0, 1, 0 )
@@ -73,20 +73,6 @@ end
 function scene:show( event )
 
 audio.reserveChannels( 1 )
-	--stop music
-	audio.stop( 1 )
-	-- Reduce the overall volume of the channel
-	audio.setVolume( 0.3, { channel=1 } )
-
-
-	-- Load audio
-	--musicTrack = audio.loadStream( "audio/Base-Game-Loop.mp3",system.ResourceDirectory)
-
-
-	-- Play the background music on channel 1, loop infinitely 
-	--audio.play( musicTrack, { channel=1, loops=-1 } )
-
-
 	local sceneGroup = self.view
 	local phase = event.phase
 

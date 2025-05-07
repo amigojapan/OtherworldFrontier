@@ -1224,7 +1224,7 @@ audio.setVolume( 1, { channel=1 } )
 
 
 -- Load audio
-musicTrack = audio.loadStream( "audio/into-the-battle.mp3",system.ResourceDirectory)
+musicTrack = audio.loadStream( "audio/Boooo-Remastered.mp3",system.ResourceDirectory)
 
 
 -- Play the background music on channel 1, loop infinitely 

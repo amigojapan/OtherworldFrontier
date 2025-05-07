@@ -12,6 +12,20 @@ local scene = composer.newScene()
 print( "ORIENTATION: "..system.orientation )
 
 local function gotoMenu()
+	audio.stop( 1 )
+
+	audio.reserveChannels( 1 )
+	-- Reduce the overall volume of the channel
+	audio.setVolume( 1, { channel=1 } )
+
+
+	-- Load audio
+	musicTrack = audio.loadStream( "audio/OtherworldFrontierOpening.mp3",system.ResourceDirectory)
+
+
+	-- Play the background music on channel 1, loop infinitely 
+	audio.play( musicTrack, { channel=1, loops=-1 } )
+
 	composer.gotoScene( "menu" )
 end
 

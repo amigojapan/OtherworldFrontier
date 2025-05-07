@@ -16,6 +16,8 @@ math.randomseed( os.time() )
 
 -- Go to the menu screen
 composer.gotoScene( "title" )
+
+
 composer.setVariable( "language", "Japanese" )
 composer.setVariable( "MCname", "Iris" )
 composer.setVariable( "gold", 4000 )
@@ -42,3 +44,5 @@ end
 composer.setVariable("NumberOfUnicorns", 20)
 composer.setVariable("KGofFood", 0)
 --composer.gotoScene("mainGameScreen")
+
+--composer.gotoScene( "trialPeriodOver" )

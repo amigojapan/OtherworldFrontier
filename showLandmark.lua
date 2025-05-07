@@ -110,20 +110,71 @@ function priestesstAlgorythm(priesitessGirl,message)
     end
     return message
 end
+function playOpening()
+    audio.stop( 1 )
+
+    audio.reserveChannels( 1 )
+    -- Reduce the overall volume of the channel
+    audio.setVolume( 1, { channel=1 } )
+
+
+    -- Load audio
+    musicTrack = audio.loadStream( "audio/OtherworldFrontierOpening.mp3",system.ResourceDirectory)
+
+
+    -- Play the background music on channel 1, loop infinitely 
+    audio.play( musicTrack, { channel=1, loops=-1 } )    
+end
+function playEnding()
+        --stop music
+        audio.stop( 1 )
+
+        audio.reserveChannels( 1 )
+        -- Reduce the overall volume of the channel
+        audio.setVolume( 1, { channel=1 } )
+
+
+        -- Load audio
+        musicTrack = audio.loadStream( "audio/ending.mp3",system.ResourceDirectory)
+
+
+        -- Play the background music on channel 1, loop infinitely 
+        audio.play( musicTrack, { channel=1, loops=-1 } )
+
+end
+function playBattle()
+
+    audio.stop( 1 )
+
+    audio.reserveChannels( 1 )
+    -- Reduce the overall volume of the channel
+    audio.setVolume( 1, { channel=1 } )
+
+
+    -- Load audio
+    musicTrack = audio.loadStream( "audio/Boooo-Remastered.mp3",system.ResourceDirectory)
+
+
+    -- Play the background music on channel 1, loop infinitely 
+    audio.play( musicTrack, { channel=1, loops=-1 } )    
+end
+
 function shopAriveJP()
     RESETQUE()
     local textSpeed=100
     if composer.getVariable("backgroundImage") == "backgrounds/crown-of-eternity.png" then
+        playEnding()
         textSpeed=200
         QUESLOWPRINT("おめでとうございます!^")
         QUESLOWPRINT("心の願いが仲間を息が得る事だった、から、!^")
         QUESLOWPRINT("皆で仲良くハッピーエンド^")
         QUESLOWPRINT("^^ゲームプランナー・プログラマー・著作権：^")
-        QUESLOWPRINT("パドウ・ウスマー・エー(amigojapan)^")
+        QUESLOWPRINT("パドウ・ウスマー・エーamigojapan^")
         QUESLOWPRINT("^グラフィックス・キャラクターデザイナー：若松 晶^")
-        QUESLOWPRINT("^音声・音楽：Albert Korman(Zcom)^")
+        QUESLOWPRINT("^音声・音楽：Albert Korman Zcom ^")
         QUESLOWPRINT("^^        END.^")
     elseif composer.getVariable("backgroundImage") == "backgrounds/altEnding.png" then
+        playEnding()
         textSpeed=200
         QUESLOWPRINT("おめでとうございます!^")
         QUESLOWPRINT("君は固定観念に取ら割らない人です!^")
@@ -134,15 +185,20 @@ function shopAriveJP()
         QUESLOWPRINT("^音声・音楽：Albert Korman(Zcom)^")
         QUESLOWPRINT("^^        END.^")
     elseif composer.getVariable("backgroundImage") == "backgrounds/Maelstrom-Peak.png" then
+        playOpening()
         QUESLOWPRINT("Maelstrom　Peakにようこそ!^")
     elseif composer.getVariable("backgroundImage") == "backgrounds/Evermist-Hills.png" then
+        playOpening()
         QUESLOWPRINT("Evermist　Hillsにようこそ!^")
     elseif composer.getVariable("backgroundImage") == "backgrounds/Enchanted-Spires.png" then
+        playOpening()
         QUESLOWPRINT("Enchanted Spiresにようこそ!^")
     elseif composer.getVariable("backgroundImage") == "backgrounds/frozen-tundra.png" then
+        audio.stop( 1 )
         QUESLOWPRINT("旅は14日間以上掛かったから、ツンドラが凍って通れないんだ、^")
         QUESLOWPRINT("目的にたどり着けない。^^^         GAME OVER^")
     elseif composer.getVariable("backgroundImage") == "backgrounds/Angry-Goblin1.png" or composer.getVariable("backgroundImage") == "backgrounds/Angry-Goblin2.png" or composer.getVariable("backgroundImage") == "backgrounds/Angry-Goblin3.png" then
+        playBattle()
         local characters = composer.getVariable("characters")
 		local girlNumber=2
 		local warriorGirl = characters[girlNumber]
@@ -193,6 +249,7 @@ function shopAriveEN()
     RESETQUE()
     local textSpeed=100
     if composer.getVariable("backgroundImage") == "backgrounds/crown-of-eternity.png" then
+        playEnding()
         textSpeed=200
         QUESLOWPRINT("Congratulations!^")
         QUESLOWPRINT("your deepest wish was that your teammates come back from the dead!^")
@@ -203,6 +260,7 @@ function shopAriveEN()
         QUESLOWPRINT("^Sound FX/Music:Albert Korman(Zcom)^")
         QUESLOWPRINT("^^        END.^")
     elseif composer.getVariable("backgroundImage") == "backgrounds/altEnding.png" then
+        playEnding()
         textSpeed=200
         QUESLOWPRINT("Congratulations!^")
         QUESLOWPRINT("You are a person that thinks outside the box!^")
@@ -213,15 +271,20 @@ function shopAriveEN()
         QUESLOWPRINT("^Sound FX/Music:Albert Korman(Zcom)^")
         QUESLOWPRINT("^^        END.^")
     elseif composer.getVariable("backgroundImage") == "backgrounds/Maelstrom-Peak.png" then
+        playOpening()
         QUESLOWPRINT("Welcome to Maelstrom Peak!^")
     elseif composer.getVariable("backgroundImage") == "backgrounds/Evermist-Hills.png" then
+        playOpening() 
         QUESLOWPRINT("Welcome to Evermist Hills!^")
     elseif composer.getVariable("backgroundImage") == "backgrounds/Enchanted-Spires.png" then
+        playOpening()   
         QUESLOWPRINT("Welcome to Enchanted Spires!^")
     elseif composer.getVariable("backgroundImage") == "backgrounds/frozen-tundra.png" then
+        audio.stop( 1 )
         QUESLOWPRINT("The trip took more than 14 days, the Northen Tundra froze over,^")
         QUESLOWPRINT("You can't reach yoru destination^^^         GAME OVER^")
     elseif composer.getVariable("backgroundImage") == "backgrounds/Angry-Goblin1.png" or composer.getVariable("backgroundImage") == "backgrounds/Angry-Goblin2.png" or composer.getVariable("backgroundImage") == "backgrounds/Angry-Goblin3.png" then
+        playBattle()
         local characters = composer.getVariable("characters")
 		local girlNumber=2
 		local warriorGirl = characters[girlNumber]
@@ -273,6 +336,7 @@ function shopAriveES()
     RESETQUE()
     local textSpeed=100
     if composer.getVariable("backgroundImage") == "backgrounds/crown-of-eternity.png" then
+        playEnding()
         textSpeed=200
         QUESLOWPRINT("Felicidades!^")
         QUESLOWPRINT("Tu deseo mas intimo fue que tus amigas resusitaran!^")
@@ -283,6 +347,7 @@ function shopAriveES()
         QUESLOWPRINT("^Effectos de sonido/Musica:Albert Korman(Zcom)^")
         QUESLOWPRINT("^^        FIN.^")
     elseif composer.getVariable("backgroundImage") == "backgrounds/altEnding.png" then
+        playEnding()
         textSpeed=200
         QUESLOWPRINT("Felicidades!^")
         QUESLOWPRINT("Tu eres una persona que puede pensar fuera del rectangulo!^")
@@ -293,12 +358,16 @@ function shopAriveES()
         QUESLOWPRINT("^Effectos de sonido/Musica:Albert Korman(Zcom)^")
         QUESLOWPRINT("^^        FIN.^")
     elseif composer.getVariable("backgroundImage") == "backgrounds/Maelstrom-Peak.png" then
+        playOpening()
         QUESLOWPRINT("Bienvenida a Maelstrom Peak!^")
     elseif composer.getVariable("backgroundImage") == "backgrounds/Evermist-Hills.png" then
+        playOpening()
         QUESLOWPRINT("Bienvenida a Evermist Hills!^")
     elseif composer.getVariable("backgroundImage") == "backgrounds/Enchanted-Spires.png" then
+        playOpening()
         QUESLOWPRINT("Bienvenida a Enchanted Spires!^")
     elseif composer.getVariable("backgroundImage") == "backgrounds/frozen-tundra.png" then
+        audio.stop( 1 )
         QUESLOWPRINT("El viaje tardo mas de 14 dias, La Tundra del Norte se congelo,^")
         QUESLOWPRINT("No puedes alcanzar tu destino.^^^         GAME OVER^")
     elseif composer.getVariable("backgroundImage") == "backgrounds/Angry-Goblin1.png" or composer.getVariable("backgroundImage") == "backgrounds/Angry-Goblin2.png" or composer.getVariable("backgroundImage") == "backgrounds/Angry-Goblin3.png" then

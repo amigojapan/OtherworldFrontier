@@ -42,6 +42,23 @@ local loadButton = display.newText("Load", 400, 50, native.systemFont, 20)
 
 local pauseButton = display.newText("[Unpause]", 500, 50, native.systemFont, 20)
 
+function playTown()
+
+    audio.stop( 1 )
+
+    audio.reserveChannels( 1 )
+    -- Reduce the overall volume of the channel
+    audio.setVolume( 1, { channel=1 } )
+
+
+    -- Load audio
+    musicTrack = audio.loadStream( "audio/town.mp3",system.ResourceDirectory)
+
+
+    -- Play the background music on channel 1, loop infinitely 
+    audio.play( musicTrack, { channel=1, loops=-1 } )    
+end
+
 
 function saveCaravan()
     composer.setVariable("caravan", {x = caravanGroup.x, y = caravanGroup.y, rotation = caravan.rotation})    --**setGamePausedState(false)
@@ -231,7 +248,7 @@ end
 
 -- Function to handle the robbery event
 function robberyEvent()
-    local items = {"gold", "HPpotions", "MPpotions"}
+    local items = {"gold", "HPpotions", "MPpotions", "food"}
     local itemToSteal = items[math.random(1, #items)]
     if itemToSteal == "gold" then
         local gold = composer.getVariable("gold")
@@ -275,6 +292,21 @@ function robberyEvent()
                 message = amount .. "個のMPポーションが盗まれた！"
             elseif composer.getVariable( "language" ) == "Spanish" then
                 message = "Te han robado " .. amount .. " pociones de MP!"
+            end
+            pauseAndShowQuickMessage(message)
+        end
+    elseif itemToSteal == "food" then
+        local KGofFood = composer.getVariable("KGofFood")
+        if KGofFood > 0 then
+            local amount = math.random(1, math.round(KGofFood/4))
+            composer.setVariable("KGofFood", KGofFood - amount)
+            local message
+            if composer.getVariable( "language" ) == "English" then
+                message = "You have been robbed of " .. amount .. " KG of food!"
+            elseif composer.getVariable( "language" ) == "Japanese" then
+                message = amount .. "キロの食料が盗まれた！"
+            elseif composer.getVariable( "language" ) == "Spanish" then
+                message = "Te han robado " .. amount .. " KG de comida!"
             end
             pauseAndShowQuickMessage(message)
         end
@@ -353,6 +385,7 @@ function enterTown(returnMessage)
     if townEntered then
         return
     end
+    playTown()
     townEntered=true
     setGamePausedState(true)
     --composer.setVariable("gamePaused", true)
@@ -399,7 +432,7 @@ function fallFromCliffGameOver()
     elseif composer.getVariable( "language" ) == "Japanese" then
         message="崖から落ちて死んだ。^^^        GAME OVER"
     elseif composer.getVariable( "language" ) == "Spanish" then
-        message="te has caido de un acantilado y has muero.^^^        GAME OVER"
+        message="te has caido en un precipicio y has muero.^^^        GAME OVER"
     end
     pauseAndShowQuickMessageThenCallFunction(message, gameOver)
     return
@@ -710,10 +743,10 @@ local dayLimit=15--one more than the limit, on the 15th day the tunra will be fr
 local landmarkShown = false
 function randomEvents()
     local randomNumber = math.random(1, 10000)
-    if randomNumber < 50/2 then
+    if randomNumber < 50 then
         setGamePausedState(true)
         curseEvent()
-    elseif randomNumber < 100/2 then
+    elseif randomNumber < 100 then
         setGamePausedState(true)
         robberyEvent()
     elseif randomNumber < 200 then
@@ -721,7 +754,7 @@ function randomEvents()
             setGamePausedState(true)
             getStuckInRut() 
         end
-    elseif randomNumber < 210/2  then
+    elseif randomNumber < 210  then
         setGamePausedState(true)
         attackedByAngryGoblynEvent()
     end
@@ -1002,6 +1035,21 @@ function gameOver()
     hideEverything()
     hideRestingMenu()
     hideTextArea()
+    	--stop music
+	audio.stop( 1 )
+
+	--audio.reserveChannels( 1 )
+	-- Reduce the overall volume of the channel
+	--audio.setVolume( 1, { channel=1 } )
+
+
+	-- Load audio
+	--musicTrack = audio.loadStream( "audio/OtherworldFrontierOpening.mp3",system.ResourceDirectory)
+
+
+	-- Play the background music on channel 1, loop infinitely 
+	--audio.play( musicTrack, { channel=1, loops=-1 } )
+
     composer.removeScene( composer.getSceneName("current") )
     composer.gotoScene("GameOver")
 end
@@ -2462,6 +2510,20 @@ function setRotationOfCaravan(degrees)
 end
 local showCalledAlreadyHack=false--this did not fix it
 function scene:show(event)
+    audio.stop( 1 )
+
+	audio.reserveChannels( 1 )
+	-- Reduce the overall volume of the channel
+	audio.setVolume( 1, { channel=1 } )
+
+
+	-- Load audio
+	musicTrack = audio.loadStream( "audio/into-the-battle.mp3",system.ResourceDirectory)
+
+
+	-- Play the background music on channel 1, loop infinitely 
+	audio.play( musicTrack, { channel=1, loops=-1 } )
+
     if showCalledAlreadyHack then
         showCalledAlreadyHack=true
         return
@@ -2593,9 +2655,10 @@ function scene:show(event)
 
         if composer.getVariable("wentHunting") then
             local bg = display.newImageRect( sceneGroup, backgroundImage, 1500,800 )
-            bg.x = display.contentCenterX
-            bg.y = display.contentCenterY
-
+            if bg then 
+                bg.x = display.contentCenterX
+                bg.y = display.contentCenterY
+            end
             composer.setVariable("wentHunting",false)
             initTextScreenByCorrectLanguage(sceneGroup)
             CLS()
@@ -2940,7 +3003,9 @@ return scene
 --(done), autocapicalize first letter of names
 --(done,decided on making it the maximum/4, maybe do maybe not)set maximum stolen ammount
     --both for money and potions
-
+--(I cant find hte cuase of this in the code)bug, it seems it did not display when amigojapan was uncursed but he got uncursed anyway
+--(fixed)in spanish, it does not update the lable when going to church
+--increase random game eventrs by about double of now mayve even more
 --[[
 月みたいなので、馬車をかいてんする
 5:24 PM <amigojapan> hiro_at_work: 上矢印でスピードをます
