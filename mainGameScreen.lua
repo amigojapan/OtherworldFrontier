@@ -3006,6 +3006,7 @@ return scene
 --(I cant find hte cuase of this in the code)bug, it seems it did not display when amigojapan was uncursed but he got uncursed anyway
 --(fixed)in spanish, it does not update the lable when going to church
 --increase random game eventrs by about double of now mayve even more
+--remove left and right shift form input keys so that people stop complaining
 --[[
 月みたいなので、馬車をかいてんする
 5:24 PM <amigojapan> hiro_at_work: 上矢印でスピードをます
