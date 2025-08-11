@@ -1523,18 +1523,28 @@ function hideEverything()
 end
 function goHuntingPaczel()
     saveCaravan()
-    composer.setVariable( "gameMode", "Paczel" )
-    gameMode = composer.getVariable( "gameMode" )
-    print("gameMode:"..gameMode)
     composer.setVariable("numberOfPowerUps",5)
     composer.setVariable("numberOfMonsters",5)
-    hideEverything()
-    composer.setVariable("wentHunting", true)
-    --composer.setVariable("caravan",caravan)    
-    composer.setVariable("unicorns",unicorns)
-    hideTextArea()
-    composer.removeScene(composer.getSceneName( "current" ))
-    composer.gotoScene( "paczel" )
+
+    if landmarkShown then
+        return 
+     end
+     landmarkShown=true
+     setGamePausedState(true)
+     hideEverything()
+     hideTextArea()
+     composer.setVariable(returnMessage, true)
+     composer.setVariable("daysPassed", daysPassed)
+     composer.setVariable("arc.x", arc.x)
+     composer.setVariable("unicorns", unicorns)
+     
+     composer.setVariable("caravan", {x = caravanGroup.x, y = caravanGroup.y, rotation = caravan.rotation})
+     print("stored caravan coordinates caravanGroup.x"..caravanGroup.x)
+ 
+     composer.setVariable("tblBoxesData", getSerializableBoxes())  -- Store data, not objects
+     composer.setVariable("wentHunting", true)
+     composer.removeScene(composer.getSceneName("current"))
+     composer.gotoScene("paczel")
 end
 
 local function menuButtonTouchListener( event )
@@ -2404,8 +2414,7 @@ local function repeatedStuffDoneWhenLeavingTownsAndLandmarks(sceneGroup,exitPoin
     caravanGroup.x = savedCaravan.x
     caravanGroup.y = savedCaravan.y
     caravan.rotation = savedCaravan.rotation
-    setRotationOfCaravan(caravan.rotation)
-
+    setRotationOfCaravan(caravan.rotation)    
     print("exit point:"..exitPoint)
     if exitPoint ~= "savedPoint" then
         local newCaravanPosition = findBox(exitPoint)
@@ -2652,40 +2661,10 @@ function scene:show(event)
 
 
         --background
-
-        if composer.getVariable("wentHunting") then
-            local bg = display.newImageRect( sceneGroup, backgroundImage, 1500,800 )
-            if bg then 
-                bg.x = display.contentCenterX
-                bg.y = display.contentCenterY
-            end
-            composer.setVariable("wentHunting",false)
-            initTextScreenByCorrectLanguage(sceneGroup)
-            CLS()
-            hideTextArea()
-            local savedCaravan=composer.getVariable("caravan")
-            transition.to( caravanGroup, { time=0, x=savedCaravan.x, y=savedCaravan.y, onComplete=transitionCompleted } )
-            caravanGroup.x=savedCaravan.x
-            caravanGroup.y=savedCaravan.y
-            caravan.rotation=savedCaravan.rotation
-            setRotationOfCaravan(caravan.rotation)
-            unicorns=composer.getVariable("unicorns")
-            lblDaysPassed.isVisible=true
-            --local MPAfterHunting=composer.getVariable("mainCharMPAfterHunting")
-            --local girlNumber = 1
-            --local characters = composer.getVariable("characters")
-            --local mainChar = characters[girlNumber]
-
-            --mainChar.MP = MPAfterHunting
-            
-             
-            --bg:addEventListener( "tap", tapListener )
-    
-            return
-        end
-        local background = display.newImageRect( sceneGroup, backgroundImage, 1500,800 )
+        local background = display.newImageRect( sceneGroup, "backgrounds/newMapCropped.png", 1500,800 )
         background.x = display.contentCenterX
         background.y = display.contentCenterY
+
         
          
         background:addEventListener( "tap", tapListener )
@@ -2828,6 +2807,12 @@ function scene:show(event)
             return
         end
 
+        if composer.getVariable("wentHunting") then            
+            composer.setVariable("wentHunting",false)
+            repeatedStuffDoneWhenLeavingTownsAndLandmarks(sceneGroup,"savedPoint")
+            return
+        end
+
         if composer.getVariable("inputBuffer") ~= "input unset" then           
             if composer.getVariable( "language" ) == "English" then
                 initTextScreen(sceneGroup,"EN")
@@ -2852,6 +2837,8 @@ function scene:show(event)
                 return
            end
         end
+
+
         --cleanupInvisibleObjects(display.getCurrentStage(),sceneGroup)
         
         --clear this when the main game screen enters so that the name does nto apepar in teh store
@@ -3007,6 +2994,7 @@ return scene
 --(fixed)in spanish, it does not update the lable when going to church
 --increase random game eventrs by about double of now mayve even more
 --remove left and right shift form input keys so that people stop complaining
+--bug game bugs out after hunting, sometimes returning to the beginning sometimes making two copies of the caravan
 --[[
 月みたいなので、馬車をかいてんする
 5:24 PM <amigojapan> hiro_at_work: 上矢印でスピードをます
