@@ -197,6 +197,13 @@ function addInputToBuffer(downkey)
 		downkey=""
 	end
 
+	if #downkey > 1 then
+		print("unknown key pressed")
+		downkey=""
+		return
+	end
+
+
 	if downkey == "unknown" then
 		print("unknown key pressed")
 		downkey=""
@@ -392,3 +399,4 @@ showInputBox("your prompt:",callback)
 
 --try adding a group to every object in here to it can be hid easily... for everything later (a way to fix the black ares)
 --now the keybnoard is responding to lciks twice, it hsould be once
+--fixed bug of control characters appearing in input box
