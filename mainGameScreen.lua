@@ -3005,5 +3005,8 @@ return scene
 5:27 PM <amigojapan> hiro_at_work: 赤い線に沿ってゴールに進む
 5:30 PM → PJBoy joined (~PJBoy@user/pjboy)
 5:31 PM <amigojapan> hiro_at_work: 魔法は野生のユニコーンを飼いならす魔法と呪いを解かす魔法。緑のはHPを回復するポーション紫のはMPを回復するポーション、あとは狩猟で食べ物をかるのが完成は明日でしょう…
-]]
 
+
+new bug https://imgur.com/Axw7FwT
+make it dim and light between camping days
+]]

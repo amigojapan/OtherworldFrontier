@@ -28,6 +28,12 @@ local unicorns = {}
 gameover=false
 gameLoopTimer=nil
 
+if composer.getVariable( "speed" )==nil then
+    composer.setVariable( "speed", 1)
+end
+composer.setVariable( "skipFrame", false)
+
+
 local saveButton = display.newText("Save", 300, 50, native.systemFont, 20)
 
 
@@ -35,6 +41,23 @@ local loadButton = display.newText("Load", 400, 50, native.systemFont, 20)
 
 
 local pauseButton = display.newText("[Unpause]", 500, 50, native.systemFont, 20)
+
+function playTown()
+
+    audio.stop( 1 )
+
+    audio.reserveChannels( 1 )
+    -- Reduce the overall volume of the channel
+    audio.setVolume( 1, { channel=1 } )
+
+
+    -- Load audio
+    musicTrack = audio.loadStream( "audio/town.mp3",system.ResourceDirectory)
+
+
+    -- Play the background music on channel 1, loop infinitely 
+    audio.play( musicTrack, { channel=1, loops=-1 } )    
+end
 
 
 function saveCaravan()
@@ -225,12 +248,12 @@ end
 
 -- Function to handle the robbery event
 function robberyEvent()
-    local items = {"gold", "HPpotions", "MPpotions"}
+    local items = {"gold", "HPpotions", "MPpotions", "food"}
     local itemToSteal = items[math.random(1, #items)]
     if itemToSteal == "gold" then
         local gold = composer.getVariable("gold")
         if gold > 0 then
-            local amount = math.random(1, gold)
+            local amount = math.random(1, math.round(gold/4))
             composer.setVariable("gold", gold - amount)
             local message 
             if composer.getVariable( "language" ) == "English" then
@@ -245,7 +268,7 @@ function robberyEvent()
     elseif itemToSteal == "HPpotions" then
         local HPpotions = composer.getVariable("HPpotions")
         if HPpotions > 0 then
-            local amount = math.random(1, HPpotions)
+            local amount = math.random(1, math.round(HPpotions/4))
             composer.setVariable("HPpotions", HPpotions - amount)
             local message
             if composer.getVariable( "language" ) == "English" then
@@ -260,7 +283,7 @@ function robberyEvent()
     elseif itemToSteal == "MPpotions" then
         local MPpotions = composer.getVariable("MPpotions")
         if MPpotions > 0 then
-            local amount = math.random(1, MPpotions)
+            local amount = math.random(1, math.round(MPpotions/4))
             composer.setVariable("MPpotions", MPpotions - amount)
             local message
             if composer.getVariable( "language" ) == "English" then
@@ -269,6 +292,21 @@ function robberyEvent()
                 message = amount .. "個のMPポーションが盗まれた！"
             elseif composer.getVariable( "language" ) == "Spanish" then
                 message = "Te han robado " .. amount .. " pociones de MP!"
+            end
+            pauseAndShowQuickMessage(message)
+        end
+    elseif itemToSteal == "food" then
+        local KGofFood = composer.getVariable("KGofFood")
+        if KGofFood > 0 then
+            local amount = math.random(1, math.round(KGofFood/4))
+            composer.setVariable("KGofFood", KGofFood - amount)
+            local message
+            if composer.getVariable( "language" ) == "English" then
+                message = "You have been robbed of " .. amount .. " KG of food!"
+            elseif composer.getVariable( "language" ) == "Japanese" then
+                message = amount .. "キロの食料が盗まれた！"
+            elseif composer.getVariable( "language" ) == "Spanish" then
+                message = "Te han robado " .. amount .. " KG de comida!"
             end
             pauseAndShowQuickMessage(message)
         end
@@ -347,6 +385,7 @@ function enterTown(returnMessage)
     if townEntered then
         return
     end
+    playTown()
     townEntered=true
     setGamePausedState(true)
     --composer.setVariable("gamePaused", true)
@@ -393,7 +432,7 @@ function fallFromCliffGameOver()
     elseif composer.getVariable( "language" ) == "Japanese" then
         message="崖から落ちて死んだ。^^^        GAME OVER"
     elseif composer.getVariable( "language" ) == "Spanish" then
-        message="te has caido de un acantilado y has muero.^^^        GAME OVER"
+        message="te has caido en un precipicio y has muero.^^^        GAME OVER"
     end
     pauseAndShowQuickMessageThenCallFunction(message, gameOver)
     return
@@ -515,7 +554,7 @@ function teleportSuccess(exitBoxName)
         pauseAndShowQuickMessage("Teleport failed: destination not found!")
     else
         setGamePausedState(true)
-        transition.to( caravanGroup, { time=1500, x=box.x, y=box.y, onComplete=transitionCompleted } )
+        transition.to( caravanGroup, { time=1500*composer.getVariable( "speed" ), x=box.x, y=box.y, onComplete=transitionCompleted } )
         print("Teleported to box.x:" .. box.x .. ", box.y:" .. box.y)
         --this was causing the persistent continue button, I would like to have this message, but I dont know how to do it safely
         --this did not work either pauseAndShowQuickMessageThenCallFunction("You teleported to the other side of the river and entered an Elven village",emptyFunctionForWaiting)
@@ -540,7 +579,7 @@ function teleportTo(teleportExit)
         pauseAndShowQuickMessage("Teleport failed: destination not found!")
     else
         setGamePausedState(true)
-        transition.to( caravanGroup, { time=1500, x=box.x, y=box.y, onComplete=transitionCompleted } )
+        transition.to( caravanGroup, { time=1500*composer.getVariable( "speed" ), x=box.x, y=box.y, onComplete=transitionCompleted } )
         updateCaravanCoordinates(box)
         print("Teleported to box.x:" .. box.x .. ", box.y:" .. box.y)
         --this was causing the persistent continue button, I would like to have this message, but I dont know how to do it safely
@@ -704,10 +743,10 @@ local dayLimit=15--one more than the limit, on the 15th day the tunra will be fr
 local landmarkShown = false
 function randomEvents()
     local randomNumber = math.random(1, 10000)
-    if randomNumber < 50/2 then
+    if randomNumber < 50 then
         setGamePausedState(true)
         curseEvent()
-    elseif randomNumber < 100/2 then
+    elseif randomNumber < 100 then
         setGamePausedState(true)
         robberyEvent()
     elseif randomNumber < 200 then
@@ -715,7 +754,7 @@ function randomEvents()
             setGamePausedState(true)
             getStuckInRut() 
         end
-    elseif randomNumber < 210/2  then
+    elseif randomNumber < 210  then
         setGamePausedState(true)
         attackedByAngryGoblynEvent()
     end
@@ -996,16 +1035,40 @@ function gameOver()
     hideEverything()
     hideRestingMenu()
     hideTextArea()
+    	--stop music
+	audio.stop( 1 )
+
+	--audio.reserveChannels( 1 )
+	-- Reduce the overall volume of the channel
+	--audio.setVolume( 1, { channel=1 } )
+
+
+	-- Load audio
+	--musicTrack = audio.loadStream( "audio/OtherworldFrontierOpening.mp3",system.ResourceDirectory)
+
+
+	-- Play the background music on channel 1, loop infinitely 
+	--audio.play( musicTrack, { channel=1, loops=-1 } )
+
     composer.removeScene( composer.getSceneName("current") )
     composer.gotoScene("GameOver")
 end
 
-local dayTimer= timer.performWithDelay( 60000, dayPassed, 0 ) -- day takes one minute
+local dayTimer= timer.performWithDelay( 60000*composer.getVariable( "speed" ), dayPassed, 0 ) -- day takes one minute
 
 local lastTime = system.getTimer() -- Get the current time in milliseconds
 
 -- In your game loop or an "enterFrame" listener:
 local function updateFrame(event)
+    --skip a frame every other frame in slow mode
+    if composer.getVariable( "speed" ) == 2 then
+        if composer.getVariable( "skipFrame")==false then
+            composer.setVariable( "skipFrame", true)
+            return
+        else
+            composer.setVariable( "skipFrame", false)
+        end
+    end
     if gamePaused then
 		return
 	end
@@ -1102,7 +1165,7 @@ function showControls()
     setGamePausedState(false)
     composer.setVariable("gameStarted",true)
 end
-gameLoopTimer = timer.performWithDelay( caravanMoveInMilliseconds, gameloop, 0 )
+gameLoopTimer = timer.performWithDelay( caravanMoveInMilliseconds*composer.getVariable( "speed" ), gameloop, 0 )
 function gameStartEN()
     RESETQUE()
     --           "1234567890123456789012345678901234567890"
@@ -2331,7 +2394,7 @@ end
 local function repeatedStuffDoneWhenLeavingTownsAndLandmarks(sceneGroup,exitPoint)
     --**set speed back to 0, the caravan keeps on moving after reaching melstroms peak
     composer.setVariable("justLeftTown",true)
-    timer.performWithDelay(20000, function() composer.setVariable("justLeftTown",false) end)
+    timer.performWithDelay(20000*composer.getVariable( "speed" ), function() composer.setVariable("justLeftTown",false) end)
     initTextScreenByCorrectLanguage(sceneGroup)
     CLS()
     hideTextArea()
@@ -2431,7 +2494,7 @@ function animateUnicorns()
         return
     else
         --sert timer at 1000/speed
-        uniconAnimationTimer=timer.performWithDelay(1000/speed, unicornAnimationLoop)
+        uniconAnimationTimer=timer.performWithDelay(1000/speed*composer.getVariable( "speed" ), unicornAnimationLoop)
     end
 end
 
@@ -2447,6 +2510,20 @@ function setRotationOfCaravan(degrees)
 end
 local showCalledAlreadyHack=false--this did not fix it
 function scene:show(event)
+    audio.stop( 1 )
+
+	audio.reserveChannels( 1 )
+	-- Reduce the overall volume of the channel
+	audio.setVolume( 1, { channel=1 } )
+
+
+	-- Load audio
+	musicTrack = audio.loadStream( "audio/into-the-battle.mp3",system.ResourceDirectory)
+
+
+	-- Play the background music on channel 1, loop infinitely 
+	audio.play( musicTrack, { channel=1, loops=-1 } )
+
     if showCalledAlreadyHack then
         showCalledAlreadyHack=true
         return
@@ -2578,9 +2655,10 @@ function scene:show(event)
 
         if composer.getVariable("wentHunting") then
             local bg = display.newImageRect( sceneGroup, backgroundImage, 1500,800 )
-            bg.x = display.contentCenterX
-            bg.y = display.contentCenterY
-
+            if bg then 
+                bg.x = display.contentCenterX
+                bg.y = display.contentCenterY
+            end
             composer.setVariable("wentHunting",false)
             initTextScreenByCorrectLanguage(sceneGroup)
             CLS()
@@ -2903,15 +2981,11 @@ return scene
 --(fixed after adding several disableokbutton intot he code)...ignore this:maybe still slightly buggy.I think I fixed it by setting the visible button stuff in slowprint)bug after clickign info button after teleporting  into elevn town the continue button takes me back to the purchase unicorns window...maybe need to eliminate enableokbutton from the uniconstable I think
 --(fixed I think, by adding composer.setVariable("gameStarted",true))bug, events happen eventho the game should be paused in the initial titles
 --(fixed by adding functionality to handle fastprint in slowprint.lua)bug, info screen is lacking a continue button.
---(pending, maybe do maybe not)set maximum stolen ammount
-    --both for money and potions
 --(done)remove unneeded labels and color boxes
     --label for level editor too
 --(done)repurpose save , load labels to save and load games
     --(done)also add quit option
     --(done)add warnings
---(pending)add speed settings
---(pending), autocapicalize first letter of names
 --(done)add default names to story mode
 --(I think it is fixed, untested yet), there is an overlap in the end of trial period screen and purchase button
 --(done)add a menu to go to each kind of store
@@ -2923,6 +2997,16 @@ return scene
     --(done)also pause game when event occurs for the same reason, we dont want tow things happening at once
 --(done)move paczel controls to adjust for resolution
 --(fixed)bug,after winning in paczel, the caravan is returning to mistralsEndStartPoint
+
+--(done)add speed settings
+
+--(done), autocapicalize first letter of names
+--(done,decided on making it the maximum/4, maybe do maybe not)set maximum stolen ammount
+    --both for money and potions
+--(I cant find hte cuase of this in the code)bug, it seems it did not display when amigojapan was uncursed but he got uncursed anyway
+--(fixed)in spanish, it does not update the lable when going to church
+--increase random game eventrs by about double of now mayve even more
+--remove left and right shift form input keys so that people stop complaining
 --[[
 月みたいなので、馬車をかいてんする
 5:24 PM <amigojapan> hiro_at_work: 上矢印でスピードをます
