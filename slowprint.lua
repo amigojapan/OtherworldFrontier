@@ -479,7 +479,7 @@ local character
 function treatAsAscii(oneline)
     local ch  = string.sub(oneline, 1, 1)
     --print("here3 character:"..character )
-    local ol=string.sub(oneline, 2, #oneline)--seems hte whole problem is in hte lack of support for utf8
+    local ol=string.sub(oneline, 2, #oneline)--seems the whole problem is in the lack of support for utf8
     --print("oneline:'"..oneline.."'" )
     return ch,ol
 end
@@ -487,7 +487,7 @@ end
 function treatAsUTF8(oneline)
     local ch  = string.sub(oneline, 1, 3)
     --print("here3 character:"..character )
-    local ol=string.sub(oneline, 4, #oneline)--seems hte whole problem is in hte lack of support for utf8
+    local ol=string.sub(oneline, 4, #oneline)--seems the whole problem is in the lack of support for utf8
     --print("oneline:'"..oneline.."'" )
     return ch,ol
 end
@@ -505,7 +505,7 @@ end
 function isAscii()
     local ch=treatAsAscii(oneline)
     if string.byte(ch) then
-        if string.byte(ch)<148 then--148 seems like hte last valid ascii character to me
+        if string.byte(ch)<148 then--148 seems like the last valid ascii character to me
             return true
         else
             return false
@@ -528,7 +528,7 @@ function coPrintOneCharOfSlowPrint()
         timer.cancel(characterTimer)
         printing=false
         return
-        --(it was not here, I thtink it is when I click the continue button--old comment: I think this may be hte place to set the next continue button...
+        --(it was not here, I thtink it is when I click the continue button--old comment: I think this may be the place to set the next continue button...
     end
     if character=="改" or character=="^" then
         NEWENDLINE()

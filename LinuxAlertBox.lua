@@ -126,7 +126,7 @@ function AlertBox(title, message, onYesPress, onNoPress)
         noButton:removeSelf()
         noText:removeSelf()
         --for key, value in ipairs( display.getCurrentStage()) do
-        --    value.isVisible=false--hack to hide hte invisible object that I do't know what it is  
+        --    value.isVisible=false--hack to hide the invisible object that I do't know what it is  
         --end
     end
 

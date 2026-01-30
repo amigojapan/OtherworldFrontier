@@ -118,7 +118,7 @@ local character
 coPrintOneCharOfSlowPrint = coroutine.create(function () 
     character  = string.sub(oneline, 1, 3)
     print("here3 character:"..character )
-    oneline=string.sub(oneline, 7, #oneline)--seems hte whole problem is in hte lack of support for utf8
+    oneline=string.sub(oneline, 7, #oneline)--seems the whole problem is in the lack of support for utf8
     print("oneline:"..oneline )
     if oneline=="" then
         --timer.cancel(characterTimer)
@@ -130,7 +130,7 @@ end)
 function coPrintOneCharOfSlowPrint() 
     character  = string.sub(oneline, 1, 3)
     print("here3 character:"..character )
-    oneline=string.sub(oneline, 4, #oneline)--seems hte whole problem is in hte lack of support for utf8
+    oneline=string.sub(oneline, 4, #oneline)--seems the whole problem is in the lack of support for utf8
     print("#oneline:'"..#oneline.."'" )
     if #oneline==0 then
         timer.cancel(characterTimer)

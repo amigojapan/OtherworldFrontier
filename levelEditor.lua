@@ -508,7 +508,7 @@ function teleportSuccess(exitBoxName)
         print("Teleported to box.x:" .. box.x .. ", box.y:" .. box.y)
         --this was causing the persistent continue button, I would like to have this message, but I dont know how to do it safely
         --this did not work either pauseAndShowQuickMessageThenCallFunction("You teleported to the other side of the river and entered an Elven village",emptyFunctionForWaiting)
-        --bug no continuebutton after going across hte river
+        --bug no continuebutton after going across the river
         if exitBoxName=="river2_exit" then --(quick hack worked)trying quick fix to fix it for river2
             hideTextArea()
         end
@@ -588,7 +588,7 @@ end
 local function drownInTheOcean()--seems not using char in this fucntion,m maybe clean up later
     local message
     if composer.getVariable("language") == "English" then
-        message = "You have drowned in hte ocean.^^^        GAME OVER"
+        message = "You have drowned in the ocean.^^^        GAME OVER"
     elseif composer.getVariable("language") == "Japanese" then
         message = "海で溺れた。^^^        GAME OVER"
     elseif composer.getVariable("language") == "Spanish" then
@@ -695,7 +695,7 @@ function gameloop()
 	if gamePaused or gameover then
 		return
 	end
-    if not caravan then -- start doing this once hte caravan appears on screen
+    if not caravan then -- start doing this once the caravan appears on screen
         print("caravan does not extist")
     else
         if gamePaused==nil then
@@ -2556,7 +2556,7 @@ return scene
     --(done)or the healer girl can use some of her MP to uncurse someone 100 percent uses 30 MP
     --(done)otherwise HP of the cursed girl will keep on draning until she dies
 --(done)event you get robbed, potions and gold can dissapear
---(done)make a status window(showTextarea()) for you to see how your unicorns are doing, how long before hte turnda freezes too
+--(done)make a status window(showTextarea()) for you to see how your unicorns are doing, how long before the turnda freezes too
 --(done)add obstacles on caravan's route so you cant go off the route, maybe even have an accident if you go off it
     --I am lazy but the best way to do this would be to have a n event of fallling in a ditch, and time going by to restore getting back on the path
     --make a level editor to design the map collision sprites
@@ -2593,7 +2593,7 @@ return scene
     --you can heal all unicon using HPpotions
     --each unicorn depending on composer.getVariable("NumberOfUnicorns")  will have its own HP the more unicorns you have the less they will get tired because they share to pulling the caravan, and the faster you go the faster they get tired. when one gets too tired he will die.
 --(fixed)bug day gets set back to 1 after going into a town, probably needs to be changed ot a composer variable
---(fixed)(this is hte most buging bug)bug with status button, leaveing a continue button I think
+--(fixed)(this is the most buging bug)bug with status button, leaveing a continue button I think
     --sometimes it goes back purchase menu when clicking the continue button on screen
         --this seems to happen only after teleporting or levaing towns
     --trying to fix the levelEditor part made it so that the into part broke too
@@ -2606,12 +2606,12 @@ return scene
     --implement warning too
 --(pending)(temporarily set this to 14 days)figuure out how many days should go by until tundra freezes, maybe this can vary by difficulty
 --(confirmed)there seems to be too much food in easy mode, you dont need to buy any food or go hunting and you can finish the game
---(done)event attacked by angry goblin)change background image maybe? instead of switching to another scene, each adventurer should have a different attack power. like hte girl form ironreach shoudl have most power to easily defeat goblins, or maybe the tamer can tame them or the girl; that can call divine power can scare them away)
+--(done)event attacked by angry goblin)change background image maybe? instead of switching to another scene, each adventurer should have a different attack power. like the girl form ironreach shoudl have most power to easily defeat goblins, or maybe the tamer can tame them or the girl; that can call divine power can scare them away)
     --for this it woudl be easiest to make attack be by ironrech girl, tame by tamer, scare by divine power girl
-    --tame and divine power shoudl cost MP of those girls oh yeah and mayeb hte random girl too         
-    --when you get attacked by goblins, you will get to choose who y ou wnat to solev the problem, the warrior by attackign hte golin, the tamer by appaeaseing the goblin, or the saiotn by scaring away the goblins with divine light or hte random girl which gives 50 percent success 50 percent failue.... but if one of them dies, you wont be able to use her powers anymroe
+    --tame and divine power shoudl cost MP of those girls oh yeah and mayeb the random girl too         
+    --when you get attacked by goblins, you will get to choose who y ou wnat to solev the problem, the warrior by attackign the golin, the tamer by appaeaseing the goblin, or the saiotn by scaring away the goblins with divine light or the random girl which gives 50 percent success 50 percent failue.... but if one of them dies, you wont be able to use her powers anymroe
 --add labels to the menu buttons
---(fixed,seems I needed to do translate.to instead of just setting hte x and y of caracan group...)bug the caravan position no longer persists between scene changes for some reason...
+--(fixed,seems I needed to do translate.to instead of just setting the x and y of caracan group...)bug the caravan position no longer persists between scene changes for some reason...
 --(fixed, Ichanged not keyword to ~= for some reason they seem to work differently)new bug, now after teletrasporting to the even town, it reenters the elven town for some reason, instead of going to the exit point
 --(this is fixed when eliminating the set game paused to false in transitioncomplete function, but it is still a problem if I dont wnat it to trigger when text is on screen, may need to make seperat pause variable juts for that.bug the angry troll event interrupts the intro screen
 --(fixed in last minutes of today)bug still trigering elf t1 eventho I caravangroup is at elf t1 exit... why? I had already fixed this, but it is happening again, and i　did nto document what I did to fix it I think...

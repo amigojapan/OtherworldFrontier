@@ -9,6 +9,39 @@ local scene = composer.newScene()
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
 -- -----------------------------------------------------------------------------------
 
+
+local function quitOrRedirect()
+  local platform = system.getInfo("platform")
+
+  -- HTML5 / Web build
+  if platform == "html5" then
+    system.openURL("https://amjp.psy-k.org/JPLY/")
+    return
+  end
+
+  -- Android + Desktop (Win/mac/Linux)
+  if platform == "android"
+  or platform == "win32"
+  or platform == "macos"
+  or platform == "linux" then
+
+    -- 1) Ask Solar2D to exit nicely
+    if native and native.requestExit then
+      native.requestExit()
+    end
+
+    -- 2) Linux fallback: some builds ignore requestExit()
+    if platform == "linux" then
+      timer.performWithDelay(150, function()
+        -- If we're still alive, hard-exit as a fallback
+        os.exit(0)
+      end)
+    end
+
+    return
+  end
+end
+
 print( "ORIENTATION: "..system.orientation )
 
 local function gotoMenu()
@@ -26,7 +59,9 @@ local function gotoMenu()
 	-- Play the background music on channel 1, loop infinitely 
 	audio.play( musicTrack, { channel=1, loops=-1 } )
 
-	composer.gotoScene( "menu" )
+	--composer.gotoScene( "menu" )
+	-- Quit button / menu option
+	quitOrRedirect()
 end
 
 -- -----------------------------------------------------------------------------------

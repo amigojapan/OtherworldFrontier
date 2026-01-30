@@ -112,7 +112,7 @@ function logDisplayObjects()
 	end
 	--this hack seems to hide the black object from any extra number of screens
 	print ("display.getCurrentStage().numChildren"..display.getCurrentStage().numChildren)
-	display.getCurrentStage()[display.getCurrentStage().numChildren-1].isVisible=false--hack to hide hte invisible object that I do't know what it is
+	display.getCurrentStage()[display.getCurrentStage().numChildren-1].isVisible=false--hack to hide the invisible object that I do't know what it is
 	--display.getCurrentStage()[2]:removeSelf()--cant do this, cause it seems composer tries to bring this object to the front
 end
 function removerInputBox(event)

@@ -23,7 +23,7 @@ function clearBuggyObjects()
 	print("Number of active display objects: " .. display.getCurrentStage().numChildren)
 	for i = 1, display.getCurrentStage().numChildren do
 		print("Object " .. i .. ": " .. tostring(display.getCurrentStage()[i]))
-		--display.getCurrentStage()[2].isVisible=false--hack to hide hte invisible object that I do't know what it is
+		--display.getCurrentStage()[2].isVisible=false--hack to hide the invisible object that I do't know what it is
 		if i==display.getCurrentStage().numChildren then
 			local buggyObject=display.getCurrentStage()[i]
 			buggyObject.isVisible=false
