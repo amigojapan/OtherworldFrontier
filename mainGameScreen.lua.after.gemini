@@ -28,6 +28,7 @@ local unicorns = {}
 gameover=false
 gameLoopTimer=nil
 
+
 if composer.getVariable( "speed" )==nil then
     composer.setVariable( "speed", 1)
 end
@@ -41,6 +42,8 @@ local loadButton = display.newText("Load", 400, 50, native.systemFont, 20)
 
 
 local pauseButton = display.newText("[Unpause]", 500, 50, native.systemFont, 20)
+
+
 
 function playTown()
 
@@ -61,10 +64,13 @@ end
 
 
 function saveCaravan()
-    composer.setVariable("caravan", {x = caravanGroup.x, y = caravanGroup.y, rotation = caravan.rotation})    --**setGamePausedState(false)
-    print("saved caravan at x:"..caravanGroup.x.." y:"..caravanGroup.y)
+    if caravanGroup then
+        -- Removed the broken "caravan.rotation" part
+        composer.setVariable("caravan", {x = caravanGroup.x, y = caravanGroup.y})    
+        
+        print("saved caravan at x:"..caravanGroup.x.." y:"..caravanGroup.y)
+    end
 end
-
 ------------------------------------------------------------
 -- Function: createUnicorns
 -- Description:
@@ -541,9 +547,10 @@ function emptyFunction()
 
 end
 function updateCaravanCoordinates(obj)
-    caravanGroup.x=obj.x
-    caravanGroup.x=obj.x
+    caravanGroup.x = obj.x
+    caravanGroup.y = obj.y  -- This was accidentally caravanGroup.x = obj.x before!
 end
+
 function teleportSuccess(exitBoxName)
     local box = findBox(exitBoxName)
     if box == nil then
@@ -759,6 +766,17 @@ function randomEvents()
         attackedByAngryGoblynEvent()
     end
 end
+local isset=false
+function restaoreRotation()
+    local savedCaravan = composer.getVariable("caravan")
+    if savedCaravan and not isset then
+        print("loading savedCaravan.x"..savedCaravan.x)
+        --caravanGroup.x = savedCaravan.x
+        --caravanGroup.y = savedCaravan.y
+        caravan.rotation = savedCaravan.rotation
+        setRotationOfCaravan(caravan.rotation)
+    end
+end
 function gameloop()
 	if gamePaused or gameover then
 		return
@@ -776,21 +794,30 @@ function gameloop()
             randomEvents()
         end
 
-        --the following is true when comming back from another scene it seems -the return solves it
+        -- DELETE THIS ENTIRE CHUNK:
+        --[[ 
         if caravan.rotation==nil then
             caravan.rotation=90
             setRotationOfCaravan(caravan.rotation)
             return
         end
+        ]]--
+        -- DELETE THIS ENTIRE CHUNK:
+        restaoreRotation()
+        
         --restore saved caravan
-        local savedCaravan = composer.getVariable("caravan")
-        if savedCaravan then
-            print("loading savedCaravan.x"..savedCaravan.x)
-            caravanGroup.x = savedCaravan.x
-            caravanGroup.y = savedCaravan.y
-            caravan.rotation = savedCaravan.rotation
-            setRotationOfCaravan(caravan.rotation)
-        end
+        --local angle = caravanGroup.rotation 
+        
+        -- converts degrees to radians
+        --local angle_radians = math.rad(angle + 90 + 180) 
+        --local distance = caravanMovePixels * speed
+        
+        -- move the caravan forward based on the safe angle
+        --local newx = caravanGroup.x + distance * math.cos(angle_radians)
+        --local newy = caravanGroup.y + distance * math.sin(angle_radians)
+        
+        --caravanGroup.x = newx
+        --caravanGroup.y = newy
         --move caravan
         print("caravan.rotation:"..caravan.rotation)
         local angle=caravan.rotation
@@ -810,6 +837,7 @@ function gameloop()
                 if box.label=="mist_end" then
                     if detectCollision3(caravanCollider, box) then
                         pauseAndShowQuickMessageThenCallFunction("Mistrals End",gotoMistralsEnd)
+                        isset=true
                         return  -- No need to check further if we found a collision
                     end
                 elseif box.label=="elf_t1" then
@@ -817,6 +845,7 @@ function gameloop()
                         print("Collision with elf_t1 detected!")
                         print("Caravan position: x=", caravanGroup.x, "y=", caravanGroup.y)
                         print("elf_t1 position: x=", box.x, "y=", box.y)                        pauseAndShowQuickMessageThenCallFunction("Elven Town.^",gotoElvenTown1)
+                        isset=true
                         return  -- No need to check further if we found a collision
                     end
                 elseif box.label=="northern_tundra" then
@@ -1094,6 +1123,34 @@ Runtime:addEventListener("enterFrame", updateFrame)
 -- create()
 function scene:create(event)
 local sceneGroup = self.view
+    local sceneGroup = self.view
+    
+    -- Example for the background:
+    local bg = display.newImageRect(backgroundImage, 800, 600)
+    sceneGroup:insert(bg) -- THIS IS CRITICAL
+    -- Center the map properly on the screen
+    bg.x = display.contentCenterX
+    bg.y = display.contentCenterY
+    
+    -- Create the caravan group first
+    caravanGroup = display.newGroup()
+    sceneGroup:insert(caravanGroup)
+
+    -- Check if we are returning from a town
+    local savedCaravan = composer.getVariable("caravan")
+
+    if savedCaravan ~= nil then
+        -- We are returning! Put the caravan where we left it (Elven Town)
+        caravanGroup.x = savedCaravan.x
+        caravanGroup.y = savedCaravan.y
+        -- caravan.rotation = savedCaravan.rotation (uncomment if you use rotation)
+    else
+        -- This is the first time playing the game. Start at Mistral's End.
+        caravanGroup.x = 150 -- Replace with your actual Mistral's End X coordinate
+        caravanGroup.y = 200 -- Replace with your actual Mistral's End Y coordinate
+    end
+
+    sceneGroup:insert(caravanGroup) -- THIS IS CRITICAL
     -- Code here runs when the scene is first created but has not yet appeared on screen
     if composer.getVariable("inputBuffer") ==nil then
         composer.setVariable("inputBuffer", "input unset")
@@ -1109,6 +1166,20 @@ local sceneGroup = self.view
     --change the following to a game init variable later since this is nessesary for comming back from another scene
     if not composer.getVariable("wentHunting") then
         composer.setVariable("characters", characters)
+    end
+
+    -- Now, check if we are returning from a town/hunting
+    local savedCaravan = composer.getVariable("caravan")
+
+    if savedCaravan ~= nil then
+        -- We returned! Put the caravan exactly where we left it
+        caravanGroup.x = savedCaravan.x
+        caravanGroup.y = savedCaravan.y
+        caravanGroup.rotation = savedCaravan.rotation
+    else
+        -- First time loading the game! Put it at Mistral's End
+        caravanGroup.x = 100 -- Replace with Mistral's End X coordinate
+        caravanGroup.y = 200 -- Replace with Mistral's End Y coordinate
     end
 end
 
@@ -1522,13 +1593,15 @@ function hideEverything()
     hideRestingMenu()
 end
 function goHuntingPaczel()
-    print("3Before setting: x:", caravanGroup.x, "y:", caravanGroup.y)
-    saveCaravan()
-    print("aftersavecaravan in go huntin")
+    -- This is where you need to add the save function!
+    saveCaravan() 
+    
+    composer.setVariable("tblBoxesData", getSerializableBoxes()) 
+    composer.removeScene(composer.getSceneName("current"))
     composer.setVariable("numberOfPowerUps",5)
     composer.setVariable("numberOfMonsters",5)
 
-    if landmarkShown or composer.setVariable("wentHunting")  then
+    if landmarkShown then
         return 
      end
      landmarkShown=true
@@ -1540,7 +1613,7 @@ function goHuntingPaczel()
      composer.setVariable("arc.x", arc.x)
      composer.setVariable("unicorns", unicorns)
      
-     --composer.setVariable("caravan", {x = caravanGroup.x, y = caravanGroup.y, rotation = caravan.rotation})
+     composer.setVariable("caravan", {x = caravanGroup.x, y = caravanGroup.y, rotation = caravan.rotation})
      print("stored caravan coordinates caravanGroup.x"..caravanGroup.x)
  
      composer.setVariable("tblBoxesData", getSerializableBoxes())  -- Store data, not objects
@@ -2438,9 +2511,7 @@ local function repeatedStuffDoneWhenLeavingTownsAndLandmarks(sceneGroup,exitPoin
         caravanGroup.y = newCaravanPosition.y
         print("2After setting: x:", caravanGroup.x, "y:", caravanGroup.y)
     else
-        print("here 100")
         setGamePausedState(true)
-        local savedCaravan=composer.getVariable("caravan")
         transition.to(caravanGroup, { time=0, x=savedCaravan.x, y=savedCaravan.y, onComplete=transitionCompleted })
         updateCaravanCoordinates(savedCaravan)
     end
@@ -2465,6 +2536,7 @@ local caravanIMG8
 local frame=1
 
 function hideCaravanSprites()
+    --caravanGroup.isVisible=false
     caravanIMG1.isVisible=false
     caravanIMG2.isVisible=false
     caravanIMG3.isVisible=false
@@ -2512,6 +2584,7 @@ function animateUnicorns()
 end
 
 function setRotationOfCaravan(degrees)
+    caravanGroup.rotation = degrees
     caravanIMG1.rotation = degrees
     caravanIMG2.rotation = degrees
     caravanIMG3.rotation = degrees
@@ -2523,6 +2596,7 @@ function setRotationOfCaravan(degrees)
 end
 local showCalledAlreadyHack=false--this did not fix it
 function scene:show(event)
+    
     audio.stop( 1 )
 
 	audio.reserveChannels( 1 )
@@ -2554,6 +2628,24 @@ function scene:show(event)
             print("gamePaused:"..tostring(gamePaused))
         end
     elseif (phase == "did") then
+            
+        -- Check if we have already loaded the level
+        if not composer.getVariable("levelAlreadyLoaded") then
+            loadLevel()
+            createUnicorns()
+            
+            -- ... ALL your button creation code goes here ...
+            
+            -- Set the flag so this block never runs again
+            composer.setVariable("levelAlreadyLoaded", true)
+        end
+        
+        -- Code to run EVERY time the scene comes on screen goes here
+        -- For example, checking if you just returned from hunting:
+        if composer.getVariable("wentHunting") then
+            composer.setVariable("wentHunting", false)
+            -- Restore caravan position, update stats, etc.
+        end
         -- Code here runs when the scene is entirely on screen
         -- Call this once when starting the scene or when unicorn count changes.
         loadLevel()
@@ -2595,6 +2687,7 @@ function scene:show(event)
         }
         caravanCollider = display.newRect( caravanGroup, 0, 0, 10, 10 )
         caravanCollider.fill = paint
+       
         local paint = {
             type = "image",
             filename = "animations/caravan/caravan1.png"
@@ -2629,22 +2722,34 @@ function scene:show(event)
         caravanIMG8 = display.newRect( caravanGroup, 0 , 0, 100, 100 )
         caravanIMG8.fill = paint
         caravanIMG8.isVisible=false
+        -- 3. LOAD THE SAVED POSITION (If you have one)
+        local savedCaravan = composer.getVariable("caravan")
+        if savedCaravan ~= nil then
+            caravanGroup.x = savedCaravan.x
+            caravanGroup.y = savedCaravan.y
+        else
+            caravanGroup.x = 100 -- Default Mistral's End X
+            caravanGroup.y = 200 -- Default Mistral's End Y
+        end
         --moving caravan to center of screen
         --remmeber that groups move reative to teh placement of the objects in their original position, so always set the objects to 0,0 first
         local mistralsEndStartPoint=findBox("mist_end_exit")
-        if not composer.getVariable("justStartedGame") then
-            composer.setVariable("justStartedGame", true)
-            if mistralsEndStartPoint==nil then
-                pauseAndShowQuickMessage("error;mistrals end not found in jason file, putting on center of screen")
-                mistralsEndStartPoint={}
-                mistralsEndStartPoint.x=display.contentCenterX
-                mistralsEndStartPoint.y=display.contentCenterY
-            end
-            --**fix new bug when it clears the map after making a new box
-            setGamePausedState(true)
-            transition.to( caravanGroup, { time=0, x=mistralsEndStartPoint.x, y=mistralsEndStartPoint.y, onComplete=transitionCompleted } )
-            updateCaravanCoordinates(mistralsEndStartPoint)
+        -- Check if we have a saved caravan position
+        local savedCaravan = composer.getVariable("caravan")
+        
+        -- ONLY teleport to mistralsEnd if we did NOT just return from hunting/town
+        if savedCaravan == nil then
+            --**fix new bug when it clears the map after making a new box 
+            setGamePausedState(true) 
+            transition.to( caravanGroup, { time=0, x=mistralsEndStartPoint.x, y=mistralsEndStartPoint.y, onComplete=transitionCompleted } ) 
+        else
+            -- If we DID return from hunting/town, just unpause or run the completion directly
+            -- without moving the caravan's position!
+            transitionCompleted() 
         end
+        -- This safely resumes the game loop without moving the caravan
+        transitionCompleted()
+        updateCaravanCoordinates(mistralsEndStartPoint)
         local paint = {
             type = "image",
             filename = "img/arrowDown.png"
@@ -2867,28 +2972,19 @@ function scene:show(event)
             initTextScreen(sceneGroup,"EN")
             showTextArea()
             CLS()
-            if not composer.getVariable("justStartedGame2") then
-                composer.setVariable("justStartedGame2", true)
-                gameStartEN()
-            end
+            gameStartEN()
         elseif composer.getVariable( "language" ) == "Japanese" then
             setGamePausedState(true)
             initTextScreen(sceneGroup,"JP")
             showTextArea()
             CLS()
-            if not composer.getVariable("justStartedGame2") then
-                composer.setVariable("justStartedGame2", true)
-                gameStartJP()
-            end
+            gameStartJP()
         elseif composer.getVariable( "language" ) == "Spanish" then
             setGamePausedState(true)
             initTextScreen(sceneGroup,"ES")
             showTextArea()
             CLS()
-            if not composer.getVariable("justStartedGame2") then
-                composer.setVariable("justStartedGame2", true)
-                gameStartES()
-            end
+            gameStartES()
         end
 	end
     --disableContinueButton()
@@ -2896,16 +2992,35 @@ end
 end end--**added these two end statements cause they were missing, but now after hunt the every sprite is doubled and returned to its initial state.
 
 -- hide()
-function scene:hide(event)
+function scene:hide( event )
     local sceneGroup = self.view
     local phase = event.phase
 
-    if (phase == "will") then
-        -- Code here runs when the scene is on screen (but is about to go off screen)
+    if ( phase == "will" ) then
 
-    elseif (phase == "did") then
-        -- Code here runs immediately after the scene goes entirely off screen
+        -- Cancel the game loop timer!
+        if gameLoopTimer ~= nil then
+            timer.cancel(gameLoopTimer)
+            gameLoopTimer = nil
+        end
+        
+        -- (Keep your Runtime:removeEventListener lines here too)
+    
+        -- The scene is about to go off screen!
+        -- KILL THE EVENT LISTENERS SO THEY DON'T DUPLICATE LATER!
+        
+        -- (Replace these with the actual names of your functions)
+        Runtime:removeEventListener("enterFrame", yourGameLoopFunction)
+        Runtime:removeEventListener("key", yourKeyboardFunction)
+        
+        -- If you have timers, cancel them too!
+        if gameLoopTimer ~= nil then
+            timer.cancel(gameLoopTimer)
+            gameLoopTimer = nil
+        end
 
+    elseif ( phase == "did" ) then
+        -- Scene is fully off screen
     end
 end
 

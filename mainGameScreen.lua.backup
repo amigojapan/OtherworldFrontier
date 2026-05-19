@@ -1523,18 +1523,28 @@ function hideEverything()
 end
 function goHuntingPaczel()
     saveCaravan()
-    composer.setVariable( "gameMode", "Paczel" )
-    gameMode = composer.getVariable( "gameMode" )
-    print("gameMode:"..gameMode)
     composer.setVariable("numberOfPowerUps",5)
     composer.setVariable("numberOfMonsters",5)
-    hideEverything()
-    composer.setVariable("wentHunting", true)
-    --composer.setVariable("caravan",caravan)    
-    composer.setVariable("unicorns",unicorns)
-    hideTextArea()
-    composer.removeScene(composer.getSceneName( "current" ))
-    composer.gotoScene( "paczel" )
+
+    if landmarkShown then
+        return 
+     end
+     landmarkShown=true
+     setGamePausedState(true)
+     hideEverything()
+     hideTextArea()
+     composer.setVariable(returnMessage, true)
+     composer.setVariable("daysPassed", daysPassed)
+     composer.setVariable("arc.x", arc.x)
+     composer.setVariable("unicorns", unicorns)
+     
+     composer.setVariable("caravan", {x = caravanGroup.x, y = caravanGroup.y, rotation = caravan.rotation})
+     print("stored caravan coordinates caravanGroup.x"..caravanGroup.x)
+ 
+     composer.setVariable("tblBoxesData", getSerializableBoxes())  -- Store data, not objects
+     composer.setVariable("wentHunting", true)
+     composer.removeScene(composer.getSceneName("current"))
+     composer.gotoScene("paczel")
 end
 
 local function menuButtonTouchListener( event )
@@ -2404,8 +2414,7 @@ local function repeatedStuffDoneWhenLeavingTownsAndLandmarks(sceneGroup,exitPoin
     caravanGroup.x = savedCaravan.x
     caravanGroup.y = savedCaravan.y
     caravan.rotation = savedCaravan.rotation
-    setRotationOfCaravan(caravan.rotation)
-
+    setRotationOfCaravan(caravan.rotation)    
     print("exit point:"..exitPoint)
     if exitPoint ~= "savedPoint" then
         local newCaravanPosition = findBox(exitPoint)
@@ -2652,78 +2661,57 @@ function scene:show(event)
 
 
         --background
-
-        if composer.getVariable("wentHunting") then
-            local bg = display.newImageRect( sceneGroup, backgroundImage, 1500,800 )
-            if bg then 
-                bg.x = display.contentCenterX
-                bg.y = display.contentCenterY
-            end
-            composer.setVariable("wentHunting",false)
-            initTextScreenByCorrectLanguage(sceneGroup)
-            CLS()
-            hideTextArea()
-            local savedCaravan=composer.getVariable("caravan")
-            transition.to( caravanGroup, { time=0, x=savedCaravan.x, y=savedCaravan.y, onComplete=transitionCompleted } )
-            caravanGroup.x=savedCaravan.x
-            caravanGroup.y=savedCaravan.y
-            caravan.rotation=savedCaravan.rotation
-            setRotationOfCaravan(caravan.rotation)
-            unicorns=composer.getVariable("unicorns")
-            lblDaysPassed.isVisible=true
-            --local MPAfterHunting=composer.getVariable("mainCharMPAfterHunting")
-            --local girlNumber = 1
-            --local characters = composer.getVariable("characters")
-            --local mainChar = characters[girlNumber]
-
-            --mainChar.MP = MPAfterHunting
+        local background = display.newImageRect( sceneGroup, "backgrounds/newMapCropped.png", 1500,800 )
+        if background then
+            background.x = display.contentCenterX
+            background.y = display.contentCenterY
             
-             
-            --bg:addEventListener( "tap", tapListener )
-    
-            return
+            
+            background:addEventListener( "tap", tapListener )
         end
-        local background = display.newImageRect( sceneGroup, backgroundImage, 1500,800 )
-        background.x = display.contentCenterX
-        background.y = display.contentCenterY
-        
-         
-        background:addEventListener( "tap", tapListener )
-
         --level editor toolbar
         toolbarOffsetX=100
         toolbarOffsetY=100
         btnWhite = display.newImageRect( sceneGroup, "img/block-white.png", 32,32 )
-        btnWhite:addEventListener( "tap", toolbarTapListener )
-        toolbarOffsetX=toolbarOffsetX+32
-        btnWhite.x = toolbarOffsetX
-        btnWhite.y = toolbarOffsetY
-        btnWhite.myName="colorWhite"
+        if btnWhite then
+            btnWhite:addEventListener( "tap", toolbarTapListener )
+            toolbarOffsetX=toolbarOffsetX+32
+            btnWhite.x = toolbarOffsetX
+            btnWhite.y = toolbarOffsetY
+            btnWhite.myName="colorWhite"
+        end
         btnRed = display.newImageRect( sceneGroup, "img/block-red.png", 32,32 )
-        btnRed:addEventListener( "tap", toolbarTapListener )
-        toolbarOffsetX=toolbarOffsetX+32
-        btnRed.x = toolbarOffsetX
-        btnRed.y = toolbarOffsetY
-        btnRed.myName="colorRed"
+        if btnRed then
+            btnRed:addEventListener( "tap", toolbarTapListener )
+            toolbarOffsetX=toolbarOffsetX+32
+            btnRed.x = toolbarOffsetX
+            btnRed.y = toolbarOffsetY
+            btnRed.myName="colorRed"
+        end
         btnGreen = display.newImageRect( sceneGroup, "img/block-green.png", 32,32 )
-        btnGreen:addEventListener( "tap", toolbarTapListener )
-        toolbarOffsetX=toolbarOffsetX+32
-        btnGreen.x = toolbarOffsetX
-        btnGreen.y = toolbarOffsetY
-        btnGreen.myName="colorGreen"
+        if btnGreen then
+            btnGreen:addEventListener( "tap", toolbarTapListener )
+            toolbarOffsetX=toolbarOffsetX+32
+            btnGreen.x = toolbarOffsetX
+            btnGreen.y = toolbarOffsetY
+            btnGreen.myName="colorGreen"
+        end
         btnBlue = display.newImageRect( sceneGroup, "img/block-blue.png", 32,32 )
-        btnBlue:addEventListener( "tap", toolbarTapListener )
-        toolbarOffsetX=toolbarOffsetX+32
-        btnBlue.x = toolbarOffsetX
-        btnBlue.y = toolbarOffsetY
-        btnBlue.myName="colorBlue"
+        if btnBlue then
+            btnBlue:addEventListener( "tap", toolbarTapListener )
+            toolbarOffsetX=toolbarOffsetX+32
+            btnBlue.x = toolbarOffsetX
+            btnBlue.y = toolbarOffsetY
+            btnBlue.myName="colorBlue"
+        if btnBlue then
         btnYellow = display.newImageRect( sceneGroup, "img/block.png", 32,32 )
-        btnYellow:addEventListener( "tap", toolbarTapListener )
-        toolbarOffsetX=toolbarOffsetX+32
-        btnYellow.x = toolbarOffsetX
-        btnYellow.y = toolbarOffsetY
-        btnYellow.myName="colorYellow"
-    
+        if btnBlue then
+            btnYellow:addEventListener( "tap", toolbarTapListener )
+            toolbarOffsetX=toolbarOffsetX+32
+            btnYellow.x = toolbarOffsetX
+            btnYellow.y = toolbarOffsetY
+            btnYellow.myName="colorYellow"
+        end
 
 
         
@@ -2828,6 +2816,12 @@ function scene:show(event)
             return
         end
 
+        if composer.getVariable("wentHunting") then            
+            composer.setVariable("wentHunting",false)
+            repeatedStuffDoneWhenLeavingTownsAndLandmarks(sceneGroup,"savedPoint")
+            return
+        end
+
         if composer.getVariable("inputBuffer") ~= "input unset" then           
             if composer.getVariable( "language" ) == "English" then
                 initTextScreen(sceneGroup,"EN")
@@ -2852,6 +2846,8 @@ function scene:show(event)
                 return
            end
         end
+
+
         --cleanupInvisibleObjects(display.getCurrentStage(),sceneGroup)
         
         --clear this when the main game screen enters so that the name does nto apepar in teh store
@@ -2881,6 +2877,7 @@ function scene:show(event)
 	end
     --disableContinueButton()
 end
+end end--**added these two end statements cause they were missing, but now after hunt the every sprite is doubled and returned to its initial state.
 
 -- hide()
 function scene:hide(event)
@@ -3007,6 +3004,7 @@ return scene
 --(fixed)in spanish, it does not update the lable when going to church
 --increase random game eventrs by about double of now mayve even more
 --remove left and right shift form input keys so that people stop complaining
+--bug game bugs out after hunting, sometimes returning to the beginning sometimes making two copies of the caravan
 --[[
 月みたいなので、馬車をかいてんする
 5:24 PM <amigojapan> hiro_at_work: 上矢印でスピードをます
@@ -3017,5 +3015,8 @@ return scene
 5:27 PM <amigojapan> hiro_at_work: 赤い線に沿ってゴールに進む
 5:30 PM → PJBoy joined (~PJBoy@user/pjboy)
 5:31 PM <amigojapan> hiro_at_work: 魔法は野生のユニコーンを飼いならす魔法と呪いを解かす魔法。緑のはHPを回復するポーション紫のはMPを回復するポーション、あとは狩猟で食べ物をかるのが完成は明日でしょう…
-]]
 
+
+new bug https://imgur.com/Axw7FwT
+make it dim and light between camping days
+]]
