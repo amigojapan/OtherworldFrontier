@@ -237,7 +237,7 @@ function returnToMainGameScreen()
 	hideEverything()
 	print("end paczel reached")
 	clearAllSprites()
-	composer.removeScene(composer.getSceneName( "current" ))
+	--composer.removeScene(composer.getSceneName( "current" ))
 	composer.gotoScene( "mainGameScreen" )
 end
 function handleRatCollision(sprite)
