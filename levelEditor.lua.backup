@@ -1074,7 +1074,7 @@ gameLoopTimer = timer.performWithDelay( caravanMoveInMilliseconds, gameloop, 0 )
 function gameStartEN()
     RESETQUE()
     --           "1234567890123456789012345678901234567890"
-    QUESLOWPRINT("^Stear the caravan carefully, ^")
+    QUESLOWPRINT("^Steer the caravan carefully, ^")
     QUESLOWPRINT("Follow the red line.^")
     QUESLOWPRINT("Set the unicorn running speed.^")
     QUESLOWPRINT("Come to a complete stop ^to restore HP of the unicorns.^")

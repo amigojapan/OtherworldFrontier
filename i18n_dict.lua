@@ -56,7 +56,7 @@ i18n["English"]={
 	["Purchase Food"]="Purchase Food",
 	["Purchase MP Potions"]="Purchase MP Potions",
 	["Purchase HP Potions"]="Purchase HP Potions",
-	["Visit church"]="Visit church(heals all ucurses)",
+	["Visit church"]="Visit church(heals all curses)",
 	["Leave Town"]="Leave Town"
 }
 i18n["Japanese"]={
