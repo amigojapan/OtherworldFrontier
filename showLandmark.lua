@@ -311,7 +311,7 @@ function shopAriveEN()
                             message=priestesstAlgorythm(priesitessGirl,message)
                         end
                     else
-                        message=message..warriorGirl.name.." holds her swrods up and casts her control spell and the goblin walks away.^"
+                        message=message..warriorGirl.name.." holds her sword up and casts her control spell and the goblin walks away.^"
                         warriorGirl.MP=warriorGirl.MP-30
                     end
                 end
